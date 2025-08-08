@@ -7,6 +7,7 @@ import { ThemeToggle } from '@/components/ui/theme-toggle'
 import { useAuth } from '@/hooks/use-auth'
 import { Menu, X, LogIn, Settings } from 'lucide-react'
 import { APP_NAME, PUBLIC_ROUTES } from '@/lib/constants'
+import logo from '@/public/images/logo-symbol.svg'
 
 const navigation = [
   { name: 'Hem', href: PUBLIC_ROUTES.home },
