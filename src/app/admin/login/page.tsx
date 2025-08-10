@@ -43,6 +43,16 @@ export default function AdminLoginPage() {
         throw new Error(ERROR_MESSAGES.emailNotAdmin)
       }
 
+      // Development mode bypass - simulate successful login
+      if (process.env.NODE_ENV === 'development') {
+        // Simulate API delay
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        
+        // Redirect directly to admin dashboard
+        window.location.href = redirectTo || '/admin'
+        return
+      }
+
       const supabase = createClient()
       const { error: signInError } = await supabase.auth.signInWithOtp({
         email: data.email,
@@ -74,6 +84,8 @@ export default function AdminLoginPage() {
         return 'Ingen e-post kunde verifieras.'
       case 'server_error':
         return ERROR_MESSAGES.serverError
+      case 'config_error':
+        return 'Supabase är inte konfigurerat. Kontakta administratör för att konfigurera NEXT_PUBLIC_SUPABASE_URL och NEXT_PUBLIC_SUPABASE_ANON_KEY.'
       default:
         return ERROR_MESSAGES.serverError
     }

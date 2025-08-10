@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { ArticleCarousel } from '@/components/ui/article-carousel'
@@ -41,6 +42,15 @@ export default async function HomePage() {
       {/* Hero Section */}
       <section className="container py-24 md:py-32">
         <div className="mx-auto flex max-w-4xl flex-col items-center text-center">
+          <div className="mb-8">
+            <Image 
+              src="/images/logga.svg"
+              alt="Bearbetar logotyp"
+              width={200}
+              height={80}
+              className="w-auto h-16 md:h-20"
+            />
+          </div>
           <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl">
             Välkommen till{' '}
             <span className="bg-gradient-to-r from-primary-300 to-primary-800 bg-clip-text text-transparent">

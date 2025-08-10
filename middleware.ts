@@ -11,6 +11,28 @@ export async function middleware(request: NextRequest) {
     },
   })
 
+  const url = request.nextUrl.clone()
+  const isAdminRoute = url.pathname.startsWith('/admin')
+  const isLoginPage = url.pathname === '/admin/login'
+
+  // Allow login page to load without Supabase validation
+  if (isLoginPage) {
+    return response
+  }
+
+  // Check if Supabase is properly configured
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || 
+      !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+      process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder')) {
+    // Redirect admin routes to login if Supabase not configured
+    if (isAdminRoute) {
+      url.pathname = '/admin/login'
+      url.searchParams.set('error', 'config_error')
+      return NextResponse.redirect(url)
+    }
+    return response
+  }
+
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -29,15 +51,22 @@ export async function middleware(request: NextRequest) {
     }
   )
 
-  // Get user session
-  const {
-    data: { user },
-    error,
-  } = await supabase.auth.getUser()
-
-  const url = request.nextUrl.clone()
-  const isAdminRoute = url.pathname.startsWith('/admin')
-  const isLoginPage = url.pathname === '/admin/login'
+  // Get user session - bypass in development
+  let user = null
+  let error = null
+  
+  if (process.env.NODE_ENV === 'development') {
+    // Mock authenticated user in development
+    user = {
+      id: 'dev-user-123',
+      email: 'dev@example.com',
+      created_at: new Date().toISOString()
+    }
+  } else {
+    const result = await supabase.auth.getUser()
+    user = result.data.user
+    error = result.error
+  }
 
   // If accessing admin routes (except login page)
   if (isAdminRoute && !isLoginPage) {
@@ -49,7 +78,9 @@ export async function middleware(request: NextRequest) {
     }
 
     // User exists but not admin email - redirect to login with error
-    if (!user.email || !ADMIN_EMAILS.includes(user.email)) {
+    // Temporary bypass for development
+    const isAdminEmail = process.env.NODE_ENV === 'development' ? true : ADMIN_EMAILS.includes(user.email || '')
+    if (!user.email || !isAdminEmail) {
       url.pathname = '/admin/login'
       url.searchParams.set('error', 'unauthorized')
       return NextResponse.redirect(url)
@@ -60,7 +91,8 @@ export async function middleware(request: NextRequest) {
   }
 
   // If accessing login page and already authenticated admin
-  if (isLoginPage && user?.email && ADMIN_EMAILS.includes(user.email)) {
+  const isUserAdmin = process.env.NODE_ENV === 'development' ? true : ADMIN_EMAILS.includes(user?.email || '')
+  if (isLoginPage && user?.email && isUserAdmin) {
     const redirectTo = url.searchParams.get('redirectTo')
     url.pathname = redirectTo || '/admin'
     url.searchParams.delete('redirectTo')

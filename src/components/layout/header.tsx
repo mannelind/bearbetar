@@ -1,14 +1,15 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { ThemeToggle } from '@/components/ui/theme-toggle'
 import { useAuth } from '@/hooks/use-auth'
 import { Menu, X, LogIn, Settings } from 'lucide-react'
 import { APP_NAME, PUBLIC_ROUTES } from '@/lib/constants'
-import logo from '@/public/images/logo-symbol.svg'
 
+// Navigation items for desktop and mobile
 const navigation = [
   { name: 'Hem', href: PUBLIC_ROUTES.home },
   { name: 'Tjänster', href: PUBLIC_ROUTES.services },
@@ -24,7 +25,13 @@ export function Header() {
       <div className="container flex h-16 items-center">
         {/* Logo */}
         <Link href="/" className="flex items-center space-x-2">
-          <span className="font-bold text-xl">{APP_NAME}</span>
+          <Image 
+            src="/images/logo-symbol.svg" 
+            alt={`${APP_NAME} logotyp`}
+            width={32}
+            height={32}
+            className="w-8 h-8"
+          />
         </Link>
 
         {/* Desktop Navigation */}

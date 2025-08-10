@@ -3,7 +3,7 @@
 import * as React from 'react'
 import { useTheme } from 'next-themes'
 import { Button } from '@/components/ui/button'
-import { Moon, Sun, Monitor } from 'lucide-react'
+import { Moon, Sun } from 'lucide-react'
 
 export function ThemeToggle() {
   const { setTheme, theme } = useTheme()
@@ -21,11 +21,9 @@ export function ThemeToggle() {
     )
   }
 
-  const cycleTheme = () => {
+  const toggleTheme = () => {
     if (theme === 'light') {
       setTheme('dark')
-    } else if (theme === 'dark') {
-      setTheme('system')
     } else {
       setTheme('light')
     }
@@ -36,12 +34,10 @@ export function ThemeToggle() {
       variant="ghost"
       size="sm"
       className="w-9 px-0"
-      onClick={cycleTheme}
-      title={`Nuvarande tema: ${theme === 'light' ? 'Ljust' : theme === 'dark' ? 'Mörkt' : 'System'}`}
+      onClick={toggleTheme}
+      title={`Växla till ${theme === 'light' ? 'mörkt' : 'ljust'} tema`}
     >
-      {theme === 'light' && <Sun className="h-4 w-4" />}
-      {theme === 'dark' && <Moon className="h-4 w-4" />}
-      {theme === 'system' && <Monitor className="h-4 w-4" />}
+      {theme === 'light' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
     </Button>
   )
 }

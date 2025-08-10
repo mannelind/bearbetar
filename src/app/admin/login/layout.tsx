@@ -2,17 +2,14 @@ import { Metadata } from 'next'
 import { APP_NAME } from '@/lib/constants'
 
 export const metadata: Metadata = {
-  title: {
-    default: `Admin | ${APP_NAME}`,
-    template: `%s | Admin | ${APP_NAME}`,
-  },
+  title: `Admin Login | ${APP_NAME}`,
   robots: {
     index: false,
     follow: false,
   },
 }
 
-export default async function AdminLayout({
+export default function AdminLoginLayout({
   children,
 }: {
   children: React.ReactNode

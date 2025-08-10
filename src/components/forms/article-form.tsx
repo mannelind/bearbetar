@@ -16,11 +16,13 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
+import { Badge } from '@/components/ui/badge'
+import { Switch } from '@/components/ui/switch'
 import { useSupabase } from '@/hooks/use-supabase'
 import { useAuth } from '@/hooks/use-auth'
 import { ADMIN_ROUTES } from '@/lib/constants'
 import { toast } from 'sonner'
-import { Loader2, Save, Eye } from 'lucide-react'
+import { Loader2, Save, Eye, X, Plus } from 'lucide-react'
 
 const articleSchema = z.object({
   title: z.string().min(1, 'Titel krävs').max(200, 'Titel får vara max 200 tecken'),
@@ -33,6 +35,7 @@ const articleSchema = z.object({
   content: z.string().min(1, 'Innehåll krävs'),
   featured_image: z.string().url('Måste vara en giltig URL').optional().or(z.literal('')),
   published: z.boolean().default(false),
+  tags: z.array(z.string()).optional().default([]),
 })
 
 type ArticleFormData = z.infer<typeof articleSchema>
@@ -46,6 +49,8 @@ interface ArticleFormProps {
     excerpt: string | null
     featured_image: string | null
     published: boolean
+    published_at: string | null
+    tags: string[] | null
   }
 }
 
@@ -54,6 +59,7 @@ export function ArticleForm({ article }: ArticleFormProps) {
   const supabase = useSupabase()
   const { user } = useAuth()
   const [isLoading, setIsLoading] = useState(false)
+  const [newTag, setNewTag] = useState('')
 
   const form = useForm<ArticleFormData>({
     resolver: zodResolver(articleSchema),
@@ -64,6 +70,7 @@ export function ArticleForm({ article }: ArticleFormProps) {
       content: article?.content || '',
       featured_image: article?.featured_image || '',
       published: article?.published || false,
+      tags: article?.tags || [],
     },
   })
 
@@ -80,6 +87,27 @@ export function ArticleForm({ article }: ArticleFormProps) {
       .replace(/^-+|-+$/g, '')
   }
 
+  // Tag management functions
+  const addTag = () => {
+    if (newTag.trim() && !form.getValues('tags').includes(newTag.trim())) {
+      const currentTags = form.getValues('tags')
+      form.setValue('tags', [...currentTags, newTag.trim()])
+      setNewTag('')
+    }
+  }
+
+  const removeTag = (tagToRemove: string) => {
+    const currentTags = form.getValues('tags')
+    form.setValue('tags', currentTags.filter(tag => tag !== tagToRemove))
+  }
+
+  const handleTagInputKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      addTag()
+    }
+  }
+
   const onSubmit = async (data: ArticleFormData) => {
     if (!user) {
       toast.error('Du måste vara inloggad för att spara artikeln')
@@ -89,10 +117,18 @@ export function ArticleForm({ article }: ArticleFormProps) {
     setIsLoading(true)
 
     try {
+      // Handle published_at logic
+      let publishedAt = null
+      if (data.published) {
+        // If article is being published and wasn't published before, set current date
+        // If it was already published, keep the existing date
+        publishedAt = article?.published_at || new Date().toISOString()
+      }
+
       const articleData = {
         ...data,
         author_id: user.id,
-        published_at: data.published ? new Date().toISOString() : null,
+        published_at: publishedAt,
       }
 
       let result
@@ -233,6 +269,57 @@ export function ArticleForm({ article }: ArticleFormProps) {
                   className="min-h-[400px]"
                 />
               </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {/* Tags Section */}
+        <FormField
+          control={form.control}
+          name="tags"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Taggar</FormLabel>
+              <div className="space-y-3">
+                {/* Display existing tags */}
+                {field.value.length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {field.value.map((tag: string, index: number) => (
+                      <Badge key={index} variant="secondary" className="text-sm">
+                        {tag}
+                        <button
+                          type="button"
+                          onClick={() => removeTag(tag)}
+                          className="ml-2 hover:text-destructive"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+                
+                {/* Add new tag input */}
+                <div className="flex gap-2">
+                  <Input
+                    value={newTag}
+                    onChange={(e) => setNewTag(e.target.value)}
+                    onKeyPress={handleTagInputKeyPress}
+                    placeholder="Lägg till tagg..."
+                    className="flex-1"
+                  />
+                  <Button
+                    type="button"
+                    onClick={addTag}
+                    variant="outline"
+                    size="sm"
+                    disabled={!newTag.trim()}
+                  >
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
               <FormMessage />
             </FormItem>
           )}

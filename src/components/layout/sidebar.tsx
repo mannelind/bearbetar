@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
@@ -47,9 +47,12 @@ const adminNavigation = [
 
 export function Sidebar() {
   const [isOpen, setIsOpen] = useState(false)
-  const [isCollapsed, setIsCollapsed] = useState(false)
+  const [isCollapsed, setIsCollapsed] = useState(true) // Start collapsed
+  const [isExpanded, setIsExpanded] = useState(false) // For hover/click state
   const pathname = usePathname()
   const { user, isAdmin, signOut } = useAuth()
+  const sidebarRef = useRef<HTMLDivElement>(null)
+  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   const handleSignOut = async () => {
     try {
@@ -63,6 +66,61 @@ export function Sidebar() {
     if (!email) return 'U'
     return email.substring(0, 2).toUpperCase()
   }
+
+  // Handle hover expand
+  const handleMouseEnter = () => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current)
+    }
+    setIsExpanded(true)
+  }
+
+  // Handle hover collapse with delay
+  const handleMouseLeave = () => {
+    hoverTimeoutRef.current = setTimeout(() => {
+      setIsExpanded(false)
+    }, 300) // 300ms delay before closing
+  }
+
+  // Handle click to toggle permanent expanded state
+  const handleClick = () => {
+    setIsCollapsed(!isCollapsed)
+    setIsExpanded(!isCollapsed) // If expanding permanently, also set expanded
+  }
+
+  // Handle outside click
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
+        // If sidebar is temporarily expanded via hover (collapsed but expanded), close it
+        if (isExpanded && isCollapsed) {
+          setIsExpanded(false)
+        }
+        // If sidebar is permanently expanded (not collapsed), collapse it
+        else if (!isCollapsed) {
+          setIsCollapsed(true)
+          setIsExpanded(false)
+        }
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [isExpanded, isCollapsed])
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (hoverTimeoutRef.current) {
+        clearTimeout(hoverTimeoutRef.current)
+      }
+    }
+  }, [])
+
+  // Determine if sidebar should show expanded content
+  const showExpandedContent = !isCollapsed || isExpanded
 
   // Remove the null return - show sidebar for all users
 
@@ -87,18 +145,23 @@ export function Sidebar() {
       )}
 
       {/* Sidebar */}
-      <aside className={cn(
-        "fixed left-0 top-0 z-40 h-full transform border-r bg-background/95 backdrop-blur transition-all duration-200 ease-in-out md:translate-x-0",
-        isCollapsed ? "w-16" : "w-64",
-        isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
-      )}>
+      <aside 
+        ref={sidebarRef}
+        className={cn(
+          "fixed left-0 top-0 z-40 h-full transform border-r bg-background/95 backdrop-blur transition-all duration-200 ease-in-out md:translate-x-0",
+          showExpandedContent ? "w-64" : "w-16",
+          isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+        )}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
         <div className="flex h-full flex-col">
           {/* Header */}
           <div className={cn(
             "flex h-16 items-center border-b",
-            isCollapsed ? "px-3 justify-center" : "px-6 justify-between"
+            showExpandedContent ? "px-6 justify-between" : "px-3 justify-center"
           )}>
-            {!isCollapsed && (
+            {showExpandedContent && (
               <Link href="/" className="flex items-center space-x-2">
                 <span className="font-bold text-xl">{APP_NAME}</span>
               </Link>
@@ -106,10 +169,10 @@ export function Sidebar() {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => setIsCollapsed(!isCollapsed)}
+              onClick={handleClick}
               className={cn(
                 "text-muted-foreground hover:text-foreground",
-                isCollapsed ? "h-8 w-8" : ""
+                !showExpandedContent ? "h-8 w-8" : ""
               )}
             >
               {isCollapsed ? (
@@ -123,19 +186,19 @@ export function Sidebar() {
           {/* User Info / Login Section */}
           <div className={cn(
             "border-b p-4",
-            isCollapsed && "flex justify-center"
+            !showExpandedContent && "flex justify-center"
           )}>
             {user ? (
               <div className={cn(
                 "flex items-center",
-                isCollapsed ? "justify-center" : "space-x-3"
+                !showExpandedContent ? "justify-center" : "space-x-3"
               )}>
                 <Avatar className="h-10 w-10">
                   <AvatarFallback className="bg-primary text-primary-foreground">
                     {getUserInitials(user.email)}
                   </AvatarFallback>
                 </Avatar>
-                {!isCollapsed && (
+                {showExpandedContent && (
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium truncate">
                       {user.user_metadata?.full_name || user.email}
@@ -155,9 +218,9 @@ export function Sidebar() {
               </div>
             ) : (
               <div className={cn(
-                isCollapsed ? "flex justify-center" : "text-center"
+                !showExpandedContent ? "flex justify-center" : "text-center"
               )}>
-                {isCollapsed ? (
+                {!showExpandedContent ? (
                   <Button asChild size="sm" variant="ghost" className="h-10 w-10 p-0">
                     <Link href="/admin/login">
                       <User className="h-5 w-5" />
@@ -181,11 +244,11 @@ export function Sidebar() {
           {/* Navigation */}
           <nav className={cn(
             "flex-1 space-y-1",
-            isCollapsed ? "px-2 py-4" : "p-4"
+            !showExpandedContent ? "px-2 py-4" : "p-4"
           )}>
             {/* Public Navigation */}
             <div className="space-y-1">
-              {!isCollapsed && (
+              {showExpandedContent && (
                 <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
                   Navigation
                 </p>
@@ -198,7 +261,7 @@ export function Sidebar() {
                     href={item.href}
                     className={cn(
                       "flex items-center rounded-lg text-sm font-medium transition-colors relative",
-                      isCollapsed 
+                      !showExpandedContent 
                         ? "justify-center py-3 px-2" 
                         : "space-x-3 px-3 py-2",
                       isActive 
@@ -206,10 +269,10 @@ export function Sidebar() {
                         : "text-muted-foreground hover:text-foreground hover:bg-muted"
                     )}
                     onClick={() => setIsOpen(false)}
-                    title={isCollapsed ? item.name : undefined}
+                    title={!showExpandedContent ? item.name : undefined}
                   >
                     <item.icon className="h-4 w-4" />
-                    {!isCollapsed && <span>{item.name}</span>}
+                    {showExpandedContent && <span>{item.name}</span>}
                   </Link>
                 )
               })}
@@ -218,7 +281,7 @@ export function Sidebar() {
             {/* Profile Navigation - Only for logged in users */}
             {user && (
               <div className="space-y-1 pt-4">
-                {!isCollapsed && (
+                {showExpandedContent && (
                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
                     Profil & Inställningar
                   </p>
@@ -239,10 +302,10 @@ export function Sidebar() {
                           : "text-muted-foreground hover:text-foreground hover:bg-muted"
                       )}
                       onClick={() => setIsOpen(false)}
-                      title={isCollapsed ? item.name : undefined}
+                      title={!showExpandedContent ? item.name : undefined}
                     >
                       <item.icon className="h-4 w-4" />
-                      {!isCollapsed && <span>{item.name}</span>}
+                      {showExpandedContent && <span>{item.name}</span>}
                     </Link>
                   )
                 })}
@@ -252,7 +315,7 @@ export function Sidebar() {
             {/* Admin Navigation */}
             {isAdmin && (
               <div className="space-y-1 pt-4">
-                {!isCollapsed && (
+                {showExpandedContent && (
                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
                     Administration
                   </p>
@@ -273,10 +336,10 @@ export function Sidebar() {
                           : "text-muted-foreground hover:text-foreground hover:bg-muted"
                       )}
                       onClick={() => setIsOpen(false)}
-                      title={isCollapsed ? item.name : undefined}
+                      title={!showExpandedContent ? item.name : undefined}
                     >
                       <item.icon className="h-4 w-4" />
-                      {!isCollapsed && <span>{item.name}</span>}
+                      {showExpandedContent && <span>{item.name}</span>}
                     </Link>
                   )
                 })}
@@ -287,35 +350,35 @@ export function Sidebar() {
           {/* Footer */}
           <div className={cn(
             "border-t p-4 space-y-2",
-            isCollapsed && "flex flex-col items-center"
+            !showExpandedContent && "flex flex-col items-center"
           )}>
-            <div className={cn(
-              "flex items-center",
-              isCollapsed ? "justify-center" : "justify-between"
-            )}>
-              {!isCollapsed && <span className="text-xs text-muted-foreground">Tema</span>}
-              <ThemeToggle />
-            </div>
             {user && (
               <Button
                 variant="ghost"
                 size="sm"
                 className={cn(
                   "text-muted-foreground hover:text-foreground",
-                  isCollapsed 
+                  !showExpandedContent 
                     ? "h-8 w-8 p-0" 
                     : "w-full justify-start"
                 )}
                 onClick={handleSignOut}
-                title={isCollapsed ? "Logga ut" : undefined}
+                title={!showExpandedContent ? "Logga ut" : undefined}
               >
                 <LogOut className={cn(
                   "h-4 w-4",
-                  !isCollapsed && "mr-3"
+                  showExpandedContent && "mr-3"
                 )} />
-                {!isCollapsed && "Logga ut"}
+                {showExpandedContent && "Logga ut"}
               </Button>
             )}
+            <div className={cn(
+              "flex items-center",
+              !showExpandedContent ? "justify-center" : "justify-between"
+            )}>
+              {showExpandedContent && <span className="text-xs text-muted-foreground">Tema</span>}
+              <ThemeToggle />
+            </div>
           </div>
         </div>
       </aside>
@@ -323,7 +386,7 @@ export function Sidebar() {
       {/* Content spacer for desktop */}
       <div className={cn(
         "hidden md:block flex-shrink-0",
-        isCollapsed ? "md:w-16" : "md:w-64"
+        showExpandedContent ? "md:w-64" : "md:w-16"
       )} />
     </>
   )

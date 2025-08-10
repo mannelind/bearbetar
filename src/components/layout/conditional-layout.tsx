@@ -13,11 +13,17 @@ interface ConditionalLayoutProps {
 
 export function ConditionalLayout({ children }: ConditionalLayoutProps) {
   const pathname = usePathname()
-  const { loading } = useAuth()
   const isAdminRoute = pathname.startsWith('/admin')
   const isLoginRoute = pathname === '/admin/login'
+  
+  // Skip auth loading for login page - render immediately
+  if (isLoginRoute) {
+    return <>{children}</>
+  }
 
-  // Don't show anything while loading auth state
+  const { loading } = useAuth()
+
+  // Don't show anything while loading auth state (for other pages)
   if (loading) {
     return null
   }

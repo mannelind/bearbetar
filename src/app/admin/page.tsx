@@ -2,8 +2,8 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { getUser } from '@/lib/auth'
 import { ADMIN_ROUTES } from '@/lib/constants'
+import AdminPageWrapper from '@/components/auth/admin-page-wrapper'
 import { 
   FileText, 
   Settings, 
@@ -26,7 +26,6 @@ const mockStats = {
 }
 
 export default async function AdminDashboard() {
-  const user = await getUser()
   
   const stats = mockStats // TODO: Replace with real database queries
 
@@ -77,7 +76,8 @@ export default async function AdminDashboard() {
   ]
 
   return (
-    <div className="space-y-8">
+    <AdminPageWrapper>
+      <div className="space-y-8">
       {/* Welcome Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -85,7 +85,7 @@ export default async function AdminDashboard() {
             Välkommen tillbaka!
           </h1>
           <p className="text-muted-foreground">
-            {user?.email && `Inloggad som ${user.email}`}
+            Hantera ditt innehåll och inställningar
           </p>
         </div>
         <Badge variant="secondary" className="text-sm">
@@ -200,6 +200,7 @@ export default async function AdminDashboard() {
           </div>
         </CardContent>
       </Card>
-    </div>
+      </div>
+    </AdminPageWrapper>
   )
 }

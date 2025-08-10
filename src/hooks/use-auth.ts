@@ -29,23 +29,48 @@ export function useAuth(): AuthHook {
   const router = useRouter()
 
   useEffect(() => {
+    // Check if Supabase is properly configured
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    
+    if (!supabaseUrl || !supabaseKey || supabaseUrl.includes('placeholder')) {
+      // Supabase not configured - set loading to false immediately
+      setAuthState({
+        user: null,
+        session: null,
+        loading: false,
+        isAdmin: false,
+      })
+      return
+    }
+
     // Get initial session
     const getInitialSession = async () => {
-      const { data: { session }, error } = await supabase.auth.getSession()
-      
-      if (error) {
-        console.error('Error getting session:', error)
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession()
+        
+        if (error) {
+          console.error('Error getting session:', error)
+        }
+        
+        const user = session?.user || null
+        const isAdmin = user?.email ? isAdminEmail(user.email) : false
+        
+        setAuthState({
+          user,
+          session,
+          loading: false,
+          isAdmin,
+        })
+      } catch (err) {
+        console.error('Error connecting to Supabase:', err)
+        setAuthState({
+          user: null,
+          session: null,
+          loading: false,
+          isAdmin: false,
+        })
       }
-      
-      const user = session?.user || null
-      const isAdmin = user?.email ? isAdminEmail(user.email) : false
-      
-      setAuthState({
-        user,
-        session,
-        loading: false,
-        isAdmin,
-      })
     }
 
     getInitialSession()
