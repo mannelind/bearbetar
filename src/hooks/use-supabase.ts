@@ -40,7 +40,7 @@ export function useSupabaseQuery<T>(
 
   useEffect(() => {
     refetch()
-  }, [supabase, ...deps])
+  }, [refetch, supabase, ...deps])
 
   return {
     data,

@@ -1,10 +1,11 @@
 import Link from 'next/link'
-import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { ArticleCarousel } from '@/components/ui/article-carousel'
+import { ThemeLogo } from '@/components/ui/theme-logo'
+import { InteractiveOrbs } from '@/components/ui/interactive-orbs'
 import { createServerComponentClient } from '@/lib/supabase'
-import { TrendingUp, Users, Target, BarChart3 } from 'lucide-react'
+import { Code, Globe, Smartphone, Coffee } from 'lucide-react'
 
 export default async function HomePage() {
   // Fetch articles for carousels
@@ -40,125 +41,139 @@ export default async function HomePage() {
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
-      <section className="container py-24 md:py-32">
-        <div className="mx-auto flex max-w-4xl flex-col items-center text-center">
-          <div className="mb-8">
-            <Image 
-              src="/images/logga.svg"
-              alt="Bearbetar logotyp"
-              width={200}
-              height={80}
-              className="w-auto h-16 md:h-20"
-            />
+      <section className="relative futuristic-gradient gradient-mesh overflow-hidden">
+        <InteractiveOrbs />
+        <div className="container py-24 md:py-32">
+          <div className="mx-auto max-w-7xl">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Left side - Logo */}
+            <div className="flex justify-center lg:justify-center animate-slide-in-left">
+              <div className="text-center lg:text-left">
+                <ThemeLogo 
+                  alt="Bearbetar logotyp"
+                  width={400}
+                  height={160}
+                  className="w-auto h-24 md:h-32 lg:h-40"
+                  type="full"
+                />
+              </div>
+            </div>
+            
+            {/* Right side - Text content */}
+            <div className="text-center lg:text-left animate-slide-up-delayed">
+              <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-5xl xl:text-6xl animate-slide-up">
+                Välkommen till{' '}
+                <span className="text-primary">
+                  Bearbetar
+                </span>
+              </h1>
+              <p className="mt-6 text-lg text-muted-foreground sm:text-xl max-w-xl lg:max-w-none animate-slide-up-delayed">
+                Vi byggger webbplatser, appar och allt däremellan. Här delar vi också våra tankar, 
+                tips och berättelser från livet som utvecklare och företagare.
+              </p>
+              <div className="mt-8 flex gap-4 justify-center lg:justify-start animate-slide-up-delayed-2">
+                <Button asChild size="lg">
+                  <Link href="/kontakt">Hör av dig</Link>
+                </Button>
+                <Button variant="outline" asChild size="lg">
+                  <Link href="/tjanster">Våra tjänster</Link>
+                </Button>
+              </div>
+            </div>
           </div>
-          <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl">
-            Välkommen till{' '}
-            <span className="bg-gradient-to-r from-primary-300 to-primary-800 bg-clip-text text-transparent">
-              Bearbetar
-            </span>
-          </h1>
-          <p className="mt-6 max-w-2xl text-lg text-muted-foreground sm:text-xl">
-            Vi hjälper företag att utvecklas och växa genom strategisk rådgivning, 
-            affärsutveckling och professionella konsulttjänster.
-          </p>
-          <div className="mt-8 flex gap-4">
-            <Button asChild size="lg">
-              <Link href="/tjanster">Våra Tjänster</Link>
-            </Button>
-            <Button variant="outline" asChild size="lg">
-              <Link href="/blog">Läs Mer</Link>
-            </Button>
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="container py-16">
-        <div className="mx-auto max-w-6xl">
-          <h2 className="text-center text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-            Våra Specialområden
+      <section className="relative py-16 bg-gradient-to-b from-transparent via-primary/5 to-transparent">
+        <div className="container">
+          <div className="mx-auto max-w-6xl">
+          <h2 className="text-center text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl animate-slide-up">
+            Vad vi gör
           </h2>
-          <p className="mt-4 text-center text-muted-foreground">
-            Vi erbjuder professionella tjänster inom flera områden
+          <p className="mt-4 text-center text-muted-foreground animate-slide-up-delayed">
+            Från enkla hemsidor till avancerade appar - vi hjälper dig att få det gjort
           </p>
           
           <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            <Card>
+            <Card className="animate-card-1">
               <CardHeader>
                 <div className="flex items-center gap-2">
-                  <TrendingUp className="h-8 w-8 text-primary" />
-                  <CardTitle>Tillväxt</CardTitle>
+                  <Globe className="h-8 w-8 text-primary" />
+                  <CardTitle>Webbsidor</CardTitle>
                 </div>
               </CardHeader>
               <CardContent>
                 <CardDescription>
-                  Strategier för hållbar tillväxt och expansion av ditt företag.
+                  Snygga och snabba webbsidor som bara fungerar. Månadsabonnemang från 399 kr/mån.
                 </CardDescription>
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="animate-card-2">
               <CardHeader>
                 <div className="flex items-center gap-2">
-                  <Users className="h-8 w-8 text-primary" />
-                  <CardTitle>Ledning</CardTitle>
+                  <Smartphone className="h-8 w-8 text-primary" />
+                  <CardTitle>Appar</CardTitle>
                 </div>
               </CardHeader>
               <CardContent>
                 <CardDescription>
-                  Utveckling av ledarskap och organisatorisk förmåga.
+                  Mobilappar och webappar som gör livet enklare för dig och dina kunder.
                 </CardDescription>
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="animate-card-3">
               <CardHeader>
                 <div className="flex items-center gap-2">
-                  <Target className="h-8 w-8 text-primary" />
-                  <CardTitle>Strategi</CardTitle>
+                  <Code className="h-8 w-8 text-primary" />
+                  <CardTitle>Utveckling</CardTitle>
                 </div>
               </CardHeader>
               <CardContent>
                 <CardDescription>
-                  Affärsstrategier som driver resultat och konkurrensfördelar.
+                  Skräddarsydd mjukvara, automatisering och allt annat du kan tänka dig.
                 </CardDescription>
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="animate-card-4">
               <CardHeader>
                 <div className="flex items-center gap-2">
-                  <BarChart3 className="h-8 w-8 text-primary" />
-                  <CardTitle>Analys</CardTitle>
+                  <Coffee className="h-8 w-8 text-primary" />
+                  <CardTitle>Rådgivning</CardTitle>
                 </div>
               </CardHeader>
               <CardContent>
                 <CardDescription>
-                  Djupgående analys och datadriven beslutsfattning.
+                  Behöver du bara prata igenom en idé? Vi hjälper gärna till över en kopp kaffe.
                 </CardDescription>
               </CardContent>
             </Card>
+          </div>
           </div>
         </div>
       </section>
 
       {/* Article Carousels */}
       {recentArticles && recentArticles.length > 0 && (
-        <section className="container py-16">
+        <section className="container py-16 animate-scale-in">
           <ArticleCarousel
             articles={recentArticles}
-            title="Senaste Artiklar"
-            description="Håll dig uppdaterad med våra senaste insikter och expertis"
+            title="Senaste inläggen"
+            description="Tips, tankar och berättelser från vårt dagliga liv som utvecklare"
           />
         </section>
       )}
 
       {featuredArticles && featuredArticles.length > 0 && (
-        <section className="container py-16">
+        <section className="container py-16 animate-scale-in-delayed">
           <ArticleCarousel
             articles={featuredArticles}
-            title="Utvalda Artiklar"
-            description="Läs våra mest lästa och populära artiklar"
+            title="Populära inlägg"
+            description="Det här gillar folk att läsa mest"
           />
         </section>
       )}
@@ -168,14 +183,14 @@ export default async function HomePage() {
         <div className="container">
           <div className="mx-auto max-w-2xl text-center">
             <h2 className="text-3xl font-bold tracking-tighter">
-              Redo att ta nästa steg?
+              Har du ett projekt i åtanke?
             </h2>
             <p className="mt-4 text-muted-foreground">
-              Kontakta oss idag för att diskutera hur vi kan hjälpa ditt företag att nå sina mål.
+              Hör av dig så tar vi en kaffe och pratar om vad vi kan hjälpa dig med.
             </p>
             <div className="mt-8">
               <Button asChild size="lg">
-                <Link href="/tjanster">Utforska Tjänster</Link>
+                <Link href="/kontakt">Hör av dig</Link>
               </Button>
             </div>
           </div>

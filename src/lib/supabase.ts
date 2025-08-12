@@ -74,5 +74,10 @@ export function createAdminClient() {
   })
 }
 
+// Client-side Supabase client for components
+export function createClientComponentClient() {
+  return createBrowserClient<Database>(supabaseUrl, supabaseAnonKey)
+}
+
 // Types
 export type SupabaseClient = ReturnType<typeof createClient>

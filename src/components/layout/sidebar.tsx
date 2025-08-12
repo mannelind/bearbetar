@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { ThemeToggle } from '@/components/ui/theme-toggle'
+import { ThemeLogo } from '@/components/ui/theme-logo'
 import { useAuth } from '@/hooks/use-auth'
 import { cn } from '@/lib/utils'
 import { 
@@ -14,22 +15,27 @@ import {
   FileText, 
   Settings, 
   LogOut,
+  LogIn,
   Menu,
   X,
-  User,
   Briefcase,
   UserCircle,
   Bell,
   Heart,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Mail,
+  FolderOpen
 } from 'lucide-react'
 import { APP_NAME, PUBLIC_ROUTES } from '@/lib/constants'
 
 const navigation = [
   { name: 'Hem', href: PUBLIC_ROUTES.home, icon: Home },
   { name: 'Tjänster', href: PUBLIC_ROUTES.services, icon: Briefcase },
+  { name: 'Portfolio', href: '/portfolio', icon: FolderOpen },
   { name: 'Blogg', href: PUBLIC_ROUTES.blog, icon: FileText },
+  { name: 'Om oss', href: '/om-oss', icon: UserCircle },
+  { name: 'Kontakt', href: '/kontakt', icon: Mail },
 ]
 
 const profileNavigation = [
@@ -42,6 +48,7 @@ const profileNavigation = [
 const adminNavigation = [
   { name: 'Admin Dashboard', href: '/admin', icon: Settings },
   { name: 'Artiklar', href: '/admin/articles', icon: FileText },
+  { name: 'Portfolio', href: '/admin/portfolio', icon: FolderOpen },
   { name: 'Tjänster', href: '/admin/services', icon: Briefcase },
 ]
 
@@ -120,7 +127,9 @@ export function Sidebar() {
   }, [])
 
   // Determine if sidebar should show expanded content
-  const showExpandedContent = !isCollapsed || isExpanded
+  // On mobile (when isOpen is true), always show expanded content
+  // On desktop, use the collapse/expand logic
+  const showExpandedContent = isOpen || !isCollapsed || isExpanded
 
   // Remove the null return - show sidebar for all users
 
@@ -130,7 +139,7 @@ export function Sidebar() {
       <Button
         variant="ghost"
         size="sm"
-        className="fixed top-4 left-4 z-50 md:hidden"
+        className="fixed top-4 right-4 z-[70] md:hidden"
         onClick={() => setIsOpen(!isOpen)}
       >
         {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -139,7 +148,7 @@ export function Sidebar() {
       {/* Overlay for mobile */}
       {isOpen && (
         <div 
-          className="fixed inset-0 bg-background/80 backdrop-blur-sm z-40 md:hidden"
+          className="fixed inset-0 bg-background/80 backdrop-blur-sm z-[55] md:hidden"
           onClick={() => setIsOpen(false)}
         />
       )}
@@ -148,12 +157,28 @@ export function Sidebar() {
       <aside 
         ref={sidebarRef}
         className={cn(
-          "fixed left-0 top-0 z-40 h-full transform border-r bg-background/95 backdrop-blur transition-all duration-200 ease-in-out md:translate-x-0",
-          showExpandedContent ? "w-64" : "w-16",
-          isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+          "fixed z-[60] transform bg-background/95 backdrop-blur transition-all duration-300 ease-in-out cyber-border cyber-glow",
+          // Mobile positioning and sizing
+          isOpen 
+            ? "top-0 left-0 w-full h-full translate-y-0" 
+            : "top-0 left-0 w-full h-full -translate-y-full",
+          // Desktop positioning and sizing (always visible)
+          "md:top-0 md:left-0 md:h-full md:translate-y-0 md:translate-x-0",
+          (showExpandedContent && !isOpen) ? "md:w-64" : "md:w-16",
+          // Desktop styling - add right border and rounded corners
+          "md:border-r-[3px] md:border-r-[rgba(139,176,129,0.6)] md:rounded-r-xl"
         )}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
+        style={{ 
+          // Mobile: no special borders when full screen, Desktop: right border accent
+          border: '1px solid rgba(139, 176, 129, 0.4)',
+          borderRight: isOpen ? '1px solid rgba(139, 176, 129, 0.4)' : '1px solid rgba(139, 176, 129, 0.4)',
+          borderRadius: isOpen ? '0' : '0',
+          background: 'linear-gradient(135deg, transparent, rgba(139, 176, 129, 0.05), transparent 50%, rgba(151, 191, 133, 0.03))',
+          boxShadow: '0 0 8px rgba(139, 176, 129, 0.25), 0 0 18px rgba(139, 176, 129, 0.12), 0 0 35px rgba(139, 176, 129, 0.06), inset 0 1px 0 rgba(205, 228, 204, 0.1)',
+          backdropFilter: 'blur(1px)'
+        }}
+        onMouseEnter={!isOpen ? handleMouseEnter : undefined}
+        onMouseLeave={!isOpen ? handleMouseLeave : undefined}
       >
         <div className="flex h-full flex-col">
           {/* Header */}
@@ -163,32 +188,40 @@ export function Sidebar() {
           )}>
             {showExpandedContent && (
               <Link href="/" className="flex items-center space-x-2">
+                <ThemeLogo 
+                  alt={`${APP_NAME} logotyp`}
+                  width={24}
+                  height={24}
+                  className="w-6 h-6"
+                  type="symbol"
+                />
                 <span className="font-bold text-xl">{APP_NAME}</span>
               </Link>
             )}
+            {/* Only show collapse/expand button on desktop */}
             <Button
               variant="ghost"
               size="sm"
               onClick={handleClick}
               className={cn(
-                "text-muted-foreground hover:text-foreground",
+                "hidden md:flex text-muted-foreground hover:text-foreground transition-all duration-200 hover:scale-110",
                 !showExpandedContent ? "h-8 w-8" : ""
               )}
             >
               {isCollapsed ? (
-                <ChevronRight className="h-4 w-4" />
+                <ChevronRight className="h-4 w-4 tech-icon" />
               ) : (
-                <ChevronLeft className="h-4 w-4" />
+                <ChevronLeft className="h-4 w-4 tech-icon" />
               )}
             </Button>
           </div>
 
-          {/* User Info / Login Section */}
-          <div className={cn(
-            "border-b p-4",
-            !showExpandedContent && "flex justify-center"
-          )}>
-            {user ? (
+          {/* User Info / Login Section - Only show when logged in */}
+          {user && (
+            <div className={cn(
+              "border-b p-4",
+              !showExpandedContent && "flex justify-center"
+            )}>
               <div className={cn(
                 "flex items-center",
                 !showExpandedContent ? "justify-center" : "space-x-3"
@@ -216,30 +249,8 @@ export function Sidebar() {
                   </div>
                 )}
               </div>
-            ) : (
-              <div className={cn(
-                !showExpandedContent ? "flex justify-center" : "text-center"
-              )}>
-                {!showExpandedContent ? (
-                  <Button asChild size="sm" variant="ghost" className="h-10 w-10 p-0">
-                    <Link href="/admin/login">
-                      <User className="h-5 w-5" />
-                    </Link>
-                  </Button>
-                ) : (
-                  <>
-                    <p className="text-sm font-medium mb-3">Inte inloggad</p>
-                    <Button asChild size="sm" className="w-full">
-                      <Link href="/admin/login">
-                        <User className="mr-2 h-4 w-4" />
-                        Logga in
-                      </Link>
-                    </Button>
-                  </>
-                )}
-              </div>
-            )}
-          </div>
+            </div>
+          )}
 
           {/* Navigation */}
           <nav className={cn(
@@ -248,11 +259,6 @@ export function Sidebar() {
           )}>
             {/* Public Navigation */}
             <div className="space-y-1">
-              {showExpandedContent && (
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
-                  Navigation
-                </p>
-              )}
               {navigation.map((item) => {
                 const isActive = pathname === item.href
                 return (
@@ -271,8 +277,8 @@ export function Sidebar() {
                     onClick={() => setIsOpen(false)}
                     title={!showExpandedContent ? item.name : undefined}
                   >
-                    <item.icon className="h-4 w-4" />
-                    {showExpandedContent && <span>{item.name}</span>}
+                    <item.icon className="h-4 w-4 tech-icon" />
+                    {showExpandedContent && <span className="transition-all duration-200">{item.name}</span>}
                   </Link>
                 )
               })}
@@ -304,8 +310,8 @@ export function Sidebar() {
                       onClick={() => setIsOpen(false)}
                       title={!showExpandedContent ? item.name : undefined}
                     >
-                      <item.icon className="h-4 w-4" />
-                      {showExpandedContent && <span>{item.name}</span>}
+                      <item.icon className="h-4 w-4 tech-icon" />
+                      {showExpandedContent && <span className="transition-all duration-200">{item.name}</span>}
                     </Link>
                   )
                 })}
@@ -338,11 +344,37 @@ export function Sidebar() {
                       onClick={() => setIsOpen(false)}
                       title={!showExpandedContent ? item.name : undefined}
                     >
-                      <item.icon className="h-4 w-4" />
-                      {showExpandedContent && <span>{item.name}</span>}
+                      <item.icon className="h-4 w-4 tech-icon" />
+                      {showExpandedContent && <span className="transition-all duration-200">{item.name}</span>}
                     </Link>
                   )
                 })}
+              </div>
+            )}
+
+            {/* Login/Auth Section - Only show when not logged in */}
+            {!user && (
+              <div className="space-y-1 pt-4">
+                {showExpandedContent && (
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                    Konto
+                  </p>
+                )}
+                <Link
+                  href="/admin/login"
+                  className={cn(
+                    "flex items-center rounded-lg text-sm font-medium transition-colors relative",
+                    !showExpandedContent 
+                      ? "justify-center py-3 px-2" 
+                      : "space-x-3 px-3 py-2",
+                    "text-muted-foreground hover:text-foreground hover:bg-muted"
+                  )}
+                  onClick={() => setIsOpen(false)}
+                  title={!showExpandedContent ? "Logga in" : undefined}
+                >
+                  <LogIn className="h-4 w-4 tech-icon" />
+                  {showExpandedContent && <span className="transition-all duration-200">Logga in</span>}
+                </Link>
               </div>
             )}
           </nav>
@@ -357,7 +389,7 @@ export function Sidebar() {
                 variant="ghost"
                 size="sm"
                 className={cn(
-                  "text-muted-foreground hover:text-foreground",
+                  "text-muted-foreground hover:text-foreground transition-all duration-200 hover:scale-105 hover:bg-destructive/10",
                   !showExpandedContent 
                     ? "h-8 w-8 p-0" 
                     : "w-full justify-start"
@@ -366,10 +398,10 @@ export function Sidebar() {
                 title={!showExpandedContent ? "Logga ut" : undefined}
               >
                 <LogOut className={cn(
-                  "h-4 w-4",
+                  "h-4 w-4 tech-icon",
                   showExpandedContent && "mr-3"
                 )} />
-                {showExpandedContent && "Logga ut"}
+                {showExpandedContent && <span className="transition-all duration-200">Logga ut</span>}
               </Button>
             )}
             <div className={cn(
@@ -386,7 +418,7 @@ export function Sidebar() {
       {/* Content spacer for desktop */}
       <div className={cn(
         "hidden md:block flex-shrink-0",
-        showExpandedContent ? "md:w-64" : "md:w-16"
+        (showExpandedContent && !isOpen) ? "md:w-64" : "md:w-16"
       )} />
     </>
   )

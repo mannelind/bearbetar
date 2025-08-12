@@ -16,17 +16,17 @@ module.exports = {
         primary: {
           DEFAULT: 'hsl(var(--primary))',
           foreground: 'hsl(var(--primary-foreground))',
-          50: '#eff6ff',
-          100: '#dbeafe',
-          200: '#bfdbfe',
-          300: '#93c5fd',
-          400: '#60a5fa',
-          500: '#3b82f6',
-          600: '#2563eb',
-          700: '#1d4ed8',
-          800: '#1e40af',
-          900: '#1e3a8a',
-          950: '#172554',
+          50: 'hsl(var(--primary-50, 240 100% 97%))',
+          100: 'hsl(var(--primary-100, 240 100% 94%))',
+          200: 'hsl(var(--primary-200, 240 100% 89%))',
+          300: 'hsl(var(--primary-300, 240 100% 83%))',
+          400: 'hsl(var(--primary-400, 240 100% 75%))',
+          500: 'hsl(var(--primary-500, 240 100% 67%))',
+          600: 'hsl(var(--primary-600, 240 100% 59%))',
+          700: 'hsl(var(--primary-700, 240 100% 51%))',
+          800: 'hsl(var(--primary-800, 240 100% 43%))',
+          900: 'hsl(var(--primary-900, 240 100% 35%))',
+          950: 'hsl(var(--primary-950, 240 100% 27%))',
         },
         secondary: {
           DEFAULT: 'hsl(var(--secondary))',
@@ -119,6 +119,15 @@ module.exports = {
         'fade-in': 'fadeIn 0.5s ease-in-out',
         'slide-up': 'slideUp 0.3s ease-out',
         'spin-slow': 'spin 2s linear infinite',
+        'glow': 'glow 2s ease-in-out infinite alternate',
+        'pulse-glow': 'pulseGlow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'scan-line': 'scanLine 3s linear infinite',
+        'cyber-pulse': 'cyberPulse 1.5s ease-in-out infinite',
+        'matrix-rain': 'matrixRain 4s linear infinite',
+        'slide-in-right': 'slideInRight 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+        'slide-out-right': 'slideOutRight 0.3s cubic-bezier(0.55, 0.06, 0.68, 0.19)',
+        'tech-hover': 'techHover 0.2s ease-out',
+        'icon-spin': 'iconSpin 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
       },
       keyframes: {
         fadeIn: {
@@ -128,6 +137,52 @@ module.exports = {
         slideUp: {
           '0%': { transform: 'translateY(10px)', opacity: '0' },
           '100%': { transform: 'translateY(0)', opacity: '1' },
+        },
+        glow: {
+          '0%': { boxShadow: '0 0 5px hsl(120 85% 60%), 0 0 10px hsl(120 85% 60%), 0 0 15px hsl(120 85% 60%)' },
+          '100%': { boxShadow: '0 0 10px hsl(120 85% 60%), 0 0 20px hsl(120 85% 60%), 0 0 30px hsl(120 85% 60%)' },
+        },
+        pulseGlow: {
+          '0%, 100%': { 
+            boxShadow: '0 0 2px hsl(120 25% 85%), 0 0 4px hsl(120 25% 85%)',
+            borderColor: 'hsl(85 40% 25%)'
+          },
+          '50%': { 
+            boxShadow: '0 0 8px hsl(120 85% 60%), 0 0 16px hsl(120 85% 60%)',
+            borderColor: 'hsl(120 85% 60%)'
+          },
+        },
+        scanLine: {
+          '0%': { transform: 'translateY(-100%)', opacity: '0' },
+          '50%': { opacity: '0.6' },
+          '100%': { transform: 'translateY(100vh)', opacity: '0' },
+        },
+        cyberPulse: {
+          '0%, 100%': { opacity: '0.8', transform: 'scale(1)' },
+          '50%': { opacity: '1', transform: 'scale(1.05)' },
+        },
+        matrixRain: {
+          '0%': { transform: 'translateY(-100px)', opacity: '0' },
+          '10%': { opacity: '1' },
+          '90%': { opacity: '1' },
+          '100%': { transform: 'translateY(100px)', opacity: '0' },
+        },
+        slideInRight: {
+          '0%': { transform: 'translateX(100%)', opacity: '0' },
+          '100%': { transform: 'translateX(0)', opacity: '1' },
+        },
+        slideOutRight: {
+          '0%': { transform: 'translateX(0)', opacity: '1' },
+          '100%': { transform: 'translateX(100%)', opacity: '0' },
+        },
+        techHover: {
+          '0%': { transform: 'scale(1) rotate(0deg)', filter: 'brightness(1)' },
+          '100%': { transform: 'scale(1.05) rotate(1deg)', filter: 'brightness(1.2)' },
+        },
+        iconSpin: {
+          '0%': { transform: 'rotate(0deg) scale(1)' },
+          '50%': { transform: 'rotate(180deg) scale(1.1)' },
+          '100%': { transform: 'rotate(360deg) scale(1)' },
         },
       },
       spacing: {

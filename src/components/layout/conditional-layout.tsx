@@ -3,7 +3,6 @@
 import { usePathname } from 'next/navigation'
 import { Header } from './header'
 import { Footer } from './footer'
-import { AdminLayout } from './admin-layout'
 import { Sidebar } from './sidebar'
 import { useAuth } from '@/hooks/use-auth'
 
@@ -16,21 +15,21 @@ export function ConditionalLayout({ children }: ConditionalLayoutProps) {
   const isAdminRoute = pathname.startsWith('/admin')
   const isLoginRoute = pathname === '/admin/login'
   
+  const { loading } = useAuth()
+
   // Skip auth loading for login page - render immediately
   if (isLoginRoute) {
     return <>{children}</>
   }
-
-  const { loading } = useAuth()
 
   // Don't show anything while loading auth state (for other pages)
   if (loading) {
     return null
   }
 
-  // Admin routes use AdminLayout (with sidebar)
+  // Admin routes get no additional layout (they use AdminPageWrapper internally)
   if (isAdminRoute && !isLoginRoute) {
-    return <AdminLayout>{children}</AdminLayout>
+    return <>{children}</>
   }
 
   // Login page gets no layout

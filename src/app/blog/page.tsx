@@ -1,67 +1,248 @@
+'use client'
+
 import Link from 'next/link'
 import Image from 'next/image'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { createServerComponentClient } from '@/lib/supabase'
+import { ThemeLogo } from '@/components/ui/theme-logo'
+import { createBrowserClient } from '@supabase/ssr'
+import { Database } from '@/types/database'
+import { ArticlesGrid } from '@/components/blog/articles-grid'
+import { BlogModal } from '@/components/blog/blog-modal'
+import { ColoredBadge } from '@/components/ui/colored-badge'
+import { AnimatedSection, PageWrapper } from '@/components/ui/page-animations'
 import { Calendar, User, ArrowRight, Search } from 'lucide-react'
 import { formatDistanceToNow } from 'date-fns'
 import { sv } from 'date-fns/locale'
 
-export default async function BlogPage() {
-  // Fetch published articles
-  const supabase = await createServerComponentClient()
-  const { data: articles } = await supabase
-    .from('articles')
-    .select(`
-      *,
-      admin_users!articles_author_id_fkey (
-        full_name,
-        email
-      )
-    `)
-    .eq('published', true)
-    .order('published_at', { ascending: false })
+export default function BlogPage() {
+  const [articlesWithTags, setArticlesWithTags] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+  const [selectedArticle, setSelectedArticle] = useState<any>(null)
+  const [modalOpen, setModalOpen] = useState(false)
 
-  // Get latest article for featured section
-  const featuredArticle = articles?.[0]
-  const regularArticles = articles?.slice(1) || []
+  useEffect(() => {
+    loadArticles()
+  }, [])
+
+  const loadArticles = async () => {
+    // Try to fetch from Supabase, fallback to mock data in development
+    try {
+      const supabase = createBrowserClient<Database>(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      )
+    const { data: articles, error } = await supabase
+      .from('articles')
+      .select(`
+        *,
+        admin_users!articles_author_id_fkey (
+          full_name,
+          email,
+          bio,
+          profile_image
+        ),
+        article_tags (
+          tags (
+            name
+          )
+        )
+      `)
+      .eq('published', true)
+      .order('published_at', { ascending: false })
+
+    if (error) {
+      console.error('Error fetching articles:', error)
+      
+      // Use mock data in development when Supabase fails
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Using mock data for development...')
+        const mockArticles = [
+          {
+            id: '1',
+            title: 'Digitalisering av småföretag - En praktisk guide',
+            slug: 'digitalisering-av-smaforetag-praktisk-guide',
+            excerpt: 'Lär dig hur ditt småföretag kan dra nytta av digitaliseringens möjligheter med praktiska tips och strategier.',
+            published_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+            featured_image: null,
+            tags: ['Digitalisering', 'Småföretag', 'Teknik'],
+            admin_users: {
+              full_name: 'Manne',
+              email: 'manne@bearbetar.se',
+              bio: 'Grundare och strateg med passion för affärsutveckling.',
+              profile_image: null
+            }
+          },
+          {
+            id: '2',
+            title: 'Säkerhetsrutiner för moderna webbapplikationer',
+            slug: 'sakerhetsrutiner-moderna-webbapplikationer',
+            excerpt: 'Grundläggande säkerhetsrutiner som alla utvecklare bör känna till för att skydda sina webbapplikationer.',
+            published_at: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
+            featured_image: null,
+            tags: ['Säkerhet', 'Webbutveckling', 'Best Practices'],
+            admin_users: {
+              full_name: 'Adam',
+              email: 'adam@bearbetar.se',
+              bio: 'Expert inom teknisk utveckling och digitalisering.',
+              profile_image: null
+            }
+          },
+          {
+            id: '3',
+            title: 'AI och maskininlärning i affärsprocesser',
+            slug: 'ai-maskininlarning-affarsprocesser',
+            excerpt: 'Upptäck hur artificiell intelligens och maskininlärning kan automatisera och förbättra dina affärsprocesser.',
+            published_at: new Date(Date.now() - 21 * 24 * 60 * 60 * 1000).toISOString(),
+            featured_image: null,
+            tags: ['AI', 'Maskininlärning', 'Innovation'],
+            admin_users: {
+              full_name: 'Manne',
+              email: 'manne@bearbetar.se',
+              bio: 'Grundare och strateg med passion för affärsutveckling.',
+              profile_image: null
+            }
+          },
+          {
+            id: '4',
+            title: 'Molnmigration - Planering och genomförande',
+            slug: 'molnmigration-planering-genomforande',
+            excerpt: 'En steg-för-steg guide till att migrera dina system till molnet på ett säkert och effektivt sätt.',
+            published_at: new Date(Date.now() - 28 * 24 * 60 * 60 * 1000).toISOString(),
+            featured_image: null,
+            tags: ['Molntjänster', 'DevOps', 'Infrastruktur'],
+            admin_users: {
+              full_name: 'Adam',
+              email: 'adam@bearbetar.se',
+              bio: 'Expert inom teknisk utveckling och digitalisering.',
+              profile_image: null
+            }
+          }
+        ]
+        setArticlesWithTags(mockArticles)
+      }
+    } else {
+      console.log('Fetched articles:', articles?.length || 0)
+      
+      // Transform articles to include tags array
+      const transformedArticles = articles?.map(article => ({
+        ...article,
+        tags: article.article_tags?.map((at: any) => at.tags.name) || []
+      })) || []
+      
+      setArticlesWithTags(transformedArticles)
+    }
+  } catch (err) {
+    console.error('Supabase connection failed:', err)
+    
+    // Use mock data as fallback
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Using mock data as fallback...')
+      const mockArticles = [
+        {
+          id: '1',
+          title: 'Varför Next.js är så bra (och lite irriterande)',
+          slug: 'varfor-nextjs-ar-sa-bra-och-lite-irriterande',
+          excerpt: 'Vi har använt Next.js i flera år nu och älskar det mesta. Men det finns några saker som är riktigt irriterande också.',
+          published_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+          featured_image: null,
+          tags: ['Next.js', 'React', 'Tips'],
+          admin_users: {
+            full_name: 'Manne',
+            email: 'manne@bearbetar.se',
+            bio: 'Utvecklare som gillar att bygga saker.',
+            profile_image: null
+          }
+        }
+      ]
+      setArticlesWithTags(mockArticles)
+    }
+  }
+  
+  setLoading(false)
+}
+
+const handleFeaturedArticleClick = () => {
+  if (featuredArticle) {
+    setSelectedArticle(featuredArticle)
+    setModalOpen(true)
+  }
+}
+
+const handleModalClose = () => {
+  setModalOpen(false)
+  setTimeout(() => setSelectedArticle(null), 300)
+}
+
+// Get latest article for featured section
+const featuredArticle = articlesWithTags[0]
+const regularArticles = articlesWithTags.slice(1) || []
+
+if (loading) {
+  return (
+    <PageWrapper>
+      <div className="container py-24 text-center">
+        <div className="loading-spinner w-8 h-8 mx-auto mb-4" />
+        <p className="text-muted-foreground">Laddar artiklar...</p>
+      </div>
+    </PageWrapper>
+  )
+}
 
   return (
-    <div className="flex flex-col">
+    <PageWrapper>
       {/* Hero Section */}
       <section className="container py-24 md:py-32">
-        <div className="mx-auto flex max-w-4xl flex-col items-center text-center">
-          <div className="mb-8">
-            <Image 
-              src="/images/logga.svg"
-              alt="Bearbetar logotyp"
-              width={200}
-              height={80}
-              className="w-auto h-16 md:h-20"
-            />
+        <div className="mx-auto max-w-7xl">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Left side - Logo */}
+            <AnimatedSection animation="slide-in-left">
+              <div className="flex justify-center lg:justify-center">
+                <div className="text-center lg:text-left">
+                  <ThemeLogo 
+                    alt="Bearbetar logotyp"
+                    width={400}
+                    height={160}
+                    className="w-auto h-24 md:h-32 lg:h-40"
+                    type="full"
+                  />
+                </div>
+              </div>
+            </AnimatedSection>
+            
+            {/* Right side - Text content */}
+            <AnimatedSection animation="slide-up-delayed">
+              <div className="text-center lg:text-left">
+                <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-5xl xl:text-6xl">
+                  Vad vi{' '}
+                  <span className="text-primary">
+                    skriver om
+                  </span>
+                </h1>
+                <p className="mt-6 text-lg text-muted-foreground sm:text-xl max-w-xl lg:max-w-none">
+                  Tips, tankar och berättelser från vårt jobb som utvecklare. Plus lite random grejer vi tänker på.
+                </p>
+              </div>
+            </AnimatedSection>
           </div>
-          <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl">
-            Vår{' '}
-            <span className="bg-gradient-to-r from-primary-600 to-primary-800 bg-clip-text text-transparent">
-              Blogg
-            </span>
-          </h1>
-          <p className="mt-6 max-w-2xl text-lg text-muted-foreground sm:text-xl">
-            Insikter, expertis och praktiska råd för att hjälpa ditt företag att växa och utvecklas.
-          </p>
         </div>
       </section>
 
       {/* Featured Article */}
       {featuredArticle && (
-        <section className="container py-16">
-          <div className="text-center mb-12">
-            <h2 className="text-2xl font-bold tracking-tight">Senaste Artikel</h2>
-            <p className="text-muted-foreground">Vår allra senaste publikation</p>
-          </div>
-          
-          <Card className="overflow-hidden max-w-4xl mx-auto">
+        <AnimatedSection animation="scale-in">
+          <section className="container py-16">
+            <div className="text-center mb-12">
+              <h2 className="text-2xl font-bold tracking-tight">Senaste inlägget</h2>
+              <p className="text-muted-foreground">Det vi skrev senast</p>
+            </div>
+            
+            <Card 
+              className="overflow-hidden max-w-4xl mx-auto cursor-pointer hover:shadow-xl transition-shadow"
+              onClick={handleFeaturedArticleClick}
+            >
             <div className="md:flex">
               {featuredArticle.featured_image && (
                 <div className="md:w-1/2">
@@ -91,13 +272,8 @@ export default async function BlogPage() {
                     )}
                   </div>
                   
-                  <CardTitle className="text-2xl">
-                    <Link 
-                      href={`/blog/${featuredArticle.slug}`}
-                      className="hover:text-primary transition-colors"
-                    >
-                      {featuredArticle.title}
-                    </Link>
+                  <CardTitle className="text-2xl hover:text-primary transition-colors cursor-pointer">
+                    {featuredArticle.title}
                   </CardTitle>
                   
                   {featuredArticle.excerpt && (
@@ -108,129 +284,95 @@ export default async function BlogPage() {
                 </CardHeader>
                 
                 <CardContent className="space-y-4">
+                  {/* Tags */}
+                  {featuredArticle.tags && featuredArticle.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {featuredArticle.tags.map((tag: string, index: number) => (
+                        <ColoredBadge key={index} tag={tag} className="text-sm" />
+                      ))}
+                    </div>
+                  )}
+
                   {featuredArticle.admin_users && (
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <User className="h-4 w-4" />
+                    <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                      {featuredArticle.admin_users.profile_image ? (
+                        <div className="relative w-6 h-6 rounded-full overflow-hidden border border-border">
+                          <Image
+                            src={featuredArticle.admin_users.profile_image}
+                            alt={featuredArticle.admin_users.full_name || featuredArticle.admin_users.email}
+                            fill
+                            className="object-cover"
+                            sizes="24px"
+                          />
+                        </div>
+                      ) : (
+                        <User className="h-4 w-4" />
+                      )}
                       <span>
                         {featuredArticle.admin_users.full_name || featuredArticle.admin_users.email}
                       </span>
                     </div>
                   )}
                   
-                  <Button asChild>
-                    <Link href={`/blog/${featuredArticle.slug}`}>
-                      Läs artikel
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Link>
+                  <Button>
+                    Läs artikel
+                    <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </CardContent>
               </div>
             </div>
           </Card>
-        </section>
+          </section>
+        </AnimatedSection>
       )}
 
       {/* Articles Grid */}
-      <section className="container py-16">
-        <div className="flex items-center justify-between mb-12">
-          <div>
-            <h2 className="text-2xl font-bold tracking-tight">Alla Artiklar</h2>
-            <p className="text-muted-foreground">
-              {articles?.length || 0} artikel{(articles?.length || 0) !== 1 ? 'ar' : ''} totalt
-            </p>
-          </div>
-        </div>
-
-        {!articles || articles.length === 0 ? (
-          <div className="text-center py-12">
-            <Search className="mx-auto h-12 w-12 text-muted-foreground" />
-            <h3 className="mt-4 text-lg font-semibold">Inga artiklar ännu</h3>
-            <p className="text-muted-foreground mb-8">
-              Vi arbetar på att publicera vårt första innehåll. Kom tillbaka snart!
-            </p>
-            <Button asChild>
-              <Link href="/">Tillbaka till startsidan</Link>
-            </Button>
-          </div>
-        ) : (
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {regularArticles.map((article: any) => (
-              <Card key={article.id} className="overflow-hidden hover:shadow-lg transition-shadow">
-                <Link href={`/blog/${article.slug}`}>
-                  {article.featured_image && (
-                    <div className="aspect-video relative">
-                      <Image
-                        src={article.featured_image}
-                        alt={article.title}
-                        fill
-                        className="object-cover transition-transform hover:scale-105"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      />
-                    </div>
-                  )}
-                  
-                  <CardHeader className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <Badge variant="secondary">Artikel</Badge>
-                      {article.published_at && (
-                        <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                          <Calendar className="h-3 w-3" />
-                          {formatDistanceToNow(new Date(article.published_at), {
-                            addSuffix: true,
-                            locale: sv
-                          })}
-                        </div>
-                      )}
-                    </div>
-                    
-                    <CardTitle className="line-clamp-2 hover:text-primary transition-colors">
-                      {article.title}
-                    </CardTitle>
-                  </CardHeader>
-
-                  {article.excerpt && (
-                    <CardContent className="pt-0">
-                      <CardDescription className="line-clamp-3">
-                        {article.excerpt}
-                      </CardDescription>
-                    </CardContent>
-                  )}
-
-                  {article.admin_users && (
-                    <CardContent className="pt-0">
-                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                        <User className="h-3 w-3" />
-                        <span>
-                          {article.admin_users.full_name || article.admin_users.email}
-                        </span>
-                      </div>
-                    </CardContent>
-                  )}
-                </Link>
-              </Card>
-            ))}
-          </div>
-        )}
-      </section>
-
-      {/* Newsletter CTA */}
-      <section className="bg-muted/50 py-16">
-        <div className="container">
-          <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-3xl font-bold tracking-tighter">
-              Missa inga uppdateringar
-            </h2>
-            <p className="mt-4 text-muted-foreground">
-              Få våra senaste artiklar och insikter direkt i din inkorg.
-            </p>
-            <div className="mt-8">
-              <Button size="lg">
-                Prenumerera på nyhetsbrev
+      <AnimatedSection animation="scale-in-delayed">
+        <section className="container py-16">
+          {!articlesWithTags || articlesWithTags.length === 0 ? (
+            <div className="text-center py-12">
+              <Search className="mx-auto h-12 w-12 text-muted-foreground" />
+              <h3 className="mt-4 text-lg font-semibold">Inget skrivet än</h3>
+              <p className="text-muted-foreground mb-8">
+                Vi håller på att skriva våra första inlägg. Håll utkik!
+              </p>
+              <Button asChild>
+                <Link href="/">Tillbaka till startsidan</Link>
               </Button>
             </div>
+          ) : (
+            <ArticlesGrid articles={regularArticles} />
+          )}
+        </section>
+      </AnimatedSection>
+
+      {/* Newsletter CTA */}
+      <AnimatedSection animation="slide-up">
+        <section className="bg-muted/50 py-16">
+          <div className="container">
+            <div className="mx-auto max-w-2xl text-center">
+              <h2 className="text-3xl font-bold tracking-tighter">
+                Vill du veta när vi skriver något nytt?
+              </h2>
+              <p className="mt-4 text-muted-foreground">
+                Vi skickar inget spam, bara en notis när vi publicerat något som kanske kan intressera dig.
+              </p>
+              <div className="mt-8">
+                <Button size="lg">
+                  Få notiser
+                </Button>
+              </div>
+            </div>
           </div>
-        </div>
-      </section>
-    </div>
+        </section>
+      </AnimatedSection>
+
+      {/* Blog Modal */}
+      <BlogModal 
+        article={selectedArticle}
+        open={modalOpen}
+        onOpenChange={handleModalClose}
+      />
+    </PageWrapper>
   )
 }

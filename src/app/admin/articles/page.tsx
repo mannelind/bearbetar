@@ -1,22 +1,6 @@
 import { createServerComponentClient } from '@/lib/supabase'
 import { ArticlesList } from '@/components/admin/articles-list'
-
-type Article = {
-  id: string
-  title: string
-  slug: string
-  excerpt: string | null
-  published: boolean
-  published_at: string | null
-  created_at: string
-  updated_at: string
-  author_id: string
-  tags: string[] | null
-  admin_users: {
-    full_name: string | null
-    email: string
-  }
-}
+import AdminPageWrapper from '@/components/auth/admin-page-wrapper'
 
 export default async function ArticlesPage() {
   const supabase = await createServerComponentClient()
@@ -28,13 +12,28 @@ export default async function ArticlesPage() {
       admin_users!articles_author_id_fkey (
         full_name,
         email
+      ),
+      article_tags (
+        tags (
+          name
+        )
       )
     `)
     .order('updated_at', { ascending: false })
+
+  // Transform articles to include tags array
+  const articlesWithTags = articles?.map(article => ({
+    ...article,
+    tags: article.article_tags?.map((at: any) => at.tags.name) || []
+  })) || []
 
   if (error) {
     console.error('Error fetching articles:', error)
   }
 
-  return <ArticlesList articles={articles || []} />
+  return (
+    <AdminPageWrapper>
+      <ArticlesList articles={articlesWithTags} />
+    </AdminPageWrapper>
+  )
 }

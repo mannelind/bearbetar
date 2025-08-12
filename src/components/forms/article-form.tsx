@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import * as React from 'react'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -17,7 +18,6 @@ import {
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
-import { Switch } from '@/components/ui/switch'
 import { useSupabase } from '@/hooks/use-supabase'
 import { useAuth } from '@/hooks/use-auth'
 import { ADMIN_ROUTES } from '@/lib/constants'
@@ -60,6 +60,45 @@ export function ArticleForm({ article }: ArticleFormProps) {
   const { user } = useAuth()
   const [isLoading, setIsLoading] = useState(false)
   const [newTag, setNewTag] = useState('')
+  const [tagUsage, setTagUsage] = useState<Record<string, number>>({})
+  
+  // Predefined tags
+  const predefinedTags = [
+    'Affärsutveckling', 'Strategi', 'Ledning', 'Innovation', 'Digitalisering',
+    'Försäljning', 'Marknadsföring', 'Finansiering', 'HR', 'Process',
+    'Tillväxt', 'Effektivitet', 'Kvalitet', 'Kundservice', 'Teknologi',
+    'Hållbarhet', 'Partnerskap', 'Internationalisering', 'Produktutveckling',
+    'Organisationskultur', 'Förändringsledning', 'Riskhantering'
+  ]
+
+  // Fetch tag usage statistics
+  React.useEffect(() => {
+    const fetchTagUsage = async () => {
+      const { data: articles } = await supabase
+        .from('articles')
+        .select('tags')
+      
+      const usage: Record<string, number> = {}
+      
+      // Count predefined tags
+      predefinedTags.forEach(tag => {
+        usage[tag] = 0
+      })
+      
+      // Count usage from articles
+      articles?.forEach(article => {
+        if (article.tags) {
+          article.tags.forEach((tag: string) => {
+            usage[tag] = (usage[tag] || 0) + 1
+          })
+        }
+      })
+      
+      setTagUsage(usage)
+    }
+    
+    fetchTagUsage()
+  }, [supabase, predefinedTags])
 
   const form = useForm<ArticleFormData>({
     resolver: zodResolver(articleSchema),
@@ -99,6 +138,13 @@ export function ArticleForm({ article }: ArticleFormProps) {
   const removeTag = (tagToRemove: string) => {
     const currentTags = form.getValues('tags')
     form.setValue('tags', currentTags.filter(tag => tag !== tagToRemove))
+  }
+
+  const addPredefinedTag = (tag: string) => {
+    const currentTags = form.getValues('tags')
+    if (!currentTags.includes(tag)) {
+      form.setValue('tags', [...currentTags, tag])
+    }
   }
 
   const handleTagInputKeyPress = (e: React.KeyboardEvent) => {
@@ -278,51 +324,90 @@ export function ArticleForm({ article }: ArticleFormProps) {
         <FormField
           control={form.control}
           name="tags"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Taggar</FormLabel>
-              <div className="space-y-3">
-                {/* Display existing tags */}
-                {field.value.length > 0 && (
-                  <div className="flex flex-wrap gap-2">
-                    {field.value.map((tag: string, index: number) => (
-                      <Badge key={index} variant="secondary" className="text-sm">
-                        {tag}
-                        <button
-                          type="button"
-                          onClick={() => removeTag(tag)}
-                          className="ml-2 hover:text-destructive"
-                        >
-                          <X className="h-3 w-3" />
-                        </button>
-                      </Badge>
-                    ))}
+          render={({ field }) => {
+            // Get all tags sorted by usage
+            const allAvailableTags = Object.entries(tagUsage)
+              .sort(([,a], [,b]) => b - a)
+              .map(([tag]) => tag)
+            
+            return (
+              <FormItem>
+                <FormLabel>Taggar</FormLabel>
+                <div className="space-y-4">
+                  {/* Display selected tags */}
+                  {field.value.length > 0 && (
+                    <div>
+                      <p className="text-sm font-medium mb-2">Valda taggar:</p>
+                      <div className="flex flex-wrap gap-2">
+                        {field.value.map((tag: string, index: number) => (
+                          <Badge key={index} variant="secondary" className="text-sm">
+                            {tag}
+                            <button
+                              type="button"
+                              onClick={() => removeTag(tag)}
+                              className="ml-2 hover:text-destructive"
+                            >
+                              <X className="h-3 w-3" />
+                            </button>
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Available tags */}
+                  {allAvailableTags.length > 0 && (
+                    <div>
+                      <p className="text-sm font-medium mb-2">Tillgängliga taggar:</p>
+                      <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto">
+                        {allAvailableTags
+                          .filter(tag => !field.value.includes(tag))
+                          .map((tag) => (
+                            <Badge
+                              key={tag}
+                              variant="outline"
+                              className="cursor-pointer hover:bg-muted text-sm"
+                              onClick={() => addPredefinedTag(tag)}
+                            >
+                              {tag}
+                              {tagUsage[tag] > 0 && (
+                                <span className="ml-1 text-xs bg-primary text-primary-foreground rounded-full px-1 min-w-[1rem] h-4 flex items-center justify-center">
+                                  {tagUsage[tag]}
+                                </span>
+                              )}
+                            </Badge>
+                          ))}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Add new tag input */}
+                  <div>
+                    <p className="text-sm font-medium mb-2">Lägg till ny tagg:</p>
+                    <div className="flex gap-2">
+                      <Input
+                        value={newTag}
+                        onChange={(e) => setNewTag(e.target.value)}
+                        onKeyPress={handleTagInputKeyPress}
+                        placeholder="Skriv ny tagg..."
+                        className="flex-1"
+                      />
+                      <Button
+                        type="button"
+                        onClick={addTag}
+                        variant="outline"
+                        size="sm"
+                        disabled={!newTag.trim()}
+                      >
+                        <Plus className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
-                )}
-                
-                {/* Add new tag input */}
-                <div className="flex gap-2">
-                  <Input
-                    value={newTag}
-                    onChange={(e) => setNewTag(e.target.value)}
-                    onKeyPress={handleTagInputKeyPress}
-                    placeholder="Lägg till tagg..."
-                    className="flex-1"
-                  />
-                  <Button
-                    type="button"
-                    onClick={addTag}
-                    variant="outline"
-                    size="sm"
-                    disabled={!newTag.trim()}
-                  >
-                    <Plus className="h-4 w-4" />
-                  </Button>
                 </div>
-              </div>
-              <FormMessage />
-            </FormItem>
-          )}
+                <FormMessage />
+              </FormItem>
+            )
+          }}
         />
 
         <FormField
