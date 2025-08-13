@@ -15,8 +15,8 @@ export function ThemeToggle() {
 
   if (!mounted) {
     return (
-      <Button variant="ghost" size="sm" className="w-9 px-0" title="Växla till green mode">
-        <Heart className="h-4 w-4" />
+      <Button variant="ghost" size="sm" className="w-9 px-0 hover:bg-transparent" title="Växla till green mode">
+        <Heart className="h-5 w-5 text-primary" />
       </Button>
     )
   }
@@ -33,11 +33,11 @@ export function ThemeToggle() {
     <Button
       variant="ghost"
       size="sm"
-      className="w-9 px-0"
+      className="w-9 px-0 hover:bg-transparent"
       onClick={toggleTheme}
       title={`Växla till ${theme === 'light' ? 'green mode' : 'pink mode'}`}
     >
-      {theme === 'light' ? <Heart className="h-4 w-4" /> : <Leaf className="h-4 w-4" />}
+      {theme === 'light' ? <Heart className="h-5 w-5 text-primary" /> : <Leaf className="h-5 w-5 text-primary" />}
     </Button>
   )
 }

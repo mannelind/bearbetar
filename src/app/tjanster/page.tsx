@@ -76,32 +76,30 @@ export default async function ServicesPage() {
       {/* Hero Section */}
       <section className="container py-24 md:py-32">
         <div className="mx-auto max-w-7xl">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="flex flex-col lg:grid lg:grid-cols-2 gap-12 items-center text-center lg:text-left">
             {/* Left side - Logo */}
             <AnimatedSection animation="slide-in-left">
-              <div className="flex justify-center lg:justify-center">
-                <div className="text-center lg:text-left">
-                  <ThemeLogo 
-                    alt="Bearbetar logotyp"
-                    width={400}
-                    height={160}
-                    className="w-auto h-24 md:h-32 lg:h-40"
-                    type="full"
-                  />
-                </div>
+              <div className="flex justify-center lg:justify-start">
+                <ThemeLogo 
+                  alt="Bearbetar logotyp"
+                  width={400}
+                  height={160}
+                  className="w-auto h-24 md:h-32 lg:h-40"
+                  type="full"
+                />
               </div>
             </AnimatedSection>
             
             {/* Right side - Text content */}
             <AnimatedSection animation="slide-up-delayed">
-              <div className="text-center lg:text-left">
+              <div>
                 <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-5xl xl:text-6xl">
                   Vad vi kan{' '}
                   <span className="text-primary">
                     hjälpa dig med
                   </span>
                 </h1>
-                <p className="mt-6 text-lg text-muted-foreground sm:text-xl max-w-xl lg:max-w-none">
+                <p className="mt-6 text-lg text-muted-foreground sm:text-xl max-w-xl mx-auto lg:mx-0 lg:max-w-none">
                   Från enkla webbsidor till komplicerade system - vi bygger det du behöver 
                   och hjälper dig att få det att funka.
                 </p>
@@ -110,6 +108,7 @@ export default async function ServicesPage() {
           </div>
         </div>
       </section>
+
 
       {/* Services Grid */}
       <AnimatedSection animation="scale-in">

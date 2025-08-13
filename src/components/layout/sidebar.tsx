@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
@@ -17,8 +17,6 @@ import {
   Settings, 
   LogOut,
   LogIn,
-  Menu,
-  X,
   Briefcase,
   UserCircle,
   Bell,
@@ -130,6 +128,7 @@ export function Sidebar() {
     }
   }, [isExpanded, isCollapsed, isPinned])
 
+
   // Cleanup timeout on unmount
   useEffect(() => {
     return () => {
@@ -148,15 +147,6 @@ export function Sidebar() {
 
   return (
     <>
-      {/* Mobile toggle button */}
-      <Button
-        variant="ghost"
-        size="sm"
-        className="fixed top-4 right-4 z-[70] md:hidden"
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-      </Button>
 
       {/* Overlay for mobile */}
       {isOpen && (
@@ -170,114 +160,114 @@ export function Sidebar() {
       <aside 
         ref={sidebarRef}
         className={cn(
-          "fixed z-[60] transform bg-background/95 backdrop-blur transition-all duration-300 ease-in-out cyber-border cyber-glow",
-          // Mobile positioning and sizing
+          "bg-background/55 backdrop-blur transition-all duration-200 ease-in-out cyber-border cyber-glow",
+          // Mobile positioning and sizing (fixed for mobile overlay)
           isOpen 
-            ? "top-0 left-0 w-full h-full translate-y-0" 
-            : "top-0 left-0 w-full h-full -translate-y-full",
-          // Desktop positioning and sizing (always visible)
-          "md:top-0 md:left-0 md:h-full md:translate-y-0 md:translate-x-0",
-          (showExpandedContent && !isOpen) ? "md:w-64" : "md:w-16",
-          // Desktop styling - add right border and rounded corners
-          "md:border-r-[3px] md:border-r-[rgba(139,176,129,0.6)] md:rounded-r-xl"
+            ? "fixed top-0 left-0 w-full h-full translate-y-0 z-[65]" 
+            : "fixed top-0 left-0 w-full h-screen -translate-y-full z-[65] md:sticky md:top-0 md:translate-y-0 md:h-screen",
+          // Desktop positioning and sizing (sticky positioning)
+          "md:flex-shrink-0",
+          (showExpandedContent && !isOpen) ? "md:w-64" : "md:w-16"
         )}
         style={{ 
-          // Mobile: no special borders when full screen, Desktop: right border accent
-          border: '1px solid rgba(139, 176, 129, 0.4)',
-          borderRight: isOpen ? '1px solid rgba(139, 176, 129, 0.4)' : '1px solid rgba(139, 176, 129, 0.4)',
-          borderRadius: isOpen ? '0' : '0',
-          background: 'linear-gradient(135deg, transparent, rgba(139, 176, 129, 0.05), transparent 50%, rgba(151, 191, 133, 0.03))',
-          boxShadow: '0 0 8px rgba(139, 176, 129, 0.25), 0 0 18px rgba(139, 176, 129, 0.12), 0 0 35px rgba(139, 176, 129, 0.06), inset 0 1px 0 rgba(205, 228, 204, 0.1)',
-          backdropFilter: 'blur(1px)'
+          // Mobile: no borders when full screen, Desktop: no borders with square corners
+          border: 'none',
+          borderRadius: '0',
+          background: 'linear-gradient(135deg, transparent, rgba(139, 176, 129, 0.03), transparent 50%, rgba(151, 191, 133, 0.02))',
+          boxShadow: '0 0 6px rgba(139, 176, 129, 0.15), 0 0 12px rgba(139, 176, 129, 0.08), 0 0 20px rgba(139, 176, 129, 0.04), inset 0 1px 0 rgba(205, 228, 204, 0.05)',
+          backdropFilter: 'blur(1px)',
+          // Simple solution: Let CSS handle the height naturally
+          height: isOpen ? '100vh' : undefined
         }}
         onMouseEnter={!isOpen ? handleMouseEnter : undefined}
         onMouseLeave={!isOpen ? handleMouseLeave : undefined}
       >
-        <div className="flex h-full flex-col">
-          {/* Header */}
-          <div className={cn(
-            "flex h-16 items-center border-b",
-            showExpandedContent ? "px-6 justify-between" : "px-3 justify-center"
-          )}>
-            {showExpandedContent && (
-              <Link href="/" className="flex items-center space-x-2">
-                <ThemeLogo 
-                  alt={`${APP_NAME} logotyp`}
-                  width={24}
-                  height={24}
-                  className="w-6 h-6"
-                  type="symbol"
-                />
-                <span className="font-bold text-xl">{APP_NAME}</span>
-              </Link>
-            )}
-            {/* Pin/Unpin button on desktop */}
-            <SimpleTooltip text={isPinned ? "Koppla loss sidofältet 📌" : "Fäst sidofältet 📌"} side="right">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handlePinToggle}
-                className={cn(
-                  "hidden md:flex text-muted-foreground hover:text-foreground transition-all duration-200 hover:scale-110",
-                  !showExpandedContent ? "h-8 w-8" : "",
-                  isPinned && "text-primary hover:text-primary/80"
-                )}
-              >
-                {isPinned ? (
-                  <Pin className="h-4 w-4 tech-icon" />
-                ) : (
-                  <PinOff className="h-4 w-4 tech-icon" />
-                )}
-              </Button>
-            </SimpleTooltip>
-          </div>
-
-          {/* User Info / Login Section - Only show when logged in */}
-          {user && (
+        <div className="flex h-full flex-col justify-between">
+          {/* Top section - Header, User Info, and Navigation */}
+          <div className="flex flex-col">
+            {/* Header */}
             <div className={cn(
-              "border-b p-4",
-              !showExpandedContent && "flex justify-center"
+              "flex h-16 items-center",
+              showExpandedContent ? "px-6 justify-between" : "px-3 justify-center"
             )}>
-              <div className={cn(
-                "flex items-center",
-                !showExpandedContent ? "justify-center" : "space-x-3"
-              )}>
-                <Avatar className="h-10 w-10">
-                  <AvatarFallback className="bg-primary text-primary-foreground">
-                    {getUserInitials(user.email)}
-                  </AvatarFallback>
-                </Avatar>
-                {showExpandedContent && (
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium truncate">
-                      {user.user_metadata?.full_name || user.email}
-                    </p>
-                    <div className="flex items-center gap-2">
-                      <p className="text-xs text-muted-foreground truncate">
-                        {user.email}
-                      </p>
-                      {isAdmin && (
-                        <Badge variant="secondary" className="text-xs">
-                          Admin
-                        </Badge>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
+              {showExpandedContent && (
+                <Link href="/" className="flex items-center justify-center">
+                  <ThemeLogo 
+                    alt={`${APP_NAME} logotyp`}
+                    width={24}
+                    height={24}
+                    className="w-6 h-6"
+                    type="symbol"
+                  />
+                </Link>
+              )}
+              {/* Pin/Unpin button on desktop */}
+              <SimpleTooltip text={isPinned ? "Koppla loss sidofältet 📌" : "Fäst sidofältet 📌"} side="right">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handlePinToggle}
+                  className={cn(
+                    "hidden md:flex text-muted-foreground hover:text-foreground transition-all duration-200 hover:scale-110",
+                    !showExpandedContent ? "h-8 w-8" : "",
+                    isPinned && "text-primary hover:text-primary/80"
+                  )}
+                >
+                  {isPinned ? (
+                    <Pin className="h-4 w-4 tech-icon" />
+                  ) : (
+                    <PinOff className="h-4 w-4 tech-icon" />
+                  )}
+                </Button>
+              </SimpleTooltip>
             </div>
-          )}
 
-          {/* Navigation */}
-          <nav 
-            id="navigation"
-            aria-label="Huvudnavigation"
-            className={cn(
-              "flex-1 space-y-1",
-              !showExpandedContent ? "px-2 py-4" : "p-4"
-            )}>
+            {/* User Info / Login Section - Only show when logged in */}
+            {user && (
+              <div className={cn(
+                "border-b p-4",
+                !showExpandedContent && "flex justify-center"
+              )}>
+                <div className={cn(
+                  "flex items-center",
+                  !showExpandedContent ? "justify-center" : "space-x-3"
+                )}>
+                  <Avatar className="h-10 w-10">
+                    <AvatarFallback className="bg-primary text-primary-foreground">
+                      {getUserInitials(user.email)}
+                    </AvatarFallback>
+                  </Avatar>
+                  {showExpandedContent && (
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium truncate">
+                        {user.user_metadata?.full_name || user.email}
+                      </p>
+                      <div className="flex items-center gap-2">
+                        <p className="text-xs text-muted-foreground truncate">
+                          {user.email}
+                        </p>
+                        {isAdmin && (
+                          <Badge variant="secondary" className="text-xs">
+                            Admin
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Navigation */}
+            <nav 
+              id="navigation"
+              aria-label="Huvudnavigation"
+              className={cn(
+                "flex flex-col space-y-1",
+                !showExpandedContent ? "px-2 py-4" : "p-4"
+              )}>
             {/* Public Navigation */}
-            <div className="space-y-1" role="group" aria-label="Huvudsidor">
+            <div className="flex flex-col space-y-1" role="group" aria-label="Huvudsidor">
               {navigation.map((item) => {
                 const isActive = pathname === item.href
                 return (
@@ -305,7 +295,7 @@ export function Sidebar() {
 
             {/* Profile Navigation - Only for logged in users */}
             {user && (
-              <div className="space-y-1 pt-4" role="group" aria-label="Profil och inställningar">
+              <div className="flex flex-col space-y-1 pt-4" role="group" aria-label="Profil och inställningar">
                 {showExpandedContent && (
                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
                     Profil & Inställningar
@@ -339,7 +329,7 @@ export function Sidebar() {
 
             {/* Admin Navigation */}
             {isAdmin && (
-              <div className="space-y-1 pt-4" role="group" aria-label="Administration">
+              <div className="flex flex-col space-y-1 pt-4" role="group" aria-label="Administration">
                 {showExpandedContent && (
                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
                     Administration
@@ -373,7 +363,7 @@ export function Sidebar() {
 
             {/* Login/Auth Section - Only show when not logged in */}
             {!user && (
-              <div className="space-y-1 pt-4" role="group" aria-label="Inloggning">
+              <div className="flex flex-col space-y-1 pt-4" role="group" aria-label="Inloggning">
                 {showExpandedContent && (
                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
                     Konto
@@ -396,7 +386,8 @@ export function Sidebar() {
                 </Link>
               </div>
             )}
-          </nav>
+            </nav>
+          </div>
 
           {/* Footer */}
           <div className={cn(
@@ -437,11 +428,6 @@ export function Sidebar() {
         </div>
       </aside>
 
-      {/* Content spacer for desktop */}
-      <div className={cn(
-        "hidden md:block flex-shrink-0",
-        (showExpandedContent && !isOpen) ? "md:w-64" : "md:w-16"
-      )} />
     </>
   )
 }

@@ -31,53 +31,49 @@ type BlogModalArticle = Database['public']['Tables']['articles']['Row'] & {
 
 interface ArticlesGridProps {
   articles: ArticlesGridArticle[]
+  selectedTags?: string[]
+  searchTerm?: string
+  sortBy?: string
+  viewMode?: 'grid' | 'list'
 }
 
-
-export function ArticlesGrid({ articles }: ArticlesGridProps) {
-  const [selectedTags, setSelectedTags] = useState<string[]>([])
-  const [showMoreTags, setShowMoreTags] = useState(false)
+export function ArticlesGrid({ articles, selectedTags = [], searchTerm = '', sortBy = 'newest', viewMode = 'grid' }: ArticlesGridProps) {
   const [showMoreCardTags, setShowMoreCardTags] = useState<Record<string, boolean>>({})
   const [selectedArticle, setSelectedArticle] = useState<BlogModalArticle | null>(null)
   const [modalOpen, setModalOpen] = useState(false)
 
-  // Get all unique tags
-  const allTags = useMemo(() => {
-    const tags = new Set<string>()
-    articles.forEach(article => {
-      article.tags.forEach(tag => tags.add(tag))
-    })
-    return Array.from(tags).sort()
-  }, [articles])
-
-  // Filter and sort articles based on selected tags
+  // Filter and sort articles based on all filters
   const filteredAndSortedArticles = useMemo(() => {
-    if (selectedTags.length === 0) {
-      return articles
+    let filtered = articles
+
+    // Filter by search term
+    if (searchTerm.trim()) {
+      const search = searchTerm.toLowerCase()
+      filtered = filtered.filter(article =>
+        article.title.toLowerCase().includes(search) ||
+        article.excerpt?.toLowerCase().includes(search) ||
+        article.tags.some(tag => tag.toLowerCase().includes(search))
+      )
     }
 
-    return articles
-      .map(article => {
-        const articleTags = article.tags
-        const matchCount = selectedTags.filter(tag => articleTags.includes(tag)).length
-        return { article, matchCount }
-      })
-      .filter(({ matchCount }) => matchCount > 0)
-      .sort((a, b) => b.matchCount - a.matchCount)
-      .map(({ article }) => article)
-  }, [articles, selectedTags])
+    // Filter by selected tags
+    if (selectedTags.length > 0) {
+      filtered = filtered.filter(article =>
+        selectedTags.some(tag => article.tags.includes(tag))
+      )
+    }
 
-  const toggleTag = (tag: string) => {
-    setSelectedTags(prev => 
-      prev.includes(tag) 
-        ? prev.filter(t => t !== tag)
-        : [...prev, tag]
-    )
-  }
-
-  const clearAllTags = () => {
-    setSelectedTags([])
-  }
+    // Sort articles
+    switch (sortBy) {
+      case 'oldest':
+        return filtered.sort((a, b) => new Date(a.published_at || '').getTime() - new Date(b.published_at || '').getTime())
+      case 'title':
+        return filtered.sort((a, b) => a.title.localeCompare(b.title))
+      case 'newest':
+      default:
+        return filtered.sort((a, b) => new Date(b.published_at || '').getTime() - new Date(a.published_at || '').getTime())
+    }
+  }, [articles, selectedTags, searchTerm, sortBy])
 
   const toggleShowMoreCardTags = (articleId: string) => {
     setShowMoreCardTags(prev => ({
@@ -104,77 +100,17 @@ export function ArticlesGrid({ articles }: ArticlesGridProps) {
     setTimeout(() => setSelectedArticle(null), 300)
   }
 
-  const visibleTags = showMoreTags ? allTags : allTags.slice(0, 8)
-  const hasMoreTags = allTags.length > 8
-
   return (
     <div className="space-y-8">
-      {/* Tag Filter Section */}
-      {allTags.length > 0 && (
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Filter className="h-4 w-4" />
-              <h3 className="font-semibold">Filtrera efter taggar</h3>
-              {selectedTags.length > 0 && (
-                <Badge variant="outline">
-                  {selectedTags.length} valda
-                </Badge>
-              )}
-            </div>
-            {selectedTags.length > 0 && (
-              <Button 
-                variant="ghost" 
-                size="sm"
-                onClick={clearAllTags}
-              >
-                Rensa alla
-              </Button>
-            )}
-          </div>
-          
-          <div className="flex flex-wrap gap-2">
-            {visibleTags.map(tag => (
-              <ColoredBadge
-                key={tag}
-                tag={tag}
-                selected={selectedTags.includes(tag)}
-                className="cursor-pointer hover:opacity-80 transition-opacity"
-                onClick={() => toggleTag(tag)}
-              />
-            ))}
-            
-            {hasMoreTags && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowMoreTags(!showMoreTags)}
-                className="h-6 px-2 text-xs"
-              >
-                {showMoreTags ? (
-                  <>
-                    Visa färre <ChevronUp className="ml-1 h-3 w-3" />
-                  </>
-                ) : (
-                  <>
-                    Visa fler ({allTags.length - 8}) <ChevronDown className="ml-1 h-3 w-3" />
-                  </>
-                )}
-              </Button>
-            )}
-          </div>
-        </div>
-      )}
-
       {/* Results Info */}
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold tracking-tight">
-            {selectedTags.length > 0 ? 'Filtrerade Artiklar' : 'Alla Artiklar'}
+            {selectedTags.length > 0 || searchTerm ? 'Filtrerade Artiklar' : 'Alla Artiklar'}
           </h2>
           <p className="text-muted-foreground">
             {filteredAndSortedArticles.length} artikel{filteredAndSortedArticles.length !== 1 ? 'ar' : ''}
-            {selectedTags.length > 0 && ` matchande valda taggar`}
+            {(selectedTags.length > 0 || searchTerm) && ` matchande filter`}
           </p>
         </div>
       </div>
@@ -185,28 +121,28 @@ export function ArticlesGrid({ articles }: ArticlesGridProps) {
           <Filter className="mx-auto h-12 w-12 text-muted-foreground" />
           <h3 className="mt-4 text-lg font-semibold">Inga matchande artiklar</h3>
           <p className="text-muted-foreground mb-4">
-            Inga artiklar matchar de valda taggarna. Prova att ändra ditt val.
+            Inga artiklar matchar de valda filtren. Prova att ändra dina sökkriterier.
           </p>
-          <Button onClick={clearAllTags} variant="outline">
-            Rensa filter
-          </Button>
         </div>
       ) : (
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <div className={viewMode === 'grid' ? 'grid gap-8 md:grid-cols-2 lg:grid-cols-3' : 'flex flex-col space-y-6'}>
           {filteredAndSortedArticles.map((article) => {
             const articleTags = article.tags
             const visibleCardTags = showMoreCardTags[article.id] ? articleTags : articleTags.slice(0, 3)
             const hasMoreCardTags = articleTags.length > 3
 
             return (
-              <SimpleTooltip key={article.id} text={`Läs "${article.title}" 📖`} side="top">
-                <Card 
-                  className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
-                  onClick={() => handleArticleClick(article)}
-                >
-                <div>
+              <div key={article.id} className={viewMode === 'list' ? 'w-full' : ''}>
+                <SimpleTooltip text={`Läs "${article.title}" 📖`} side="top">
+                  <Card 
+                    className={`overflow-hidden hover:shadow-lg transition-shadow cursor-pointer ${
+                      viewMode === 'grid' ? 'h-full flex flex-col' : 'w-full'
+                    }`}
+                    onClick={() => handleArticleClick(article)}
+                  >
+                <div className={viewMode === 'grid' ? 'flex flex-col h-full' : 'flex flex-col md:flex-row gap-6'}>
                   {article.featured_image && (
-                    <div className="aspect-video relative">
+                    <div className={viewMode === 'grid' ? 'aspect-video relative' : 'aspect-video md:aspect-square relative md:w-48 flex-shrink-0'}>
                       <Image
                         src={article.featured_image}
                         alt={article.title}
@@ -217,32 +153,34 @@ export function ArticlesGrid({ articles }: ArticlesGridProps) {
                     </div>
                   )}
                   
-                  <CardHeader className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <Badge variant="secondary">Artikel</Badge>
-                      {article.published_at && (
-                        <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                          <Calendar className="h-3 w-3" />
-                          {formatDistanceToNow(new Date(article.published_at), {
-                            addSuffix: true,
-                            locale: sv
-                          })}
-                        </div>
-                      )}
-                    </div>
-                    
-                    <CardTitle className="line-clamp-2 hover:text-primary transition-colors">
-                      {article.title}
-                    </CardTitle>
-                  </CardHeader>
+                  <div className={viewMode === 'grid' ? 'flex-grow flex flex-col' : 'flex-1 flex flex-col'}>
+                    <CardHeader className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <Badge variant="secondary">Artikel</Badge>
+                        {article.published_at && (
+                          <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                            <Calendar className="h-3 w-3" />
+                            {formatDistanceToNow(new Date(article.published_at), {
+                              addSuffix: true,
+                              locale: sv
+                            })}
+                          </div>
+                        )}
+                      </div>
+                      
+                      <CardTitle className="line-clamp-2 hover:text-primary transition-colors">
+                        {article.title}
+                      </CardTitle>
+                    </CardHeader>
 
-                  {article.excerpt && (
-                    <CardContent className="pt-0">
-                      <CardDescription className="line-clamp-3">
-                        {article.excerpt}
-                      </CardDescription>
-                    </CardContent>
-                  )}
+                    {article.excerpt && (
+                      <CardContent className={viewMode === 'grid' ? 'pt-0 flex-grow' : 'pt-0'}>
+                        <CardDescription className="line-clamp-3">
+                          {article.excerpt}
+                        </CardDescription>
+                      </CardContent>
+                    )}
+                  </div>
                 </div>
 
                 {/* Tags Section */}
@@ -255,8 +193,7 @@ export function ArticlesGrid({ articles }: ArticlesGridProps) {
                             key={index}
                             tag={tag}
                             selected={selectedTags.includes(tag)}
-                            className="text-xs cursor-pointer transition-colors"
-                            onClick={() => toggleTag(tag)}
+                            className="text-xs"
                           />
                         ))}
                         
@@ -309,8 +246,9 @@ export function ArticlesGrid({ articles }: ArticlesGridProps) {
                     </div>
                   </CardContent>
                 )}
-              </Card>
-              </SimpleTooltip>
+                  </Card>
+                </SimpleTooltip>
+              </div>
             )
           })}
         </div>

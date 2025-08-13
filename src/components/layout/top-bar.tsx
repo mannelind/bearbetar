@@ -7,12 +7,27 @@ import { SimpleTooltip } from '@/components/ui/tooltip'
 import { useAuth } from '@/hooks/use-auth'
 import { LogIn, Home, Users, Phone } from 'lucide-react'
 import { PUBLIC_ROUTES } from '@/lib/constants'
+import { useState, useEffect } from 'react'
 
 export function TopBar() {
   const { user, isAdmin, loading } = useAuth()
+  const [isScrolled, setIsScrolled] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY
+      setIsScrolled(scrollTop > 50) // Hide TopBar after 50px scroll
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  // Don't render TopBar when scrolled
+  if (isScrolled) return null
 
   return (
-    <div className="sticky top-0 z-[60] border-b bg-muted/30 backdrop-blur supports-[backdrop-filter]:bg-muted/20">
+    <div className="hidden md:block sticky top-0 z-[60] border-b bg-muted/30 backdrop-blur supports-[backdrop-filter]:bg-muted/20 transition-all duration-300">
       <div className="container flex h-10 items-center justify-between text-sm">
         {/* Left side - Secondary navigation */}
         <nav className="hidden md:flex items-center space-x-4">
@@ -47,12 +62,6 @@ export function TopBar() {
           </SimpleTooltip>
         </nav>
 
-        {/* Mobile - Show minimal items */}
-        <div className="md:hidden">
-          <SimpleTooltip text="Byt mellan ljust och mörkt tema ☀️🌙" side="bottom">
-            <ThemeToggle />
-          </SimpleTooltip>
-        </div>
 
         {/* Right side - Theme toggle and auth */}
         <div className="flex items-center space-x-3">

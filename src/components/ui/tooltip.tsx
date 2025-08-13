@@ -101,6 +101,10 @@ export function Tooltip({
   const showTooltip = () => {
     if (disabled) return
     
+    // Don't show tooltips on mobile/touch devices
+    const isMobile = window.innerWidth < 768 || 'ontouchstart' in window
+    if (isMobile) return
+    
     timeoutRef.current = setTimeout(() => {
       setIsVisible(true)
     }, delayDuration)

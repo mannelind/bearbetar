@@ -43,32 +43,32 @@ export default async function HomePage() {
       {/* Hero Section */}
       <section className="relative futuristic-gradient gradient-mesh overflow-hidden">
         <InteractiveOrbs />
+        
+        
         <div className="container py-24 md:py-32">
           <div className="mx-auto max-w-7xl">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="flex flex-col lg:grid lg:grid-cols-2 gap-12 items-center text-center lg:text-left">
             {/* Left side - Logo */}
-            <div className="flex justify-center lg:justify-center animate-slide-in-left">
-              <div className="text-center lg:text-left">
-                <ThemeLogo 
-                  alt="Bearbetar logotyp"
-                  width={400}
-                  height={160}
-                  className="w-auto h-24 md:h-32 lg:h-40"
-                  type="full"
-                  priority
-                />
-              </div>
+            <div className="flex justify-center lg:justify-start animate-slide-in-left">
+              <ThemeLogo 
+                alt="Bearbetar logotyp"
+                width={400}
+                height={160}
+                className="w-auto h-24 md:h-32 lg:h-40"
+                type="full"
+                priority
+              />
             </div>
             
             {/* Right side - Text content */}
-            <div className="text-center lg:text-left animate-slide-up-delayed">
+            <div className="animate-slide-up-delayed">
               <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-5xl xl:text-6xl animate-slide-up">
                 Välkommen till{' '}
                 <span className="text-primary">
                   Bearbetar
                 </span>
               </h1>
-              <p className="mt-6 text-lg text-muted-foreground sm:text-xl max-w-xl lg:max-w-none animate-slide-up-delayed">
+              <p className="mt-6 text-lg text-muted-foreground sm:text-xl max-w-xl mx-auto lg:mx-0 lg:max-w-none animate-slide-up-delayed">
                 Vi byggger webbplatser, appar och allt däremellan. Här delar vi också våra tankar, 
                 tips och berättelser från livet som utvecklare och företagare.
               </p>
