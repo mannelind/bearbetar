@@ -55,6 +55,7 @@ export default async function HomePage() {
                   height={160}
                   className="w-auto h-24 md:h-32 lg:h-40"
                   type="full"
+                  priority
                 />
               </div>
             </div>

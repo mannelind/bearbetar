@@ -1,11 +1,13 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
+import Image from 'next/image'
 import { createBrowserClient } from '@supabase/ssr'
 import { Database } from '@/types/database'
 import { Modal, ModalContent, ModalHeader, ModalBody } from '@/components/ui/modal'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
 import { Calendar, Clock, User, Tag } from 'lucide-react'
 
 type Article = Database['public']['Tables']['articles']['Row'] & {
@@ -32,18 +34,11 @@ export function BlogModal({ article, open, onOpenChange }: BlogModalProps) {
   )
   const [fullArticle, setFullArticle] = useState<Article | null>(null)
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    if (open && article && !fullArticle) {
-      loadFullArticle(article.id)
-    }
-    if (!open) {
-      setFullArticle(null)
-    }
-  }, [open, article])
-
-  const loadFullArticle = async (articleId: string) => {
+  const loadFullArticle = useCallback(async (articleId: string) => {
     setLoading(true)
+    setError(null)
     
     const { data, error } = await supabase
       .from('articles')
@@ -67,7 +62,11 @@ export function BlogModal({ article, open, onOpenChange }: BlogModalProps) {
           id,
           email,
           full_name,
-          avatar_url
+          bio,
+          profile_image,
+          avatar_url,
+          created_at,
+          updated_at
         )
       `)
       .eq('id', articleId)
@@ -75,6 +74,7 @@ export function BlogModal({ article, open, onOpenChange }: BlogModalProps) {
 
     if (error) {
       console.error('Error loading article:', error)
+      setError('Kunde inte ladda artikeln. Försök igen senare.')
       setLoading(false)
       return
     }
@@ -90,7 +90,17 @@ export function BlogModal({ article, open, onOpenChange }: BlogModalProps) {
     }
 
     setLoading(false)
-  }
+  }, [supabase])
+
+  useEffect(() => {
+    if (open && article && !fullArticle) {
+      loadFullArticle(article.id)
+    }
+    if (!open) {
+      setFullArticle(null)
+      setError(null)
+    }
+  }, [open, article, fullArticle, loadFullArticle])
 
   const formatReadingTime = (content: string) => {
     const wordsPerMinute = 200
@@ -109,6 +119,13 @@ export function BlogModal({ article, open, onOpenChange }: BlogModalProps) {
             <div className="loading-spinner w-8 h-8 mx-auto mb-4" />
             <p className="text-muted-foreground">Laddar artikel...</p>
           </div>
+        ) : error ? (
+          <div className="p-8 text-center">
+            <p className="text-destructive mb-4">{error}</p>
+            <Button onClick={() => loadFullArticle(article.id)}>
+              Försök igen
+            </Button>
+          </div>
         ) : fullArticle ? (
           <div className="flex flex-col h-full">
             {/* Header */}
@@ -116,11 +133,13 @@ export function BlogModal({ article, open, onOpenChange }: BlogModalProps) {
               <div className="space-y-4">
                 {/* Featured Image */}
                 {fullArticle.featured_image && (
-                  <div className="aspect-video bg-muted rounded-lg overflow-hidden">
-                    <img 
+                  <div className="relative aspect-video bg-muted rounded-lg overflow-hidden">
+                    <Image 
                       src={fullArticle.featured_image} 
                       alt={fullArticle.title}
-                      className="object-cover w-full h-full"
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, 80vw"
                     />
                   </div>
                 )}

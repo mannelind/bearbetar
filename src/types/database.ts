@@ -16,6 +16,7 @@ export type Database = {
           full_name: string | null
           bio: string | null
           profile_image: string | null
+          avatar_url: string | null
           created_at: string
           updated_at: string
         }
@@ -25,6 +26,7 @@ export type Database = {
           full_name?: string | null
           bio?: string | null
           profile_image?: string | null
+          avatar_url?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -34,6 +36,7 @@ export type Database = {
           full_name?: string | null
           bio?: string | null
           profile_image?: string | null
+          avatar_url?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -279,6 +282,8 @@ export type Database = {
           client_name: string | null
           project_url: string | null
           completion_date: string | null
+          case_study_content: string | null
+          technologies_used: string | null
           published: boolean
           published_at: string | null
           created_at: string
@@ -297,6 +302,8 @@ export type Database = {
           client_name?: string | null
           project_url?: string | null
           completion_date?: string | null
+          case_study_content?: string | null
+          technologies_used?: string | null
           published?: boolean
           published_at?: string | null
           created_at?: string
@@ -315,6 +322,8 @@ export type Database = {
           client_name?: string | null
           project_url?: string | null
           completion_date?: string | null
+          case_study_content?: string | null
+          technologies_used?: string | null
           published?: boolean
           published_at?: string | null
           created_at?: string

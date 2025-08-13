@@ -5,63 +5,30 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge'
 import { ThemeLogo } from '@/components/ui/theme-logo'
 import { AnimatedSection, AnimatedGrid, PageWrapper } from '@/components/ui/page-animations'
-import { createServerComponentClient } from '@/lib/supabase'
 import { User, Mail, ArrowRight } from 'lucide-react'
 
-export default async function AboutPage() {
-  let teamMembers: any[] = []
-  let companyDescription = 'Vi på Bearbetar hjälper företag att växa och utvecklas genom strategisk rådgivning och praktiska lösningar.'
-
-  // Hämta teammedlemmar och företagsbeskrivning
-  try {
-    const supabase = await createServerComponentClient()
-    
-    // Hämta alla admin-användare (teammedlemmar)
-    const { data: users, error: usersError } = await supabase
-      .from('admin_users')
-      .select('*')
-      .order('full_name')
-
-    if (!usersError && users) {
-      teamMembers = users
+export default function AboutPage() {
+  // Statisk data för teammedlemmar
+  const teamMembers = [
+    {
+      id: '1',
+      full_name: 'Manne',
+      email: 'manne@bearbetar.se',
+      bio: 'Grundare och strateg med passion för affärsutveckling och innovation. Hjälper företag att växa genom strategisk rådgivning och praktiska lösningar.',
+      profile_image: null,
+      created_at: new Date().toISOString()
+    },
+    {
+      id: '2',
+      full_name: 'Adam',
+      email: 'adam@bearbetar.se', 
+      bio: 'Expert inom teknisk utveckling och digitalisering. Specialiserad på att transformera affärsprocesser genom teknik och automation.',
+      profile_image: null,
+      created_at: new Date().toISOString()
     }
+  ]
 
-    // Hämta företagsbeskrivning
-    const { data: settings, error: settingsError } = await supabase
-      .from('company_settings')
-      .select('value')
-      .eq('key', 'about_us_description')
-      .single()
-
-    if (!settingsError && settings?.value) {
-      companyDescription = settings.value
-    }
-
-  } catch (error) {
-    console.error('Error fetching about page data:', error)
-    
-    // Använd mock-data i utveckling
-    if (process.env.NODE_ENV === 'development') {
-      teamMembers = [
-        {
-          id: '1',
-          full_name: 'Manne',
-          email: 'manne@bearbetar.se',
-          bio: 'Grundare och strateg med passion för affärsutveckling och innovation. Hjälper företag att växa genom strategisk rådgivning och praktiska lösningar.',
-          profile_image: null,
-          created_at: new Date().toISOString()
-        },
-        {
-          id: '2',
-          full_name: 'Adam',
-          email: 'adam@bearbetar.se', 
-          bio: 'Expert inom teknisk utveckling och digitalisering. Specialiserad på att transformera affärsprocesser genom teknik och automation.',
-          profile_image: null,
-          created_at: new Date().toISOString()
-        }
-      ]
-    }
-  }
+  const companyDescription = 'Vi på Bearbetar hjälper företag att växa och utvecklas genom strategisk rådgivning och praktiska lösningar.'
 
   return (
     <PageWrapper>
@@ -79,6 +46,7 @@ export default async function AboutPage() {
                     height={160}
                     className="w-auto h-24 md:h-32 lg:h-40"
                     type="full"
+                    priority
                   />
                 </div>
               </div>

@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
+import Image from 'next/image'
 import { createBrowserClient } from '@supabase/ssr'
 import { Database } from '@/types/database'
 import { Modal, ModalContent, ModalHeader, ModalBody } from '@/components/ui/modal'
@@ -13,8 +14,7 @@ import {
   FileText, 
   Image as ImageIcon,
   ChevronLeft,
-  ChevronRight,
-  X
+  ChevronRight
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -39,17 +39,7 @@ export function PortfolioModal({ item, open, onOpenChange }: PortfolioModalProps
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [loading, setLoading] = useState(false)
 
-  useEffect(() => {
-    if (open && item && !fullItem) {
-      loadFullItem(item.id)
-    }
-    if (!open) {
-      setFullItem(null)
-      setCurrentImageIndex(0)
-    }
-  }, [open, item])
-
-  const loadFullItem = async (itemId: string) => {
+  const loadFullItem = useCallback(async (itemId: string) => {
     setLoading(true)
     
     const { data, error } = await supabase
@@ -91,13 +81,35 @@ export function PortfolioModal({ item, open, onOpenChange }: PortfolioModalProps
         ...data,
         portfolio_categories: data.portfolio_item_categories?.map((pc: any) => pc.portfolio_categories).filter(Boolean) || [],
         tags: data.portfolio_item_tags?.map((pt: any) => pt.tags).filter(Boolean) || [],
-        portfolio_gallery: data.portfolio_gallery?.sort((a: any, b: any) => a.sort_order - b.sort_order) || []
+        portfolio_gallery: data.portfolio_gallery?.map(gallery => ({
+          id: gallery.id,
+          portfolio_item_id: data.id,
+          image_url: gallery.image_url,
+          image_alt: null,
+          caption: gallery.caption,
+          sort_order: gallery.sort_order,
+          created_at: new Date().toISOString()
+        })).sort((a, b) => a.sort_order - b.sort_order) || []
       }
       setFullItem(transformedItem)
     }
 
     setLoading(false)
-  }
+  }, [supabase])
+
+  const loadFullItemCallback = useCallback((itemId: string) => {
+    loadFullItem(itemId)
+  }, [loadFullItem])
+
+  useEffect(() => {
+    if (open && item && !fullItem) {
+      loadFullItemCallback(item.id)
+    }
+    if (!open) {
+      setFullItem(null)
+      setCurrentImageIndex(0)
+    }
+  }, [open, item, fullItem, loadFullItemCallback])
 
   const allImages = fullItem ? [
     ...(fullItem.featured_image ? [{ url: fullItem.featured_image, caption: 'Huvudbild' }] : []),
@@ -198,10 +210,12 @@ export function PortfolioModal({ item, open, onOpenChange }: PortfolioModalProps
               {allImages.length > 0 && (
                 <div className="space-y-4">
                   <div className="relative aspect-video bg-muted rounded-lg overflow-hidden">
-                    <img 
-                      src={allImages[currentImageIndex]?.url} 
+                    <Image 
+                      src={allImages[currentImageIndex]?.url || ''} 
                       alt={allImages[currentImageIndex]?.caption || fullItem.title}
-                      className="object-cover w-full h-full"
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, 80vw"
                     />
                     
                     {allImages.length > 1 && (
@@ -252,10 +266,12 @@ export function PortfolioModal({ item, open, onOpenChange }: PortfolioModalProps
                           )}
                           onClick={() => setCurrentImageIndex(index)}
                         >
-                          <img 
+                          <Image 
                             src={img.url} 
                             alt={img.caption || `Bild ${index + 1}`}
-                            className="object-cover w-full h-full"
+                            fill
+                            className="object-cover"
+                            sizes="64px"
                           />
                         </button>
                       ))}

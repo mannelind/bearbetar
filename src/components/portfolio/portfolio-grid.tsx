@@ -1,12 +1,14 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useSearchParams } from 'next/navigation'
+import Image from 'next/image'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { createBrowserClient } from '@supabase/ssr'
 import { Database } from '@/types/database'
+import { SimpleTooltip } from '@/components/ui/tooltip'
 import { PortfolioModal } from './portfolio-modal'
 import { Calendar, ExternalLink, Eye, FileText, Image as ImageIcon, User } from 'lucide-react'
 
@@ -27,11 +29,7 @@ export function PortfolioGrid() {
   const [selectedItem, setSelectedItem] = useState<PortfolioItem | null>(null)
   const [modalOpen, setModalOpen] = useState(false)
 
-  useEffect(() => {
-    loadPortfolioItems()
-  }, [searchParams])
-
-  const loadPortfolioItems = async () => {
+  const loadPortfolioItems = useCallback(async () => {
     setLoading(true)
 
     let query = supabase
@@ -84,7 +82,7 @@ export function PortfolioGrid() {
         query = query.order('title', { ascending: true })
         break
       case 'completion_date':
-        query = query.order('completion_date', { ascending: false, nullsLast: true })
+        query = query.order('completion_date', { ascending: false })
         break
       default: // newest
         query = query.order('created_at', { ascending: false })
@@ -131,7 +129,15 @@ export function PortfolioGrid() {
 
     setItems(transformedItems)
     setLoading(false)
-  }
+  }, [supabase, searchParams])
+
+  const loadPortfolioItemsCallback = useCallback(() => {
+    loadPortfolioItems()
+  }, [loadPortfolioItems])
+
+  useEffect(() => {
+    loadPortfolioItemsCallback()
+  }, [loadPortfolioItemsCallback])
 
   const handleItemClick = (item: PortfolioItem) => {
     setSelectedItem(item)
@@ -186,18 +192,20 @@ export function PortfolioGrid() {
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {items.map((item) => (
-          <Card 
-            key={item.id} 
-            className="group cursor-pointer hover:shadow-lg transition-all duration-300 overflow-hidden"
-            onClick={() => handleItemClick(item)}
-          >
+          <SimpleTooltip key={item.id} text={`Klicka för att se mer om ${item.title} 🔍`} side="top">
+            <Card 
+              className="group cursor-pointer hover:shadow-lg transition-all duration-300 overflow-hidden"
+              onClick={() => handleItemClick(item)}
+            >
             {/* Image */}
             <div className="relative h-48 bg-muted overflow-hidden">
               {item.featured_image ? (
-                <img 
+                <Image 
                   src={item.featured_image} 
                   alt={item.title}
-                  className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-300"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
@@ -223,7 +231,7 @@ export function PortfolioGrid() {
               </div>
 
               {/* Gallery indicator */}
-              {item.gallery_count > 0 && (
+              {item.gallery_count && item.gallery_count > 0 && (
                 <div className="absolute top-3 right-3">
                   <Badge variant="outline" className="bg-background/80 backdrop-blur-sm">
                     +{item.gallery_count} bilder
@@ -303,21 +311,24 @@ export function PortfolioGrid() {
 
               {/* Project URL */}
               {item.project_url && (
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  className="w-full"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    window.open(item.project_url!, '_blank')
-                  }}
-                >
-                  <ExternalLink className="h-4 w-4 mr-2" />
-                  Besök projekt
-                </Button>
+                <SimpleTooltip text="Öppna projektet i en ny flik 🚀" side="bottom">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="w-full"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      window.open(item.project_url!, '_blank')
+                    }}
+                  >
+                    <ExternalLink className="h-4 w-4 mr-2" />
+                    Besök projekt
+                  </Button>
+                </SimpleTooltip>
               )}
             </CardContent>
-          </Card>
+            </Card>
+          </SimpleTooltip>
         ))}
       </div>
 

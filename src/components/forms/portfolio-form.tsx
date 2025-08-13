@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -62,8 +62,7 @@ export function PortfolioForm({ portfolioItem, onSave }: PortfolioFormProps) {
     handleSubmit,
     formState: { errors },
     setValue,
-    watch,
-    reset
+    watch
   } = useForm<PortfolioFormData>({
     resolver: zodResolver(portfolioSchema),
     defaultValues: {
@@ -83,16 +82,7 @@ export function PortfolioForm({ portfolioItem, onSave }: PortfolioFormProps) {
 
   const projectType = watch('project_type')
 
-  useEffect(() => {
-    loadCategories()
-    loadTags()
-    if (portfolioItem) {
-      loadSelectedCategoriesAndTags()
-      loadGalleryImages()
-    }
-  }, [portfolioItem])
-
-  const loadCategories = async () => {
+  const loadCategories = useCallback(async () => {
     const { data, error } = await supabase
       .from('portfolio_categories')
       .select('*')
@@ -101,9 +91,9 @@ export function PortfolioForm({ portfolioItem, onSave }: PortfolioFormProps) {
     if (!error && data) {
       setCategories(data)
     }
-  }
+  }, [supabase])
 
-  const loadTags = async () => {
+  const loadTags = useCallback(async () => {
     const { data, error } = await supabase
       .from('tags')
       .select('*')
@@ -112,9 +102,9 @@ export function PortfolioForm({ portfolioItem, onSave }: PortfolioFormProps) {
     if (!error && data) {
       setTags(data)
     }
-  }
+  }, [supabase])
 
-  const loadSelectedCategoriesAndTags = async () => {
+  const loadSelectedCategoriesAndTags = useCallback(async () => {
     if (!portfolioItem) return
 
     // Load selected categories
@@ -136,9 +126,9 @@ export function PortfolioForm({ portfolioItem, onSave }: PortfolioFormProps) {
     if (tagData) {
       setSelectedTags(tagData.map(t => t.tag_id))
     }
-  }
+  }, [portfolioItem, supabase])
 
-  const loadGalleryImages = async () => {
+  const loadGalleryImages = useCallback(async () => {
     if (!portfolioItem) return
 
     const { data, error } = await supabase
@@ -150,7 +140,19 @@ export function PortfolioForm({ portfolioItem, onSave }: PortfolioFormProps) {
     if (!error && data) {
       setGalleryImages(data)
     }
-  }
+  }, [portfolioItem, supabase])
+
+  useEffect(() => {
+    const loadData = () => {
+      loadCategories()
+      loadTags()
+      if (portfolioItem) {
+        loadSelectedCategoriesAndTags()
+        loadGalleryImages()
+      }
+    }
+    loadData()
+  }, [portfolioItem, loadCategories, loadTags, loadSelectedCategoriesAndTags, loadGalleryImages])
 
   const generateSlug = (title: string) => {
     return title

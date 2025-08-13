@@ -413,6 +413,27 @@
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
+
+  /* Skip links for accessibility */
+  .skip-link {
+    position: absolute;
+    top: -40px;
+    left: 6px;
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    padding: 8px 16px;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 500;
+    z-index: 100;
+    transition: top 0.3s ease;
+  }
+  
+  .skip-link:focus {
+    top: 6px;
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
   
   /* Futuristic gradient backgrounds - Green theme (dark mode) */
   .futuristic-gradient {

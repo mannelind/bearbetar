@@ -1,7 +1,7 @@
 'use client'
 
 import { createClient } from '@/lib/supabase'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import type { SupabaseClient } from '@supabase/supabase-js'
 
 export function useSupabase(): SupabaseClient {
@@ -19,7 +19,7 @@ export function useSupabaseQuery<T>(
   
   const supabase = useSupabase()
 
-  const refetch = async () => {
+  const refetch = useCallback(async () => {
     setLoading(true)
     setError(null)
     
@@ -36,11 +36,11 @@ export function useSupabaseQuery<T>(
     } finally {
       setLoading(false)
     }
-  }
+  }, [supabase, queryFn])
 
   useEffect(() => {
     refetch()
-  }, [refetch, supabase, ...deps])
+  }, [refetch, ...deps])
 
   return {
     data,

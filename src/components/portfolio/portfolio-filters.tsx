@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useSearchParams, useRouter, usePathname } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -34,12 +34,7 @@ export function PortfolioFilters() {
   const [sortBy, setSortBy] = useState(searchParams.get('sort') || 'newest')
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
 
-  useEffect(() => {
-    loadCategories()
-    loadTags()
-  }, [])
-
-  const loadCategories = async () => {
+  const loadCategories = useCallback(async () => {
     const { data, error } = await supabase
       .from('portfolio_categories')
       .select('*')
@@ -48,9 +43,9 @@ export function PortfolioFilters() {
     if (!error && data) {
       setCategories(data)
     }
-  }
+  }, [supabase])
 
-  const loadTags = async () => {
+  const loadTags = useCallback(async () => {
     const { data, error } = await supabase
       .from('tags')
       .select('*')
@@ -59,7 +54,12 @@ export function PortfolioFilters() {
     if (!error && data) {
       setTags(data)
     }
-  }
+  }, [supabase])
+
+  useEffect(() => {
+    loadCategories()
+    loadTags()
+  }, [loadCategories, loadTags])
 
   const updateFilters = (updates: Record<string, string | string[] | null>) => {
     const newParams = new URLSearchParams(searchParams.toString())

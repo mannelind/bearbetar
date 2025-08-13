@@ -10,9 +10,10 @@ interface ThemeLogoProps {
   height: number
   className?: string
   type?: 'symbol' | 'full'
+  priority?: boolean
 }
 
-export function ThemeLogo({ alt, width, height, className, type = 'symbol' }: ThemeLogoProps) {
+export function ThemeLogo({ alt, width, height, className, type = 'symbol', priority = false }: ThemeLogoProps) {
   const { theme } = useTheme()
   const [mounted, setMounted] = useState(false)
 
@@ -41,6 +42,7 @@ export function ThemeLogo({ alt, width, height, className, type = 'symbol' }: Th
       width={width}
       height={height}
       className={className}
+      priority={priority}
     />
   )
 } 

@@ -1,6 +1,5 @@
 'use client'
 
-import Link from 'next/link'
 import Image from 'next/image'
 import { useState, useMemo } from 'react'
 import { Button } from '@/components/ui/button'
@@ -8,17 +7,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge'
 import { ColoredBadge } from '@/components/ui/colored-badge'
 import { BlogModal } from './blog-modal'
+import { Database } from '@/types/database'
+import { SimpleTooltip } from '@/components/ui/tooltip'
 import { Calendar, User, ChevronDown, ChevronUp, Filter } from 'lucide-react'
 import { formatDistanceToNow } from 'date-fns'
 import { sv } from 'date-fns/locale'
 
-type Article = {
-  id: string
-  title: string
-  slug: string
-  excerpt: string | null
-  featured_image: string | null
-  published_at: string | null
+type ArticlesGridArticle = Database['public']['Tables']['articles']['Row'] & {
   tags: string[]
   admin_users: {
     full_name: string | null
@@ -28,8 +23,14 @@ type Article = {
   }
 }
 
+type BlogModalArticle = Database['public']['Tables']['articles']['Row'] & {
+  categories?: Database['public']['Tables']['categories']['Row'][]
+  tags?: Database['public']['Tables']['tags']['Row'][]
+  author?: Database['public']['Tables']['admin_users']['Row']
+}
+
 interface ArticlesGridProps {
-  articles: Article[]
+  articles: ArticlesGridArticle[]
 }
 
 
@@ -37,7 +38,7 @@ export function ArticlesGrid({ articles }: ArticlesGridProps) {
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [showMoreTags, setShowMoreTags] = useState(false)
   const [showMoreCardTags, setShowMoreCardTags] = useState<Record<string, boolean>>({})
-  const [selectedArticle, setSelectedArticle] = useState<Article | null>(null)
+  const [selectedArticle, setSelectedArticle] = useState<BlogModalArticle | null>(null)
   const [modalOpen, setModalOpen] = useState(false)
 
   // Get all unique tags
@@ -85,9 +86,16 @@ export function ArticlesGrid({ articles }: ArticlesGridProps) {
     }))
   }
 
-  const handleArticleClick = (article: Article) => {
+  const handleArticleClick = (article: ArticlesGridArticle) => {
+    // Convert ArticlesGridArticle to BlogModalArticle for the modal
+    const blogModalArticle: BlogModalArticle = {
+      ...article,
+      tags: undefined, // BlogModal will fetch proper tag objects
+      categories: undefined,
+      author: undefined
+    }
     console.log('Article clicked:', article.title)
-    setSelectedArticle(article)
+    setSelectedArticle(blogModalArticle)
     setModalOpen(true)
   }
 
@@ -191,11 +199,11 @@ export function ArticlesGrid({ articles }: ArticlesGridProps) {
             const hasMoreCardTags = articleTags.length > 3
 
             return (
-              <Card 
-                key={article.id} 
-                className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
-                onClick={() => handleArticleClick(article)}
-              >
+              <SimpleTooltip key={article.id} text={`Läs "${article.title}" 📖`} side="top">
+                <Card 
+                  className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
+                  onClick={() => handleArticleClick(article)}
+                >
                 <div>
                   {article.featured_image && (
                     <div className="aspect-video relative">
@@ -248,10 +256,7 @@ export function ArticlesGrid({ articles }: ArticlesGridProps) {
                             tag={tag}
                             selected={selectedTags.includes(tag)}
                             className="text-xs cursor-pointer transition-colors"
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              toggleTag(tag)
-                            }}
+                            onClick={() => toggleTag(tag)}
                           />
                         ))}
                         
@@ -305,6 +310,7 @@ export function ArticlesGrid({ articles }: ArticlesGridProps) {
                   </CardContent>
                 )}
               </Card>
+              </SimpleTooltip>
             )
           })}
         </div>

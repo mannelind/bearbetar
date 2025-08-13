@@ -1,18 +1,13 @@
 import Link from 'next/link'
 import { Suspense } from 'react'
+import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { AdminPageWrapper } from '@/components/auth/admin-page-wrapper'
 import { createServerComponentClient } from '@/lib/supabase'
-import { Database } from '@/types/database'
 import { Plus, Eye, Edit, Trash2, Image as ImageIcon, FileText } from 'lucide-react'
 
-type PortfolioItem = Database['public']['Tables']['portfolio_items']['Row'] & {
-  admin_users?: Database['public']['Tables']['admin_users']['Row']
-  portfolio_categories?: Database['public']['Tables']['portfolio_categories']['Row'][]
-  tags?: Database['public']['Tables']['tags']['Row'][]
-}
 
 async function PortfolioList() {
   const supabase = await createServerComponentClient()
@@ -175,10 +170,12 @@ async function PortfolioList() {
               {item.featured_image && (
                 <CardContent className="pt-0">
                   <div className="relative w-full h-48 bg-muted rounded-lg overflow-hidden">
-                    <img 
+                    <Image 
                       src={item.featured_image} 
                       alt={item.title}
-                      className="object-cover w-full h-full"
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
                   </div>
                 </CardContent>

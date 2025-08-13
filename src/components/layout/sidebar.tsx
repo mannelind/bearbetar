@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { ThemeToggle } from '@/components/ui/theme-toggle'
 import { ThemeLogo } from '@/components/ui/theme-logo'
+import { SimpleTooltip } from '@/components/ui/tooltip'
 import { useAuth } from '@/hooks/use-auth'
 import { cn } from '@/lib/utils'
 import { 
@@ -22,40 +23,41 @@ import {
   UserCircle,
   Bell,
   Heart,
-  ChevronLeft,
-  ChevronRight,
+  Pin,
+  PinOff,
   Mail,
   FolderOpen
 } from 'lucide-react'
 import { APP_NAME, PUBLIC_ROUTES } from '@/lib/constants'
 
 const navigation = [
-  { name: 'Hem', href: PUBLIC_ROUTES.home, icon: Home },
-  { name: 'Tjänster', href: PUBLIC_ROUTES.services, icon: Briefcase },
-  { name: 'Portfolio', href: '/portfolio', icon: FolderOpen },
-  { name: 'Blogg', href: PUBLIC_ROUTES.blog, icon: FileText },
-  { name: 'Om oss', href: '/om-oss', icon: UserCircle },
-  { name: 'Kontakt', href: '/kontakt', icon: Mail },
+  { name: 'Hem', href: PUBLIC_ROUTES.home, icon: Home, tooltip: 'Tillbaka till startsidan 🏠' },
+  { name: 'Tjänster', href: PUBLIC_ROUTES.services, icon: Briefcase, tooltip: 'Se vad vi kan hjälpa dig med 💼' },
+  { name: 'Portfolio', href: '/portfolio', icon: FolderOpen, tooltip: 'Utforska våra tidigare projekt 🎨' },
+  { name: 'Blogg', href: PUBLIC_ROUTES.blog, icon: FileText, tooltip: 'Läs våra senaste artiklar 📝' },
+  { name: 'Om oss', href: '/om-oss', icon: UserCircle, tooltip: 'Lär känna teamet bakom Bearbetar 👥' },
+  { name: 'Kontakt', href: '/kontakt', icon: Mail, tooltip: 'Hör av dig till oss! 📞' },
 ]
 
 const profileNavigation = [
-  { name: 'Min Profil', href: '/profil', icon: UserCircle },
-  { name: 'Inställningar', href: '/installningar', icon: Settings },
-  { name: 'Meddelanden', href: '/meddelanden', icon: Bell },
-  { name: 'Favoriter', href: '/favoriter', icon: Heart },
+  { name: 'Min Profil', href: '/profil', icon: UserCircle, tooltip: 'Hantera din profil och inställningar 👤' },
+  { name: 'Inställningar', href: '/installningar', icon: Settings, tooltip: 'Konfigurera dina inställningar ⚙️' },
+  { name: 'Meddelanden', href: '/meddelanden', icon: Bell, tooltip: 'Se dina notiser och meddelanden 🔔' },
+  { name: 'Favoriter', href: '/favoriter', icon: Heart, tooltip: 'Dina sparade favoriter ❤️' },
 ]
 
 const adminNavigation = [
-  { name: 'Admin Dashboard', href: '/admin', icon: Settings },
-  { name: 'Artiklar', href: '/admin/articles', icon: FileText },
-  { name: 'Portfolio', href: '/admin/portfolio', icon: FolderOpen },
-  { name: 'Tjänster', href: '/admin/services', icon: Briefcase },
+  { name: 'Admin Dashboard', href: '/admin', icon: Settings, tooltip: 'Administrationspanel för hantering 👑' },
+  { name: 'Artiklar', href: '/admin/articles', icon: FileText, tooltip: 'Hantera blogginlägg och artiklar ✍️' },
+  { name: 'Portfolio', href: '/admin/portfolio', icon: FolderOpen, tooltip: 'Hantera portfolioprojekt 📁' },
+  { name: 'Tjänster', href: '/admin/services', icon: Briefcase, tooltip: 'Hantera tjänster och erbjudanden 🛠️' },
 ]
 
 export function Sidebar() {
   const [isOpen, setIsOpen] = useState(false)
   const [isCollapsed, setIsCollapsed] = useState(true) // Start collapsed
   const [isExpanded, setIsExpanded] = useState(false) // For hover/click state
+  const [isPinned, setIsPinned] = useState(false) // Pin state
   const pathname = usePathname()
   const { user, isAdmin, signOut } = useAuth()
   const sidebarRef = useRef<HTMLDivElement>(null)
@@ -74,30 +76,41 @@ export function Sidebar() {
     return email.substring(0, 2).toUpperCase()
   }
 
-  // Handle hover expand
+  // Handle hover expand (only if not pinned)
   const handleMouseEnter = () => {
+    if (isPinned) return // Don't expand on hover if pinned
     if (hoverTimeoutRef.current) {
       clearTimeout(hoverTimeoutRef.current)
     }
     setIsExpanded(true)
   }
 
-  // Handle hover collapse with delay
+  // Handle hover collapse with delay (only if not pinned)
   const handleMouseLeave = () => {
+    if (isPinned) return // Don't collapse on hover leave if pinned
     hoverTimeoutRef.current = setTimeout(() => {
       setIsExpanded(false)
     }, 300) // 300ms delay before closing
   }
 
-  // Handle click to toggle permanent expanded state
-  const handleClick = () => {
-    setIsCollapsed(!isCollapsed)
-    setIsExpanded(!isCollapsed) // If expanding permanently, also set expanded
+  // Handle pin toggle
+  const handlePinToggle = () => {
+    setIsPinned(!isPinned)
+    if (!isPinned) {
+      // When pinning, ensure sidebar is expanded
+      setIsCollapsed(false)
+      setIsExpanded(true)
+    } else {
+      // When unpinning, collapse sidebar
+      setIsCollapsed(true)
+      setIsExpanded(false)
+    }
   }
 
-  // Handle outside click
+  // Handle outside click (only if not pinned)
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      if (isPinned) return // Don't handle outside clicks if pinned
       if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
         // If sidebar is temporarily expanded via hover (collapsed but expanded), close it
         if (isExpanded && isCollapsed) {
@@ -115,7 +128,7 @@ export function Sidebar() {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside)
     }
-  }, [isExpanded, isCollapsed])
+  }, [isExpanded, isCollapsed, isPinned])
 
   // Cleanup timeout on unmount
   useEffect(() => {
@@ -128,8 +141,8 @@ export function Sidebar() {
 
   // Determine if sidebar should show expanded content
   // On mobile (when isOpen is true), always show expanded content
-  // On desktop, use the collapse/expand logic
-  const showExpandedContent = isOpen || !isCollapsed || isExpanded
+  // On desktop, use the collapse/expand logic or pin state
+  const showExpandedContent = isOpen || !isCollapsed || isExpanded || isPinned
 
   // Remove the null return - show sidebar for all users
 
@@ -198,22 +211,25 @@ export function Sidebar() {
                 <span className="font-bold text-xl">{APP_NAME}</span>
               </Link>
             )}
-            {/* Only show collapse/expand button on desktop */}
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleClick}
-              className={cn(
-                "hidden md:flex text-muted-foreground hover:text-foreground transition-all duration-200 hover:scale-110",
-                !showExpandedContent ? "h-8 w-8" : ""
-              )}
-            >
-              {isCollapsed ? (
-                <ChevronRight className="h-4 w-4 tech-icon" />
-              ) : (
-                <ChevronLeft className="h-4 w-4 tech-icon" />
-              )}
-            </Button>
+            {/* Pin/Unpin button on desktop */}
+            <SimpleTooltip text={isPinned ? "Koppla loss sidofältet 📌" : "Fäst sidofältet 📌"} side="right">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handlePinToggle}
+                className={cn(
+                  "hidden md:flex text-muted-foreground hover:text-foreground transition-all duration-200 hover:scale-110",
+                  !showExpandedContent ? "h-8 w-8" : "",
+                  isPinned && "text-primary hover:text-primary/80"
+                )}
+              >
+                {isPinned ? (
+                  <Pin className="h-4 w-4 tech-icon" />
+                ) : (
+                  <PinOff className="h-4 w-4 tech-icon" />
+                )}
+              </Button>
+            </SimpleTooltip>
           </div>
 
           {/* User Info / Login Section - Only show when logged in */}
@@ -253,40 +269,43 @@ export function Sidebar() {
           )}
 
           {/* Navigation */}
-          <nav className={cn(
-            "flex-1 space-y-1",
-            !showExpandedContent ? "px-2 py-4" : "p-4"
-          )}>
+          <nav 
+            id="navigation"
+            aria-label="Huvudnavigation"
+            className={cn(
+              "flex-1 space-y-1",
+              !showExpandedContent ? "px-2 py-4" : "p-4"
+            )}>
             {/* Public Navigation */}
-            <div className="space-y-1">
+            <div className="space-y-1" role="group" aria-label="Huvudsidor">
               {navigation.map((item) => {
                 const isActive = pathname === item.href
                 return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className={cn(
-                      "flex items-center rounded-lg text-sm font-medium transition-colors relative",
-                      !showExpandedContent 
-                        ? "justify-center py-3 px-2" 
-                        : "space-x-3 px-3 py-2",
-                      isActive 
-                        ? "bg-primary text-primary-foreground" 
-                        : "text-muted-foreground hover:text-foreground hover:bg-muted"
-                    )}
-                    onClick={() => setIsOpen(false)}
-                    title={!showExpandedContent ? item.name : undefined}
-                  >
-                    <item.icon className="h-4 w-4 tech-icon" />
-                    {showExpandedContent && <span className="transition-all duration-200">{item.name}</span>}
-                  </Link>
+                  <SimpleTooltip key={item.href} text={item.tooltip} side="right" disabled={showExpandedContent}>
+                    <Link
+                      href={item.href}
+                      className={cn(
+                        "flex items-center rounded-lg text-sm font-medium transition-colors relative",
+                        !showExpandedContent 
+                          ? "justify-center py-3 px-2" 
+                          : "space-x-3 px-3 py-2",
+                        isActive 
+                          ? "bg-primary text-primary-foreground" 
+                          : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                      )}
+                      onClick={() => setIsOpen(false)}
+                    >
+                      <item.icon className="h-4 w-4 tech-icon" />
+                      {showExpandedContent && <span className="transition-all duration-200">{item.name}</span>}
+                    </Link>
+                  </SimpleTooltip>
                 )
               })}
             </div>
 
             {/* Profile Navigation - Only for logged in users */}
             {user && (
-              <div className="space-y-1 pt-4">
+              <div className="space-y-1 pt-4" role="group" aria-label="Profil och inställningar">
                 {showExpandedContent && (
                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
                     Profil & Inställningar
@@ -300,7 +319,7 @@ export function Sidebar() {
                       href={item.href}
                       className={cn(
                         "flex items-center rounded-lg text-sm font-medium transition-colors relative",
-                        isCollapsed 
+                        !showExpandedContent 
                           ? "justify-center py-3 px-2" 
                           : "space-x-3 px-3 py-2",
                         isActive 
@@ -320,7 +339,7 @@ export function Sidebar() {
 
             {/* Admin Navigation */}
             {isAdmin && (
-              <div className="space-y-1 pt-4">
+              <div className="space-y-1 pt-4" role="group" aria-label="Administration">
                 {showExpandedContent && (
                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
                     Administration
@@ -329,24 +348,24 @@ export function Sidebar() {
                 {adminNavigation.map((item) => {
                   const isActive = pathname === item.href || pathname.startsWith(item.href + '/')
                   return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className={cn(
-                        "flex items-center rounded-lg text-sm font-medium transition-colors relative",
-                        isCollapsed 
-                          ? "justify-center py-3 px-2" 
-                          : "space-x-3 px-3 py-2",
-                        isActive 
-                          ? "bg-primary text-primary-foreground" 
-                          : "text-muted-foreground hover:text-foreground hover:bg-muted"
-                      )}
-                      onClick={() => setIsOpen(false)}
-                      title={!showExpandedContent ? item.name : undefined}
-                    >
-                      <item.icon className="h-4 w-4 tech-icon" />
-                      {showExpandedContent && <span className="transition-all duration-200">{item.name}</span>}
-                    </Link>
+                    <SimpleTooltip key={item.href} text={item.tooltip} side="right" disabled={showExpandedContent}>
+                      <Link
+                        href={item.href}
+                        className={cn(
+                          "flex items-center rounded-lg text-sm font-medium transition-colors relative",
+                          !showExpandedContent 
+                            ? "justify-center py-3 px-2" 
+                            : "space-x-3 px-3 py-2",
+                          isActive 
+                            ? "bg-primary text-primary-foreground" 
+                            : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                        )}
+                        onClick={() => setIsOpen(false)}
+                      >
+                        <item.icon className="h-4 w-4 tech-icon" />
+                        {showExpandedContent && <span className="transition-all duration-200">{item.name}</span>}
+                      </Link>
+                    </SimpleTooltip>
                   )
                 })}
               </div>
@@ -354,7 +373,7 @@ export function Sidebar() {
 
             {/* Login/Auth Section - Only show when not logged in */}
             {!user && (
-              <div className="space-y-1 pt-4">
+              <div className="space-y-1 pt-4" role="group" aria-label="Inloggning">
                 {showExpandedContent && (
                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
                     Konto
@@ -385,31 +404,34 @@ export function Sidebar() {
             !showExpandedContent && "flex flex-col items-center"
           )}>
             {user && (
-              <Button
-                variant="ghost"
-                size="sm"
-                className={cn(
-                  "text-muted-foreground hover:text-foreground transition-all duration-200 hover:scale-105 hover:bg-destructive/10",
-                  !showExpandedContent 
-                    ? "h-8 w-8 p-0" 
-                    : "w-full justify-start"
-                )}
-                onClick={handleSignOut}
-                title={!showExpandedContent ? "Logga ut" : undefined}
-              >
-                <LogOut className={cn(
-                  "h-4 w-4 tech-icon",
-                  showExpandedContent && "mr-3"
-                )} />
-                {showExpandedContent && <span className="transition-all duration-200">Logga ut</span>}
-              </Button>
+              <SimpleTooltip text="Logga ut från kontot 👋" side="right" disabled={showExpandedContent}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className={cn(
+                    "text-muted-foreground hover:text-foreground transition-all duration-200 hover:scale-105 hover:bg-destructive/10",
+                    !showExpandedContent 
+                      ? "h-8 w-8 p-0" 
+                      : "w-full justify-start"
+                  )}
+                  onClick={handleSignOut}
+                >
+                  <LogOut className={cn(
+                    "h-4 w-4 tech-icon",
+                    showExpandedContent && "mr-3"
+                  )} />
+                  {showExpandedContent && <span className="transition-all duration-200">Logga ut</span>}
+                </Button>
+              </SimpleTooltip>
             )}
             <div className={cn(
               "flex items-center",
               !showExpandedContent ? "justify-center" : "justify-between"
             )}>
               {showExpandedContent && <span className="text-xs text-muted-foreground">Tema</span>}
-              <ThemeToggle />
+              <SimpleTooltip text="Byt mellan ljust och mörkt tema ☀️🌙" side="right" disabled={showExpandedContent}>
+                <ThemeToggle />
+              </SimpleTooltip>
             </div>
           </div>
         </div>

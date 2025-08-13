@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import { Modal, ModalContent, ModalHeader, ModalBody } from '@/components/ui/modal'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -112,11 +113,13 @@ export function ServiceModal({ service, open, onOpenChange }: ServiceModalProps)
             <div className="space-y-4">
               {/* Service Image */}
               {service.featured_image && (
-                <div className="aspect-video bg-muted rounded-lg overflow-hidden">
-                  <img 
+                <div className="relative aspect-video bg-muted rounded-lg overflow-hidden">
+                  <Image 
                     src={service.featured_image} 
                     alt={service.title}
-                    className="object-cover w-full h-full"
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, 80vw"
                   />
                 </div>
               )}

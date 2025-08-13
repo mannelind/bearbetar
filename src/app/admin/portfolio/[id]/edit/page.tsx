@@ -2,10 +2,7 @@ import { Suspense } from 'react'
 import { AdminPageWrapper } from '@/components/auth/admin-page-wrapper'
 import { PortfolioForm } from '@/components/forms/portfolio-form'
 import { createServerComponentClient } from '@/lib/supabase'
-import { Database } from '@/types/database'
 import { notFound } from 'next/navigation'
-
-type PortfolioItem = Database['public']['Tables']['portfolio_items']['Row']
 
 async function EditPortfolioForm({ id }: { id: string }) {
   const supabase = await createServerComponentClient()

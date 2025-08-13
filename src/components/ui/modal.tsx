@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useState, useCallback, useRef } from 'react'
 import { X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -28,10 +28,10 @@ interface ModalContentProps {
 export function Modal({ children, open, onOpenChange }: ModalProps) {
   const [isOpen, setIsOpen] = useState(open || false)
 
-  const handleOpenChange = (newOpen: boolean) => {
+  const handleOpenChange = useCallback((newOpen: boolean) => {
     setIsOpen(newOpen)
     onOpenChange?.(newOpen)
-  }
+  }, [onOpenChange])
 
   const contextValue: ModalContextType = {
     isOpen,
@@ -54,7 +54,7 @@ export function Modal({ children, open, onOpenChange }: ModalProps) {
 
     document.addEventListener('keydown', handleEscape)
     return () => document.removeEventListener('keydown', handleEscape)
-  }, [isOpen])
+  }, [isOpen, handleOpenChange])
 
   useEffect(() => {
     if (isOpen) {
@@ -106,6 +106,60 @@ export function ModalTrigger({
   )
 }
 
+// Focus trap hook for modals
+function useFocusTrap(isOpen: boolean) {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const previousActiveElement = useRef<HTMLElement | null>(null)
+
+  useEffect(() => {
+    if (!isOpen) return
+
+    // Store the previously focused element
+    previousActiveElement.current = document.activeElement as HTMLElement
+
+    const container = containerRef.current
+    if (!container) return
+
+    // Focus the modal container
+    container.focus()
+
+    const focusableElements = container.querySelectorAll(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    )
+    
+    const firstElement = focusableElements[0] as HTMLElement
+    const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement
+
+    const handleTabKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab') return
+
+      if (e.shiftKey) {
+        if (document.activeElement === firstElement) {
+          e.preventDefault()
+          lastElement?.focus()
+        }
+      } else {
+        if (document.activeElement === lastElement) {
+          e.preventDefault()
+          firstElement?.focus()
+        }
+      }
+    }
+
+    container.addEventListener('keydown', handleTabKey)
+
+    return () => {
+      container.removeEventListener('keydown', handleTabKey)
+      // Restore focus to the previous element
+      if (previousActiveElement.current) {
+        previousActiveElement.current.focus()
+      }
+    }
+  }, [isOpen])
+
+  return containerRef
+}
+
 export function ModalContent({ 
   children, 
   className,
@@ -118,6 +172,7 @@ export function ModalContent({
   }
 
   const { isOpen, close } = context
+  const focusTrapRef = useFocusTrap(isOpen)
 
   if (!isOpen) return null
 
@@ -135,12 +190,18 @@ export function ModalContent({
       <div 
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
         onClick={close}
+        aria-hidden="true"
       />
       
       {/* Content */}
       <div 
+        ref={focusTrapRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-title"
+        tabIndex={-1}
         className={cn(
-          "relative bg-background border rounded-lg shadow-xl max-h-[90vh] overflow-auto w-full",
+          "relative bg-background border rounded-lg shadow-xl max-h-[90vh] overflow-auto w-full focus:outline-none",
           sizeClasses[size],
           className
         )}
@@ -149,7 +210,8 @@ export function ModalContent({
         {showCloseButton && (
           <button
             onClick={close}
-            className="absolute top-4 right-4 z-10 p-2 rounded-full hover:bg-muted transition-colors"
+            aria-label="Stäng modal"
+            className="absolute top-4 right-4 z-10 p-2 rounded-full hover:bg-muted transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
           >
             <X className="h-4 w-4" />
             <span className="sr-only">Stäng</span>

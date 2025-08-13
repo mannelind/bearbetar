@@ -18,6 +18,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
+import { SimpleTooltip } from '@/components/ui/tooltip'
 import { useSupabase } from '@/hooks/use-supabase'
 import { useAuth } from '@/hooks/use-auth'
 import { ADMIN_ROUTES } from '@/lib/constants'
@@ -61,18 +62,17 @@ export function ArticleForm({ article }: ArticleFormProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [newTag, setNewTag] = useState('')
   const [tagUsage, setTagUsage] = useState<Record<string, number>>({})
-  
-  // Predefined tags
-  const predefinedTags = [
-    'Affärsutveckling', 'Strategi', 'Ledning', 'Innovation', 'Digitalisering',
-    'Försäljning', 'Marknadsföring', 'Finansiering', 'HR', 'Process',
-    'Tillväxt', 'Effektivitet', 'Kvalitet', 'Kundservice', 'Teknologi',
-    'Hållbarhet', 'Partnerskap', 'Internationalisering', 'Produktutveckling',
-    'Organisationskultur', 'Förändringsledning', 'Riskhantering'
-  ]
 
   // Fetch tag usage statistics
   React.useEffect(() => {
+    const predefinedTags = [
+      'Affärsutveckling', 'Strategi', 'Ledning', 'Innovation', 'Digitalisering',
+      'Försäljning', 'Marknadsföring', 'Finansiering', 'HR', 'Process',
+      'Tillväxt', 'Effektivitet', 'Kvalitet', 'Kundservice', 'Teknologi',
+      'Hållbarhet', 'Partnerskap', 'Internationalisering', 'Produktutveckling',
+      'Organisationskultur', 'Förändringsledning', 'Riskhantering'
+    ]
+
     const fetchTagUsage = async () => {
       const { data: articles } = await supabase
         .from('articles')
@@ -98,7 +98,7 @@ export function ArticleForm({ article }: ArticleFormProps) {
     }
     
     fetchTagUsage()
-  }, [supabase, predefinedTags])
+  }, [supabase])
 
   const form = useForm<ArticleFormData>({
     resolver: zodResolver(articleSchema),
@@ -392,15 +392,17 @@ export function ArticleForm({ article }: ArticleFormProps) {
                         placeholder="Skriv ny tagg..."
                         className="flex-1"
                       />
-                      <Button
-                        type="button"
-                        onClick={addTag}
-                        variant="outline"
-                        size="sm"
-                        disabled={!newTag.trim()}
-                      >
-                        <Plus className="h-4 w-4" />
-                      </Button>
+                      <SimpleTooltip text="Lägg till den nya taggen 🏷️">
+                        <Button
+                          type="button"
+                          onClick={addTag}
+                          variant="outline"
+                          size="sm"
+                          disabled={!newTag.trim()}
+                        >
+                          <Plus className="h-4 w-4" />
+                        </Button>
+                      </SimpleTooltip>
                     </div>
                   </div>
                 </div>
@@ -436,28 +438,32 @@ export function ArticleForm({ article }: ArticleFormProps) {
         />
 
         <div className="flex items-center gap-4">
-          <Button type="submit" disabled={isLoading}>
-            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            {isLoading ? 'Sparar...' : (
-              <>
-                <Save className="mr-2 h-4 w-4" />
-                {article ? 'Uppdatera' : 'Skapa'} Artikel
-              </>
-            )}
-          </Button>
+          <SimpleTooltip text={article ? "Spara ändringar till artikeln 💾" : "Skapa den nya artikeln 🎉"}>
+            <Button type="submit" disabled={isLoading}>
+              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {isLoading ? 'Sparar...' : (
+                <>
+                  <Save className="mr-2 h-4 w-4" />
+                  {article ? 'Uppdatera' : 'Skapa'} Artikel
+                </>
+              )}
+            </Button>
+          </SimpleTooltip>
 
           {form.watch('published') && form.watch('slug') && (
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => {
-                const slug = form.getValues('slug')
-                window.open(`/blog/${slug}`, '_blank')
-              }}
-            >
-              <Eye className="mr-2 h-4 w-4" />
-              Förhandsgranska
-            </Button>
+            <SimpleTooltip text="Förhandsgranska hur artikeln ser ut på webbplatsen 👀">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  const slug = form.getValues('slug')
+                  window.open(`/blog/${slug}`, '_blank')
+                }}
+              >
+                <Eye className="mr-2 h-4 w-4" />
+                Förhandsgranska
+              </Button>
+            </SimpleTooltip>
           )}
         </div>
       </form>
