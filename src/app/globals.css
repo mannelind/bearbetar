@@ -18,6 +18,7 @@
     --secondary-foreground: 120 25% 85%; /* hsl(120, 25%, 85%) - Ljus grön sekundär text */
     --muted: 85 25% 12%;             /* hsl(85, 25%, 12%) - Dämpad mörk grön */
     --muted-foreground: 120 15% 65%;  /* hsl(120, 15%, 65%) - Medium grön muted text */
+    --header-light: 167 18% 20%;       /* hsl(167, 18%, 20%) - Ljusare variant av background för floating header */
     --accent: 120 85% 60%;             /* hsl(120, 85%, 60%) - Ljus intensiv grön accent */
     --accent-foreground: 85 20% 6%; /* hsl(85, 20%, 6%) - Mycket mörk grön accent text */
     --destructive: 0 75% 55%;        /* hsl(0, 75%, 55%) - Röd för varningar */
@@ -31,19 +32,6 @@
     --chart-4: 90 80% 50%;          /* hsl(90, 80%, 50%) */
     --chart-5: 130 70% 45%;         /* hsl(130, 70%, 45%) */
     --radius: 0.875rem;
-    
-    /* Green primary color scale for default theme */
-    --primary-50: 120 60% 97%;      /* hsl(120, 60%, 97%) */
-    --primary-100: 120 60% 94%;     /* hsl(120, 60%, 94%) */
-    --primary-200: 120 55% 89%;     /* hsl(120, 55%, 89%) */
-    --primary-300: 120 85% 83%;     /* hsl(120, 85%, 83%) */
-    --primary-400: 120 85% 75%;     /* hsl(120, 85%, 75%) */
-    --primary-500: 120 85% 67%;     /* hsl(120, 85%, 67%) */
-    --primary-600: 120 85% 59%;     /* hsl(120, 85%, 59%) */
-    --primary-700: 120 80% 51%;     /* hsl(120, 80%, 51%) */
-    --primary-800: 120 75% 43%;     /* hsl(120, 75%, 43%) */
-    --primary-900: 120 70% 35%;     /* hsl(120, 70%, 35%) */
-    --primary-950: 120 65% 27%;     /* hsl(120, 65%, 27%) */
   }
 
   /* Pink Mode (Bohemian Rose Tech - Cyber & Organic) */
@@ -60,6 +48,7 @@
     --secondary-foreground: 320 18% 88%; /* hsl(320, 18%, 88%) - Mjuk rosa sekundär text */
     --muted: 290 43% 79%;             /* hsl(338, 18%, 12%) - Dämpad plommon-rosa */
     --muted-foreground: 325 15% 22%;  /* hsl(325, 15%, 72%) - Mjuk grå-rosa muted text */
+    --header-light: 20 100% 96%;     /* hsl(20, 100%, 96%) - Ljusare variant av background för floating header */
     --accent: 60 69% 73%;            /* hsl(280, 40%, 78%) - Bohemisk orkidé-lila accent */
     --accent-foreground: 340 20% 8%;     /* hsl(340, 20%, 8%) - Mörk plommon accent text */
     --destructive: 15 55% 68%;        /* hsl(15, 55%, 68%) - Mjuk korall-orange för varningar */
@@ -72,19 +61,6 @@
     --chart-3: 320 35% 72%;         /* hsl(320, 35%, 72%) */
     --chart-4: 260 45% 80%;         /* hsl(260, 45%, 80%) */
     --chart-5: 310 38% 76%;         /* hsl(310, 38%, 76%) */
-    
-    /* Pink/Purple primary color scale for light theme */
-    --primary-50: 320 50% 97%;      /* hsl(320, 50%, 97%) */
-    --primary-100: 320 50% 94%;     /* hsl(320, 50%, 94%) */
-    --primary-200: 320 45% 89%;     /* hsl(320, 45%, 89%) */
-    --primary-300: 300 45% 83%;     /* hsl(300, 45%, 83%) */
-    --primary-400: 300 45% 75%;     /* hsl(300, 45%, 75%) */
-    --primary-500: 300 45% 67%;     /* hsl(300, 45%, 67%) */
-    --primary-600: 300 45% 59%;     /* hsl(300, 45%, 59%) */
-    --primary-700: 280 40% 51%;     /* hsl(280, 40%, 51%) */
-    --primary-800: 280 40% 43%;     /* hsl(280, 40%, 43%) */
-    --primary-900: 260 35% 35%;     /* hsl(260, 35%, 35%) */
-    --primary-950: 260 30% 27%;     /* hsl(260, 30%, 27%) */
   }
 
   /* Dark mode - alias for consistency */
@@ -101,6 +77,7 @@
     --secondary-foreground: 155 59% 47%; /* hsl(155, 59%, 47%) - Light green secondary foreground */
     --muted: 167 8% 8%; /* hsl(167, 8%, 8%) - Dark green muted */
     --muted-foreground: 155 15% 65%; /* hsl(155, 15%, 65%) - Light green muted foreground */
+    --header-light: 167 18% 20%; /* hsl(167, 18%, 20%) - Ljusare variant av background för floating header */
     --accent: 120 85% 60%; /* hsl(120, 85%, 60%) - Light green accent */
     --accent-foreground: 85 20% 6%; /* hsl(85, 20%, 6%) - Dark green accent foreground */
     --destructive: 0 75% 55%; /* hsl(0, 75%, 55%) - Red destructive */
@@ -138,11 +115,11 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-secondary-400 rounded-full;
+    @apply bg-secondary rounded-full;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-secondary-500;
+    @apply bg-secondary/80;
   }
 }
 
@@ -216,6 +193,7 @@
 
   .glow-outline {
     border-color: hsl(var(--input));
+    background-color: hsla(var(--background), 0.1);
     box-shadow: 0 0 8px hsla(var(--primary), 0.3);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     /* Force CSS refresh */
@@ -298,11 +276,48 @@
   /* Bohemian cyber glow effects */
   .cyber-glow {
     box-shadow: 
-      0 0 8px hsla(var(--primary), 0.25),
-      0 0 18px hsla(var(--primary), 0.12),
-      0 0 35px hsla(var(--primary), 0.06),
-      inset 0 1px 0 hsla(var(--foreground), 0.1);
-    backdrop-filter: blur(1px);
+      0 0 4px hsla(var(--primary), 0.15),
+      0 0 8px hsla(var(--primary), 0.06),
+      0 0 16px hsla(var(--primary), 0.03),
+      inset 0 1px 0 hsla(var(--foreground), 0.05);
+    backdrop-filter: blur(0.5px);
+  }
+
+  /* Floating header color effect */
+  .floating-header-glow {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: headerColorShift 8s ease-in-out infinite;
+  }
+
+  @keyframes headerColorShift {
+    0%, 100% {
+      border-color: hsl(var(--primary) / 0.2) !important;
+      box-shadow: 
+        0 0 12px hsla(var(--primary), 0.4),
+        0 0 24px hsla(var(--primary), 0.2),
+        0 0 45px hsla(var(--primary), 0.1);
+    }
+    25% {
+      border-color: hsl(var(--accent) / 0.3) !important;
+      box-shadow: 
+        0 0 12px hsla(var(--accent), 0.4),
+        0 0 24px hsla(var(--accent), 0.2),
+        0 0 45px hsla(var(--accent), 0.1);
+    }
+    50% {
+      border-color: hsl(var(--primary) / 0.4) !important;
+      box-shadow: 
+        0 0 15px hsla(var(--primary), 0.5),
+        0 0 30px hsla(var(--primary), 0.25),
+        0 0 50px hsla(var(--primary), 0.12);
+    }
+    75% {
+      border-color: hsl(var(--accent) / 0.25) !important;
+      box-shadow: 
+        0 0 12px hsla(var(--accent), 0.35),
+        0 0 24px hsla(var(--accent), 0.18),
+        0 0 45px hsla(var(--accent), 0.08);
+    }
   }
 
   /* Simple sidebar height solution */
@@ -315,6 +330,54 @@
       /* Start with space for banner, grow when banner disappears */
       min-height: calc(100vh - 2rem);
     }
+  }
+
+  /* Articles grid equal height - Force all cards to be same height */
+  .articles-grid {
+    display: grid !important;
+    grid-auto-rows: 1fr !important;
+  }
+
+  .articles-grid > div {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .articles-grid .article-card {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+  }
+
+  .articles-grid .article-card > div:first-child {
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1 !important;
+  }
+
+  .articles-grid .article-card-body {
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1 !important;
+  }
+
+  .articles-grid .article-card-excerpt {
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1 !important;
+  }
+
+  .articles-grid .article-card-footer {
+    margin-top: auto !important;
+  }
+
+  /* Ensure all cards have minimum equal height */
+  .articles-grid {
+    align-items: stretch !important;
+  }
+  
+  .articles-grid > * > * {
+    height: 100% !important;
   }
 
   .cyber-border {
@@ -331,7 +394,7 @@
   /* Extra specificity for sidebars */
   aside.cyber-border {
     border: 1px solid hsla(var(--primary), 0.4) !important;
-    border-right: 3px solid hsla(var(--primary), 0.6) !important;
+    border-right: 1px solid hsla(var(--primary), 0.6) !important;
     border-radius: 0 12px 12px 0;
   }
 
@@ -871,5 +934,52 @@
       0 0 50px hsla(var(--primary), 0.5),
       0 0 75px hsla(var(--primary), 0.3);
   }
+}
+
+/* Kompensera för fast positionerad construction banner */
+body {
+  padding-top: 2rem; /* 32px för h-8 bannern */
+}
+
+/* Glow border effekt för knappar */
+.btn-glow {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid transparent;
+}
+
+.btn-glow:hover {
+  background-color: hsl(140, 80%, 25%) !important; /* Mörkare grön */
+  color: hsl(140, 60%, 90%) !important; /* Ljus grön/vit text */
+  border-color: hsl(var(--primary));
+  box-shadow: 
+    0 0 20px hsla(var(--primary), 0.4),
+    0 0 40px hsla(var(--primary), 0.2),
+    inset 0 0 10px hsla(var(--primary), 0.1);
+  filter: brightness(1.1);
+}
+
+.btn-glow:focus-visible {
+  background-color: hsl(140, 80%, 25%) !important;
+  color: hsl(140, 60%, 90%) !important;
+  border-color: hsl(var(--primary));
+  box-shadow: 
+    0 0 15px hsla(var(--primary), 0.5),
+    0 0 30px hsla(var(--primary), 0.3),
+    inset 0 0 8px hsla(var(--primary), 0.15);
+}
+
+/* Alternativ för outline knappar */
+.btn-glow-outline {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-glow-outline:hover {
+  background-color: hsl(140, 80%, 25%) !important; /* Mörkare grön bakgrund */
+  color: hsl(140, 60%, 90%) !important; /* Ljus text */
+  box-shadow: 
+    0 0 15px hsla(var(--primary), 0.3),
+    0 0 30px hsla(var(--primary), 0.15);
+  border-color: hsl(var(--primary));
+  filter: brightness(1.1);
 }
 

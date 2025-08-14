@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
@@ -160,7 +160,7 @@ export function Sidebar() {
       <aside 
         ref={sidebarRef}
         className={cn(
-          "bg-background/55 backdrop-blur transition-all duration-200 ease-in-out cyber-border cyber-glow",
+          "bg-background/55 backdrop-blur transition-all duration-200 ease-in-out border-r border-input cyber-glow",
           // Mobile positioning and sizing (fixed for mobile overlay)
           isOpen 
             ? "fixed top-0 left-0 w-full h-full translate-y-0 z-[65]" 
@@ -170,11 +170,9 @@ export function Sidebar() {
           (showExpandedContent && !isOpen) ? "md:w-64" : "md:w-16"
         )}
         style={{ 
-          // Mobile: no borders when full screen, Desktop: no borders with square corners
-          border: 'none',
-          borderRadius: '0',
+          // Let Tailwind border class handle borders
           background: 'linear-gradient(135deg, transparent, rgba(139, 176, 129, 0.03), transparent 50%, rgba(151, 191, 133, 0.02))',
-          boxShadow: '0 0 6px rgba(139, 176, 129, 0.15), 0 0 12px rgba(139, 176, 129, 0.08), 0 0 20px rgba(139, 176, 129, 0.04), inset 0 1px 0 rgba(205, 228, 204, 0.05)',
+          boxShadow: '0 0 3px rgba(139, 176, 129, 0.08), 0 0 6px rgba(139, 176, 129, 0.04), 0 0 12px rgba(139, 176, 129, 0.02), inset 0 1px 0 rgba(205, 228, 204, 0.03)',
           backdropFilter: 'blur(1px)',
           // Simple solution: Let CSS handle the height naturally
           height: isOpen ? '100vh' : undefined
@@ -208,7 +206,7 @@ export function Sidebar() {
                   size="sm"
                   onClick={handlePinToggle}
                   className={cn(
-                    "hidden md:flex text-muted-foreground hover:text-foreground transition-all duration-200 hover:scale-110",
+                    "hidden md:flex text-foreground hover:text-accent-foreground transition-all duration-200 hover:scale-110",
                     !showExpandedContent ? "h-8 w-8" : "",
                     isPinned && "text-primary hover:text-primary/80"
                   )}
@@ -225,7 +223,7 @@ export function Sidebar() {
             {/* User Info / Login Section - Only show when logged in */}
             {user && (
               <div className={cn(
-                "border-b p-4",
+                "border-b p-4 border-border",
                 !showExpandedContent && "flex justify-center"
               )}>
                 <div className={cn(
@@ -281,7 +279,7 @@ export function Sidebar() {
                           : "space-x-3 px-3 py-2",
                         isActive 
                           ? "bg-primary text-primary-foreground" 
-                          : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                          : "text-foreground hover:text-accent-foreground hover:bg-muted"
                       )}
                       onClick={() => setIsOpen(false)}
                     >
@@ -314,7 +312,7 @@ export function Sidebar() {
                           : "space-x-3 px-3 py-2",
                         isActive 
                           ? "bg-primary text-primary-foreground" 
-                          : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                          : "text-foreground hover:text-accent-foreground hover:bg-muted"
                       )}
                       onClick={() => setIsOpen(false)}
                       title={!showExpandedContent ? item.name : undefined}
@@ -348,7 +346,7 @@ export function Sidebar() {
                             : "space-x-3 px-3 py-2",
                           isActive 
                             ? "bg-primary text-primary-foreground" 
-                            : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                            : "text-foreground hover:text-accent-foreground hover:bg-muted"
                         )}
                         onClick={() => setIsOpen(false)}
                       >
@@ -376,7 +374,7 @@ export function Sidebar() {
                     !showExpandedContent 
                       ? "justify-center py-3 px-2" 
                       : "space-x-3 px-3 py-2",
-                    "text-muted-foreground hover:text-foreground hover:bg-muted"
+                    "text-foreground hover:text-accent-foreground hover:bg-muted"
                   )}
                   onClick={() => setIsOpen(false)}
                   title={!showExpandedContent ? "Logga in" : undefined}
@@ -400,7 +398,7 @@ export function Sidebar() {
                   variant="ghost"
                   size="sm"
                   className={cn(
-                    "text-muted-foreground hover:text-foreground transition-all duration-200 hover:scale-105 hover:bg-destructive/10",
+                    "text-foreground hover:text-accent-foreground transition-all duration-200 hover:scale-105 hover:bg-destructive/10",
                     !showExpandedContent 
                       ? "h-8 w-8 p-0" 
                       : "w-full justify-start"

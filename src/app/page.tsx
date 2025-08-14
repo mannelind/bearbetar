@@ -47,9 +47,9 @@ export default async function HomePage() {
         
         <div className="container py-24 md:py-32">
           <div className="mx-auto max-w-7xl">
-          <div className="flex flex-col lg:grid lg:grid-cols-2 gap-12 items-center text-center lg:text-left">
+          <div className="flex flex-col lg:grid lg:grid-cols-2 items-center text-center lg:text-left">
             {/* Left side - Logo */}
-            <div className="flex justify-center lg:justify-start animate-slide-in-left">
+            <div className="flex justify-center animate-slide-in-left">
               <ThemeLogo 
                 alt="Bearbetar logotyp"
                 width={400}

@@ -101,7 +101,7 @@ export function ArticlesGrid({ articles, selectedTags = [], searchTerm = '', sor
   }
 
   return (
-    <div className="space-y-8">
+    <div className={`space-y-8 ${viewMode === 'list' ? 'w-full max-w-none' : 'max-w-7xl mx-auto'}`}>
       {/* Results Info */}
       <div className="flex items-center justify-between">
         <div>
@@ -125,7 +125,7 @@ export function ArticlesGrid({ articles, selectedTags = [], searchTerm = '', sor
           </p>
         </div>
       ) : (
-        <div className={viewMode === 'grid' ? 'grid gap-8 md:grid-cols-2 lg:grid-cols-3' : 'flex flex-col space-y-6'}>
+        <div className={viewMode === 'grid' ? 'articles-grid grid gap-8 md:grid-cols-2 lg:grid-cols-3' : 'w-full space-y-6'}>
           {filteredAndSortedArticles.map((article) => {
             const articleTags = article.tags
             const visibleCardTags = showMoreCardTags[article.id] ? articleTags : articleTags.slice(0, 3)
@@ -136,11 +136,11 @@ export function ArticlesGrid({ articles, selectedTags = [], searchTerm = '', sor
                 <SimpleTooltip text={`Läs "${article.title}" 📖`} side="top">
                   <Card 
                     className={`overflow-hidden hover:shadow-lg transition-shadow cursor-pointer ${
-                      viewMode === 'grid' ? 'h-full flex flex-col' : 'w-full'
+                      viewMode === 'grid' ? 'article-card' : 'w-full'
                     }`}
                     onClick={() => handleArticleClick(article)}
                   >
-                <div className={viewMode === 'grid' ? 'flex flex-col h-full' : 'flex flex-col md:flex-row gap-6'}>
+                <div className={viewMode === 'grid' ? 'h-full flex flex-col' : 'flex flex-col md:flex-row gap-6'}>
                   {article.featured_image && (
                     <div className={viewMode === 'grid' ? 'aspect-video relative' : 'aspect-video md:aspect-square relative md:w-48 flex-shrink-0'}>
                       <Image
@@ -153,7 +153,7 @@ export function ArticlesGrid({ articles, selectedTags = [], searchTerm = '', sor
                     </div>
                   )}
                   
-                  <div className={viewMode === 'grid' ? 'flex-grow flex flex-col' : 'flex-1 flex flex-col'}>
+                  <div className={viewMode === 'grid' ? 'article-card-body' : 'flex-1 flex flex-col'}>
                     <CardHeader className="space-y-2">
                       <div className="flex items-center gap-2">
                         <Badge variant="secondary">Artikel</Badge>
@@ -174,8 +174,8 @@ export function ArticlesGrid({ articles, selectedTags = [], searchTerm = '', sor
                     </CardHeader>
 
                     {article.excerpt && (
-                      <CardContent className={viewMode === 'grid' ? 'pt-0 flex-grow' : 'pt-0'}>
-                        <CardDescription className="line-clamp-3">
+                      <CardContent className={viewMode === 'grid' ? 'pt-0 flex-1' : 'pt-0'}>
+                        <CardDescription className={viewMode === 'grid' ? 'line-clamp-4' : 'line-clamp-3'}>
                           {article.excerpt}
                         </CardDescription>
                       </CardContent>
@@ -184,6 +184,7 @@ export function ArticlesGrid({ articles, selectedTags = [], searchTerm = '', sor
                 </div>
 
                 {/* Tags Section */}
+                <div className={viewMode === 'grid' ? 'article-card-footer' : ''}>
                 {articleTags.length > 0 && (
                   <CardContent className="pt-0">
                     <div className="space-y-2">
@@ -246,6 +247,7 @@ export function ArticlesGrid({ articles, selectedTags = [], searchTerm = '', sor
                     </div>
                   </CardContent>
                 )}
+                </div>
                   </Card>
                 </SimpleTooltip>
               </div>

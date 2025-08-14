@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { useSearchParams, useRouter, usePathname } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ColoredBadge } from '@/components/ui/colored-badge'
 import { createBrowserClient } from '@supabase/ssr'
 import { Database } from '@/types/database'
-import { Search, X, Filter, Grid, List, Calendar, User, ChevronDown, ChevronUp } from 'lucide-react'
+import { Search, X, Filter, Grid, List, ChevronDown, ChevronUp } from 'lucide-react'
 
 type Category = Database['public']['Tables']['portfolio_categories']['Row'] | Database['public']['Tables']['article_categories']['Row']
 type Tag = Database['public']['Tables']['tags']['Row']
@@ -65,8 +65,6 @@ interface FilterState {
 }
 
 export function ContentFilters({ config, onFiltersChange, className, availableTags }: ContentFiltersProps) {
-  const router = useRouter()
-  const pathname = usePathname()
   const searchParams = useSearchParams()
   const supabase = createBrowserClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -103,7 +101,7 @@ export function ContentFilters({ config, onFiltersChange, className, availableTa
       .order('name')
 
     if (!error && data) {
-      setCategories(data)
+      setCategories(data as any)
     }
   }, [supabase, config.enableCategories, config.categoryTable])
 
@@ -114,13 +112,13 @@ export function ContentFilters({ config, onFiltersChange, className, availableTa
     // If availableTags is provided, use those instead of fetching from database
     if (availableTags) {
       const uniqueTags = [...new Set(availableTags)].sort()
-      const transformedTags = uniqueTags.map((tag, index) => ({
+      const transformedTags = uniqueTags.map((tag) => ({
         id: tag, // Use tag name as ID for local tags
         name: tag,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
+        slug: tag.toLowerCase().replace(/\s+/g, '-'),
+        created_at: new Date().toISOString()
       }))
-      setTags(transformedTags)
+      setTags(transformedTags as any)
       return
     }
 
@@ -290,7 +288,7 @@ export function ContentFilters({ config, onFiltersChange, className, availableTa
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">Alla kategorier</SelectItem>
-                    {categories.map((category) => (
+                    {categories.map((category: any) => (
                       <SelectItem key={category.id} value={category.id}>
                         {category.name}
                       </SelectItem>
@@ -485,7 +483,7 @@ export function ContentFilters({ config, onFiltersChange, className, availableTa
               
               {filters.category !== 'all' && (
                 <Badge variant="secondary">
-                  {categories.find(c => c.id === filters.category)?.name}
+                  {(categories as any).find((c: any) => c.id === filters.category)?.name}
                   <X 
                     className="h-3 w-3 ml-1 cursor-pointer" 
                     onClick={() => updateFilters({ category: 'all' })}

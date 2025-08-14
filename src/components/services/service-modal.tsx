@@ -152,7 +152,7 @@ export function ServiceModal({ service, open, onOpenChange }: ServiceModalProps)
 
           {/* Body with scrollable content */}
           <ModalBody className="flex-1 overflow-y-auto">
-            <div className="grid lg:grid-cols-2 gap-8">
+            <div className="grid lg:grid-cols-2">
               {/* Left Column - Service Details */}
               <div className="space-y-6">
                 {/* Features */}

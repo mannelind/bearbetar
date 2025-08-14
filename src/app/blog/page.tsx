@@ -1,22 +1,16 @@
 'use client'
 
 import Link from 'next/link'
-import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
 import { ThemeLogo } from '@/components/ui/theme-logo'
 import { createBrowserClient } from '@supabase/ssr'
 import { Database } from '@/types/database'
 import { ArticlesGrid } from '@/components/blog/articles-grid'
 import { BlogModal } from '@/components/blog/blog-modal'
-import { ColoredBadge } from '@/components/ui/colored-badge'
 import { ContentFilters, FilterState } from '@/components/ui/content-filters'
 import { AnimatedSection, PageWrapper } from '@/components/ui/page-animations'
-import { Calendar, User, ArrowRight, Search } from 'lucide-react'
-import { formatDistanceToNow } from 'date-fns'
-import { sv } from 'date-fns/locale'
+import { Search } from 'lucide-react'
 
 export default function BlogPage() {
   const [articlesWithTags, setArticlesWithTags] = useState<any[]>([])
@@ -211,10 +205,10 @@ if (loading) {
       {/* Hero Section */}
       <section className="container py-24 md:py-32">
         <div className="mx-auto max-w-7xl">
-          <div className="flex flex-col lg:grid lg:grid-cols-2 gap-12 items-center text-center lg:text-left">
+          <div className="flex flex-col lg:grid lg:grid-cols-2 items-center text-center lg:text-left">
             {/* Left side - Logo */}
             <AnimatedSection animation="slide-in-left">
-              <div className="flex justify-center lg:justify-start">
+              <div className="flex justify-center">
                 <ThemeLogo 
                   alt="Bearbetar logotyp"
                   width={400}
@@ -273,7 +267,7 @@ if (loading) {
 
       {/* Articles Grid */}
       <AnimatedSection animation="scale-in-delayed">
-        <section className="container py-16">
+        <section className="w-full py-16 px-4 md:px-6 lg:px-8">
           {!articlesWithTags || articlesWithTags.length === 0 ? (
             <div className="text-center py-12">
               <Search className="mx-auto h-12 w-12 text-muted-foreground" />

@@ -3,12 +3,7 @@
 export function ConstructionBanner() {
   return (
     <div 
-      className="w-full h-8 bg-amber-500/80 dark:bg-amber-600/80 backdrop-blur-sm overflow-hidden border-b border-amber-400/30 construction-banner z-50"
-      style={{
-        position: 'fixed !important',
-        top: '0 !important',
-        left: '0 !important'
-      }}
+      className="absolute top-0 left-0 w-full h-8 bg-amber-500/80 dark:bg-amber-600/80 backdrop-blur-sm overflow-hidden construction-banner z-[9999]"
     >
       <div className="flex h-full items-center">
         <div 

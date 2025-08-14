@@ -11,10 +11,10 @@ export default function PortfolioPage() {
         {/* Hero Section */}
         <section className="mb-16">
           <div className="mx-auto max-w-7xl">
-            <div className="flex flex-col lg:grid lg:grid-cols-2 gap-12 items-center text-center lg:text-left">
+            <div className="flex flex-col lg:grid lg:grid-cols-2 items-center text-center lg:text-left">
               {/* Left side - Logo */}
               <AnimatedSection animation="slide-in-left">
-                <div className="flex justify-center lg:justify-start">
+                <div className="flex justify-center">
                   <ThemeLogo 
                     alt="Bearbetar logotyp"
                     width={400}
