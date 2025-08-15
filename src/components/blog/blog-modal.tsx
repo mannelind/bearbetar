@@ -40,57 +40,132 @@ export function BlogModal({ article, open, onOpenChange }: BlogModalProps) {
     setLoading(true)
     setError(null)
     
-    const { data, error } = await supabase
-      .from('articles')
-      .select(`
-        *,
-        article_categories (
-          categories (
+    try {
+      const { data, error } = await supabase
+        .from('articles')
+        .select(`
+          *,
+          article_categories (
+            categories (
+              id,
+              name,
+              slug
+            )
+          ),
+          article_tags (
+            tags (
+              id,
+              name,
+              slug
+            )
+          ),
+          admin_users (
             id,
-            name,
-            slug
+            email,
+            full_name,
+            bio,
+            profile_image,
+            avatar_url,
+            created_at,
+            updated_at
           )
-        ),
-        article_tags (
-          tags (
-            id,
-            name,
-            slug
-          )
-        ),
-        admin_users (
-          id,
-          email,
-          full_name,
-          bio,
-          profile_image,
-          avatar_url,
-          created_at,
-          updated_at
-        )
-      `)
-      .eq('id', articleId)
-      .single()
+        `)
+        .eq('id', articleId)
+        .single()
 
-    if (error) {
-      console.error('Error loading article:', error)
-      setError('Kunde inte ladda artikeln. Försök igen senare.')
-      setLoading(false)
-      return
-    }
-
-    if (data) {
-      const transformedArticle: Article = {
-        ...data,
-        categories: data.article_categories?.map((ac: any) => ac.categories).filter(Boolean) || [],
-        tags: data.article_tags?.map((at: any) => at.tags).filter(Boolean) || [],
-        author: data.admin_users
+      if (error) {
+        console.error('Error loading article:', error)
+        
+        // If this is development and we're using mock data, create a mock full article
+        if (process.env.NODE_ENV === 'development' && article) {
+          console.log('Using mock article data for development...')
+          const mockFullArticle: Article = {
+            ...article,
+            content: `<div class="space-y-6">
+              <p>Detta är mock-innehåll för artikeln "<strong>${article.title}</strong>" i utvecklingsläge.</p>
+              
+              <p>I en riktig miljö skulle detta innehåll komma från Supabase-databasen och innehålla den fullständiga artikeltexten med formatering.</p>
+              
+              <h2>Om denna artikel</h2>
+              <p>${article.excerpt || 'Ingen sammanfattning tillgänglig.'}</p>
+              
+              <p>Detta är bara en demonstration av hur modal-fönstret fungerar när en artikel öppnas.</p>
+              
+              <blockquote class="border-l-4 border-primary pl-4 italic">
+                "I produktionsmiljön kommer detta att ersättas med verkligt innehåll från databasen."
+              </blockquote>
+            </div>`,
+            categories: [],
+            tags: [],
+            author: {
+              id: 'mock',
+              email: 'demo@bearbetar.se',
+              full_name: 'Demo Författare',
+              bio: 'Detta är en demo-författare för utvecklingsläge.',
+              profile_image: null,
+              avatar_url: null,
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString()
+            }
+          }
+          setFullArticle(mockFullArticle)
+          setLoading(false)
+          return
+        }
+        
+        setError('Kunde inte ladda artikeln. Försök igen senare.')
+        setLoading(false)
+        return
       }
-      setFullArticle(transformedArticle)
+
+      if (data) {
+        const transformedArticle: Article = {
+          ...data,
+          categories: data.article_categories?.map((ac: any) => ac.categories).filter(Boolean) || [],
+          tags: data.article_tags?.map((at: any) => at.tags).filter(Boolean) || [],
+          author: data.admin_users
+        }
+        setFullArticle(transformedArticle)
+      }
+    } catch (err) {
+      console.error('Supabase connection failed:', err)
+      
+      // Fallback to mock data in development
+      if (process.env.NODE_ENV === 'development' && article) {
+        console.log('Using mock article data as fallback...')
+        const mockFullArticle: Article = {
+          ...article,
+          content: `<div class="space-y-6">
+            <p>Detta är mock-innehåll för artikeln "<strong>${article.title}</strong>" (fallback-läge).</p>
+            
+            <p>Supabase-anslutningen misslyckades, så vi visar mock-data istället i utvecklingsläge.</p>
+            
+            <h2>Artikel-sammanfattning</h2>
+            <p>${article.excerpt || 'Ingen sammanfattning tillgänglig.'}</p>
+            
+            <p>I produktionsmiljön skulle detta visa det verkliga innehållet från databasen.</p>
+          </div>`,
+          categories: [],
+          tags: [],
+          author: {
+            id: 'mock',
+            email: 'demo@bearbetar.se',
+            full_name: 'Demo Författare',
+            bio: 'Mock-författare för utvecklingsläge.',
+            profile_image: null,
+            avatar_url: null,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          }
+        }
+        setFullArticle(mockFullArticle)
+      } else {
+        setError('Anslutningen misslyckades. Kontrollera din internetanslutning och försök igen.')
+      }
     }
 
     setLoading(false)
-  }, [supabase])
+  }, [supabase, article])
 
   useEffect(() => {
     if (open && article && !fullArticle) {

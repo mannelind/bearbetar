@@ -27,14 +27,14 @@ export function TopBar() {
   if (isScrolled) return null
 
   return (
-    <div className="hidden md:block sticky top-0 z-[60] border-b bg-muted/30 backdrop-blur supports-[backdrop-filter]:bg-muted/20 transition-all duration-300">
-      <div className="container flex h-10 items-center justify-between text-sm">
+    <div className="hidden md:block sticky top-0 z-[60] bg-header-accent/60 backdrop-blur supports-[backdrop-filter]:bg-header-accent/60 transition-all duration-300">
+      <div className="container flex h-auto items-center justify-between text-sm text-header-accent-foreground">
         {/* Left side - Secondary navigation */}
         <nav className="hidden md:flex items-center space-x-4">
           <SimpleTooltip text="Tillbaka till startsidan 🏠" side="bottom">
             <Link
               href={PUBLIC_ROUTES.home}
-              className="flex items-center space-x-1 text-muted-foreground hover:text-foreground transition-colors"
+              className="flex items-center space-x-1 hover:text-primary transition-colors"
             >
               <Home className="h-3 w-3" />
               <span>Hem</span>
@@ -44,7 +44,7 @@ export function TopBar() {
           <SimpleTooltip text="Lär känna teamet bakom Bearbetar 👥" side="bottom">
             <Link
               href="/om-oss"
-              className="flex items-center space-x-1 text-muted-foreground hover:text-foreground transition-colors"
+              className="flex items-center space-x-1 hover:text-primary transition-colors"
             >
               <Users className="h-3 w-3" />
               <span>Om oss</span>
@@ -54,7 +54,7 @@ export function TopBar() {
           <SimpleTooltip text="Hör av dig till oss! 📞" side="bottom">
             <Link
               href="/kontakt"
-              className="flex items-center space-x-1 text-muted-foreground hover:text-foreground transition-colors"
+              className="flex items-center space-x-1 hover:text-primary transition-colors"
             >
               <Phone className="h-3 w-3" />
               <span>Kontakt</span>
@@ -77,7 +77,7 @@ export function TopBar() {
             <>
               {!user ? (
                 <SimpleTooltip text="Snart illgänglig för våra kunder" side="bottom">
-                  <Button variant="ghost" size="sm" asChild className="h-8 px-3 text-xs">
+                  <Button variant="ghost" size="sm" asChild className="h-8 px-3 text-xs text-header-accent-foreground hover:text-primary hover:bg-transparent">
                     <Link href="/admin/login">
                       <LogIn className="mr-1 h-3 w-3" />
                       <span className="hidden sm:inline">Logga in</span>
@@ -86,7 +86,7 @@ export function TopBar() {
                 </SimpleTooltip>
               ) : isAdmin ? (
                 <SimpleTooltip text="Gå till admin-panelen ⚙️" side="bottom">
-                  <Button variant="ghost" size="sm" asChild className="h-8 px-3 text-xs">
+                  <Button variant="ghost" size="sm" asChild className="h-8 px-3 text-xs text-header-accent-foreground hover:text-primary hover:bg-transparent">
                     <Link href="/admin">
                       Admin
                     </Link>

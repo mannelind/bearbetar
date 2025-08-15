@@ -24,13 +24,15 @@ export function ThemeLogo({ alt, width, height, className, type = 'symbol', prio
   // Determine which logo to show based on theme
   const getLogoSrc = () => {
     if (!mounted) {
-      // Return a default logo while mounting
+      // Return a default logo while mounting (dark mode default)
       return type === 'symbol' ? '/images/logo-symbol-greenmode.svg' : '/images/logo-greenmode.svg'
     }
     
     if (theme === 'light') {
-      return type === 'symbol' ? '/images/logo-symbol-pinkmode.svg' : '/images/logo-prinkmode.svg'
+      // Light mode uses lightmode logos
+      return type === 'symbol' ? '/images/logo-symbol-lightmode.svg' : '/images/logo-lightmode.svg'
     } else {
+      // Dark mode uses greenmode logos
       return type === 'symbol' ? '/images/logo-symbol-greenmode.svg' : '/images/logo-greenmode.svg'
     }
   }

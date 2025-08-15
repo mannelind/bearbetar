@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { ThemeLogo } from '@/components/ui/theme-logo'
+import { HeroSection } from '@/components/ui/hero-section'
 import { AnimatedSection, PageWrapper } from '@/components/ui/page-animations'
 import { ContactForm } from '@/components/forms/contact-form'
 import { Mail, Phone, MapPin, Clock, Coffee } from 'lucide-react'
@@ -9,40 +9,17 @@ import { Mail, Phone, MapPin, Clock, Coffee } from 'lucide-react'
 export default function ContactPage() {
   return (
     <PageWrapper>
-      {/* Hero Section */}
-      <section className="container py-24 md:py-32">
-        <div className="mx-auto max-w-7xl">
-          <div className="flex flex-col lg:grid lg:grid-cols-2 items-center text-center lg:text-left">
-            {/* Left side - Logo */}
-            <AnimatedSection animation="slide-in-left">
-              <div className="flex justify-center">
-                <ThemeLogo 
-                  alt="Bearbetar logotyp"
-                  width={400}
-                  height={160}
-                  className="w-auto h-24 md:h-32 lg:h-40"
-                  type="full"
-                />
-              </div>
-            </AnimatedSection>
-            
-            {/* Right side - Text content */}
-            <AnimatedSection animation="slide-up-delayed">
-              <div>
-                <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-5xl xl:text-6xl">
-                  Hör av{' '}
-                  <span className="text-primary">
-                    dig!
-                  </span>
-                </h1>
-                <p className="mt-6 text-lg text-muted-foreground sm:text-xl max-w-xl mx-auto lg:mx-0 lg:max-w-none">
-                  Har du ett projekt i åtanke? Vill du bara prata om en idé? Vi älskar att höra från folk som vill bygga coola grejer.
-                </p>
-              </div>
-            </AnimatedSection>
-          </div>
-        </div>
-      </section>
+      <HeroSection>
+        <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-5xl xl:text-6xl">
+          Hör av{' '}
+          <span className="text-primary">
+            dig!
+          </span>
+        </h1>
+        <p className="mt-6 text-lg text-muted-foreground sm:text-xl max-w-xl mx-auto lg:mx-0 lg:max-w-none">
+          Har du ett projekt i åtanke? Vill du bara prata om en idé? Vi älskar att höra från folk som vill bygga coola grejer.
+        </p>
+      </HeroSection>
 
       <div className="container py-16">
         <div className="grid lg:grid-cols-2 gap-12 max-w-6xl mx-auto">

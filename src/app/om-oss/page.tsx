@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { ThemeLogo } from '@/components/ui/theme-logo'
+import { HeroSection } from '@/components/ui/hero-section'
 import { AnimatedSection, AnimatedGrid, PageWrapper } from '@/components/ui/page-animations'
 import { User, Mail, ArrowRight } from 'lucide-react'
 
@@ -32,41 +32,17 @@ export default function AboutPage() {
 
   return (
     <PageWrapper>
-      {/* Hero Section */}
-      <section className="container py-24 md:py-32">
-        <div className="mx-auto max-w-7xl">
-          <div className="flex flex-col lg:grid lg:grid-cols-2 items-center text-center lg:text-left">
-            {/* Left side - Logo */}
-            <AnimatedSection animation="slide-in-left">
-              <div className="flex justify-center">
-                <ThemeLogo 
-                  alt="Bearbetar logotyp"
-                  width={400}
-                  height={160}
-                  className="w-auto h-24 md:h-32 lg:h-40"
-                  type="full"
-                  priority
-                />
-              </div>
-            </AnimatedSection>
-            
-            {/* Right side - Text content */}
-            <AnimatedSection animation="slide-up-delayed">
-              <div>
-                <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-5xl xl:text-6xl">
-                  Vilka är{' '}
-                  <span className="text-primary">
-                    vi egentligen?
-                  </span>
-                </h1>
-                <p className="mt-6 text-lg text-muted-foreground sm:text-xl max-w-xl mx-auto lg:mx-0 lg:max-w-none">
-                  Vi är bara två killar som gillar att bygga saker och hjälpa andra att få sina idéer till verklighet.
-                </p>
-              </div>
-            </AnimatedSection>
-          </div>
-        </div>
-      </section>
+      <HeroSection>
+        <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-5xl xl:text-6xl">
+          Vilka är{' '}
+          <span className="text-primary">
+            vi egentligen?
+          </span>
+        </h1>
+        <p className="mt-6 text-lg text-muted-foreground sm:text-xl max-w-xl mx-auto lg:mx-0 lg:max-w-none">
+          Vi är bara två killar som gillar att bygga saker och hjälpa andra att få sina idéer till verklighet.
+        </p>
+      </HeroSection>
 
       {/* Company Description */}
       <AnimatedSection animation="scale-in">

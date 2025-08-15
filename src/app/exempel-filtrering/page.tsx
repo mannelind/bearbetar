@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge'
 import { ContentFilters, FilterState } from '@/components/ui/content-filters'
 import { AnimatedSection, PageWrapper } from '@/components/ui/page-animations'
-import { ThemeLogo } from '@/components/ui/theme-logo'
+import { HeroSection } from '@/components/ui/hero-section'
 import { Search } from 'lucide-react'
 
 // Example data för att visa hur systemet fungerar
@@ -116,41 +116,18 @@ export default function ExempelFilteringPage() {
 
   return (
     <PageWrapper>
-      {/* Hero Section */}
-      <section className="container py-24">
-        <div className="mx-auto max-w-7xl">
-          <div className="flex flex-col lg:grid lg:grid-cols-2 items-center text-center lg:text-left">
-            {/* Left side - Logo */}
-            <AnimatedSection animation="slide-in-left">
-              <div className="flex justify-center">
-                <ThemeLogo 
-                  alt="Bearbetar logotyp"
-                  width={400}
-                  height={160}
-                  className="w-auto h-24 md:h-32 lg:h-40"
-                  type="full"
-                />
-              </div>
-            </AnimatedSection>
-            
-            {/* Right side - Text content */}
-            <AnimatedSection animation="slide-up-delayed">
-              <div>
-                <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-5xl xl:text-6xl">
-                  Exempel på{' '}
-                  <span className="text-primary">
-                    Filtreringssystem
-                  </span>
-                </h1>
-                <p className="mt-6 text-lg text-muted-foreground sm:text-xl max-w-xl mx-auto lg:mx-0 lg:max-w-none">
-                  Detta är ett exempel på hur vårt enhetliga filtreringssystem kan användas
-                  på olika typer av innehåll med anpassade filter för varje behov.
-                </p>
-              </div>
-            </AnimatedSection>
-          </div>
-        </div>
-      </section>
+      <HeroSection className="py-24">
+        <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-5xl xl:text-6xl">
+          Exempel på{' '}
+          <span className="text-primary">
+            Filtreringssystem
+          </span>
+        </h1>
+        <p className="mt-6 text-lg text-muted-foreground sm:text-xl max-w-xl mx-auto lg:mx-0 lg:max-w-none">
+          Detta är ett exempel på hur vårt enhetliga filtreringssystem kan användas
+          på olika typer av innehåll med anpassade filter för varje behov.
+        </p>
+      </HeroSection>
 
       {/* Filters */}
       <AnimatedSection animation="fade-in">

@@ -60,6 +60,7 @@ export function Sidebar() {
   const { user, isAdmin, signOut } = useAuth()
   const sidebarRef = useRef<HTMLDivElement>(null)
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const hoverOpenTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   const handleSignOut = async () => {
     try {
@@ -77,15 +78,36 @@ export function Sidebar() {
   // Handle hover expand (only if not pinned)
   const handleMouseEnter = () => {
     if (isPinned) return // Don't expand on hover if pinned
+    
+    // Clear any pending close timeout
     if (hoverTimeoutRef.current) {
       clearTimeout(hoverTimeoutRef.current)
+      hoverTimeoutRef.current = null
     }
-    setIsExpanded(true)
+    
+    // Clear any existing open timeout
+    if (hoverOpenTimeoutRef.current) {
+      clearTimeout(hoverOpenTimeoutRef.current)
+      hoverOpenTimeoutRef.current = null
+    }
+    
+    // Set a delay before opening (hover delay)
+    hoverOpenTimeoutRef.current = setTimeout(() => {
+      setIsExpanded(true)
+    }, 500) // 500ms delay before opening
   }
 
   // Handle hover collapse with delay (only if not pinned)
   const handleMouseLeave = () => {
     if (isPinned) return // Don't collapse on hover leave if pinned
+    
+    // Clear any pending open timeout since we're leaving
+    if (hoverOpenTimeoutRef.current) {
+      clearTimeout(hoverOpenTimeoutRef.current)
+      hoverOpenTimeoutRef.current = null
+    }
+    
+    // Set delay before closing
     hoverTimeoutRef.current = setTimeout(() => {
       setIsExpanded(false)
     }, 300) // 300ms delay before closing
@@ -129,11 +151,14 @@ export function Sidebar() {
   }, [isExpanded, isCollapsed, isPinned])
 
 
-  // Cleanup timeout on unmount
+  // Cleanup timeouts on unmount
   useEffect(() => {
     return () => {
       if (hoverTimeoutRef.current) {
         clearTimeout(hoverTimeoutRef.current)
+      }
+      if (hoverOpenTimeoutRef.current) {
+        clearTimeout(hoverOpenTimeoutRef.current)
       }
     }
   }, [])
@@ -160,7 +185,7 @@ export function Sidebar() {
       <aside 
         ref={sidebarRef}
         className={cn(
-          "bg-background/55 backdrop-blur transition-all duration-200 ease-in-out border-r border-input cyber-glow",
+          "bg-background/55 backdrop-blur transition-all duration-300 ease-out border-r border-input cyber-glow",
           // Mobile positioning and sizing (fixed for mobile overlay)
           isOpen 
             ? "fixed top-0 left-0 w-full h-full translate-y-0 z-[65]" 
@@ -184,40 +209,44 @@ export function Sidebar() {
           {/* Top section - Header, User Info, and Navigation */}
           <div className="flex flex-col">
             {/* Header */}
-            <div className={cn(
-              "flex h-16 items-center",
-              showExpandedContent ? "px-6 justify-between" : "px-3 justify-center"
-            )}>
-              {showExpandedContent && (
+            <div className="h-16 relative">
+              {/* Logo - always at fixed position (left side when collapsed) */}
+              <div className="absolute left-3 top-1/2 -translate-y-1/2">
                 <Link href="/" className="flex items-center justify-center">
                   <ThemeLogo 
                     alt={`${APP_NAME} logotyp`}
-                    width={24}
-                    height={24}
-                    className="w-6 h-6"
+                    width={40}
+                    height={40}
+                    className={cn(
+                      "w-10 h-10 transition-transform duration-300 ease-out",
+                      showExpandedContent ? "rotate-180" : "rotate-0"
+                    )}
                     type="symbol"
                   />
                 </Link>
+              </div>
+              {/* Pin/Unpin button on desktop - only show when expanded */}
+              {showExpandedContent && (
+                <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                  <SimpleTooltip text={isPinned ? "Koppla loss sidofältet 📌" : "Fäst sidofältet 📌"} side="right">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handlePinToggle}
+                      className={cn(
+                        "hidden md:flex text-foreground sidebar-btn-hover hover:scale-110 rounded-full",
+                        isPinned && "text-primary hover:text-primary/80"
+                      )}
+                    >
+                      {isPinned ? (
+                        <Pin className="h-4 w-4 tech-icon" />
+                      ) : (
+                        <PinOff className="h-4 w-4 tech-icon" />
+                      )}
+                    </Button>
+                  </SimpleTooltip>
+                </div>
               )}
-              {/* Pin/Unpin button on desktop */}
-              <SimpleTooltip text={isPinned ? "Koppla loss sidofältet 📌" : "Fäst sidofältet 📌"} side="right">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handlePinToggle}
-                  className={cn(
-                    "hidden md:flex text-foreground hover:text-accent-foreground transition-all duration-200 hover:scale-110",
-                    !showExpandedContent ? "h-8 w-8" : "",
-                    isPinned && "text-primary hover:text-primary/80"
-                  )}
-                >
-                  {isPinned ? (
-                    <Pin className="h-4 w-4 tech-icon" />
-                  ) : (
-                    <PinOff className="h-4 w-4 tech-icon" />
-                  )}
-                </Button>
-              </SimpleTooltip>
             </div>
 
             {/* User Info / Login Section - Only show when logged in */}
@@ -262,7 +291,7 @@ export function Sidebar() {
               aria-label="Huvudnavigation"
               className={cn(
                 "flex flex-col space-y-1",
-                !showExpandedContent ? "px-2 py-4" : "p-4"
+                !showExpandedContent ? "px-2 py-4 items-center" : "p-4"
               )}>
             {/* Public Navigation */}
             <div className="flex flex-col space-y-1" role="group" aria-label="Huvudsidor">
@@ -273,18 +302,18 @@ export function Sidebar() {
                     <Link
                       href={item.href}
                       className={cn(
-                        "flex items-center rounded-lg text-sm font-medium transition-colors relative",
+                        "flex items-center rounded-full text-sm font-medium transition-all duration-200 ease-out relative",
                         !showExpandedContent 
-                          ? "justify-center py-3 px-2" 
+                          ? "justify-center h-10 w-10 p-0" 
                           : "space-x-3 px-3 py-2",
                         isActive 
                           ? "bg-primary text-primary-foreground" 
-                          : "text-foreground hover:text-accent-foreground hover:bg-muted"
+                          : "text-foreground sidebar-btn-hover"
                       )}
                       onClick={() => setIsOpen(false)}
                     >
                       <item.icon className="h-4 w-4 tech-icon" />
-                      {showExpandedContent && <span className="transition-all duration-200">{item.name}</span>}
+                      {showExpandedContent && <span className="transition-all duration-300 ease-out">{item.name}</span>}
                     </Link>
                   </SimpleTooltip>
                 )
@@ -293,7 +322,10 @@ export function Sidebar() {
 
             {/* Profile Navigation - Only for logged in users */}
             {user && (
-              <div className="flex flex-col space-y-1 pt-4" role="group" aria-label="Profil och inställningar">
+              <div className={cn(
+                "flex flex-col space-y-1 pt-4",
+                !showExpandedContent && "items-center"
+              )} role="group" aria-label="Profil och inställningar">
                 {showExpandedContent && (
                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
                     Profil & Inställningar
@@ -306,19 +338,19 @@ export function Sidebar() {
                       key={item.href}
                       href={item.href}
                       className={cn(
-                        "flex items-center rounded-lg text-sm font-medium transition-colors relative",
+                        "flex items-center rounded-full text-sm font-medium transition-all duration-200 ease-out relative",
                         !showExpandedContent 
-                          ? "justify-center py-3 px-2" 
+                          ? "justify-center h-10 w-10 p-0" 
                           : "space-x-3 px-3 py-2",
                         isActive 
                           ? "bg-primary text-primary-foreground" 
-                          : "text-foreground hover:text-accent-foreground hover:bg-muted"
+                          : "text-foreground sidebar-btn-hover"
                       )}
                       onClick={() => setIsOpen(false)}
                       title={!showExpandedContent ? item.name : undefined}
                     >
                       <item.icon className="h-4 w-4 tech-icon" />
-                      {showExpandedContent && <span className="transition-all duration-200">{item.name}</span>}
+                      {showExpandedContent && <span className="transition-all duration-300 ease-out">{item.name}</span>}
                     </Link>
                   )
                 })}
@@ -327,7 +359,10 @@ export function Sidebar() {
 
             {/* Admin Navigation */}
             {isAdmin && (
-              <div className="flex flex-col space-y-1 pt-4" role="group" aria-label="Administration">
+              <div className={cn(
+                "flex flex-col space-y-1 pt-4",
+                !showExpandedContent && "items-center"
+              )} role="group" aria-label="Administration">
                 {showExpandedContent && (
                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
                     Administration
@@ -340,9 +375,9 @@ export function Sidebar() {
                       <Link
                         href={item.href}
                         className={cn(
-                          "flex items-center rounded-lg text-sm font-medium transition-colors relative",
+                          "flex items-center rounded-full text-sm font-medium transition-all duration-200 ease-out relative",
                           !showExpandedContent 
-                            ? "justify-center py-3 px-2" 
+                            ? "justify-center h-10 w-10 p-0" 
                             : "space-x-3 px-3 py-2",
                           isActive 
                             ? "bg-primary text-primary-foreground" 
@@ -351,7 +386,7 @@ export function Sidebar() {
                         onClick={() => setIsOpen(false)}
                       >
                         <item.icon className="h-4 w-4 tech-icon" />
-                        {showExpandedContent && <span className="transition-all duration-200">{item.name}</span>}
+                        {showExpandedContent && <span className="transition-all duration-300 ease-out">{item.name}</span>}
                       </Link>
                     </SimpleTooltip>
                   )
@@ -361,7 +396,10 @@ export function Sidebar() {
 
             {/* Login/Auth Section - Only show when not logged in */}
             {!user && (
-              <div className="flex flex-col space-y-1 pt-4" role="group" aria-label="Inloggning">
+              <div className={cn(
+                "flex flex-col space-y-1 pt-4",
+                !showExpandedContent && "items-center"
+              )} role="group" aria-label="Inloggning">
                 {showExpandedContent && (
                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
                     Konto
@@ -370,17 +408,17 @@ export function Sidebar() {
                 <Link
                   href="/admin/login"
                   className={cn(
-                    "flex items-center rounded-lg text-sm font-medium transition-colors relative",
+                    "flex items-center rounded-full text-sm font-medium transition-all duration-200 ease-out relative",
                     !showExpandedContent 
-                      ? "justify-center py-3 px-2" 
+                      ? "justify-center h-10 w-10 p-0" 
                       : "space-x-3 px-3 py-2",
-                    "text-foreground hover:text-accent-foreground hover:bg-muted"
+                    "text-foreground sidebar-btn-hover"
                   )}
                   onClick={() => setIsOpen(false)}
                   title={!showExpandedContent ? "Logga in" : undefined}
                 >
                   <LogIn className="h-4 w-4 tech-icon" />
-                  {showExpandedContent && <span className="transition-all duration-200">Logga in</span>}
+                  {showExpandedContent && <span className="transition-all duration-300 ease-out">Logga in</span>}
                 </Link>
               </div>
             )}
@@ -389,7 +427,7 @@ export function Sidebar() {
 
           {/* Footer */}
           <div className={cn(
-            "border-t p-4 space-y-2",
+            "p-4 space-y-2",
             !showExpandedContent && "flex flex-col items-center"
           )}>
             {user && (
@@ -398,7 +436,7 @@ export function Sidebar() {
                   variant="ghost"
                   size="sm"
                   className={cn(
-                    "text-foreground hover:text-accent-foreground transition-all duration-200 hover:scale-105 hover:bg-destructive/10",
+                    "text-foreground hover:text-accent-foreground transition-all duration-300 ease-out hover:scale-105 hover:bg-destructive/10 rounded-full",
                     !showExpandedContent 
                       ? "h-8 w-8 p-0" 
                       : "w-full justify-start"
@@ -409,7 +447,7 @@ export function Sidebar() {
                     "h-4 w-4 tech-icon",
                     showExpandedContent && "mr-3"
                   )} />
-                  {showExpandedContent && <span className="transition-all duration-200">Logga ut</span>}
+                  {showExpandedContent && <span className="transition-all duration-300 ease-out">Logga ut</span>}
                 </Button>
               </SimpleTooltip>
             )}

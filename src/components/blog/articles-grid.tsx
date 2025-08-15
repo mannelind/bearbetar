@@ -9,7 +9,7 @@ import { ColoredBadge } from '@/components/ui/colored-badge'
 import { BlogModal } from './blog-modal'
 import { Database } from '@/types/database'
 import { SimpleTooltip } from '@/components/ui/tooltip'
-import { Calendar, User, ChevronDown, ChevronUp, Filter } from 'lucide-react'
+import { Calendar, User, ChevronDown, ChevronUp, Filter, BookOpen } from 'lucide-react'
 import { formatDistanceToNow } from 'date-fns'
 import { sv } from 'date-fns/locale'
 
@@ -101,7 +101,7 @@ export function ArticlesGrid({ articles, selectedTags = [], searchTerm = '', sor
   }
 
   return (
-    <div className={`space-y-8 ${viewMode === 'list' ? 'w-full max-w-none' : 'max-w-7xl mx-auto'}`}>
+    <div className={`space-y-8 ${viewMode === 'list' ? 'w-full max-w-none' : 'w-full mx-auto'}`}>
       {/* Results Info */}
       <div className="flex items-center justify-between">
         <div>
@@ -133,13 +133,12 @@ export function ArticlesGrid({ articles, selectedTags = [], searchTerm = '', sor
 
             return (
               <div key={article.id} className={viewMode === 'list' ? 'w-full' : ''}>
-                <SimpleTooltip text={`Läs "${article.title}" 📖`} side="top">
-                  <Card 
-                    className={`overflow-hidden hover:shadow-lg transition-shadow cursor-pointer ${
-                      viewMode === 'grid' ? 'article-card' : 'w-full'
-                    }`}
-                    onClick={() => handleArticleClick(article)}
-                  >
+                <Card 
+                  className={`overflow-hidden hover:shadow-lg transition-shadow cursor-pointer ${
+                    viewMode === 'grid' ? 'article-card' : 'w-full'
+                  }`}
+                  onClick={() => handleArticleClick(article)}
+                >
                 <div className={viewMode === 'grid' ? 'h-full flex flex-col' : 'flex flex-col md:flex-row gap-6'}>
                   {article.featured_image && (
                     <div className={viewMode === 'grid' ? 'aspect-video relative' : 'aspect-video md:aspect-square relative md:w-48 flex-shrink-0'}>
@@ -178,6 +177,20 @@ export function ArticlesGrid({ articles, selectedTags = [], searchTerm = '', sor
                         <CardDescription className={viewMode === 'grid' ? 'line-clamp-4' : 'line-clamp-3'}>
                           {article.excerpt}
                         </CardDescription>
+                        <div className="mt-4">
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              handleArticleClick(article)
+                            }}
+                            className="flex items-center gap-2"
+                          >
+                            <BookOpen className="h-4 w-4" />
+                            Läs mer
+                          </Button>
+                        </div>
                       </CardContent>
                     )}
                   </div>
@@ -203,7 +216,7 @@ export function ArticlesGrid({ articles, selectedTags = [], searchTerm = '', sor
                             variant="ghost"
                             size="sm"
                             onClick={(e) => {
-                              e.preventDefault()
+                              e.stopPropagation()
                               toggleShowMoreCardTags(article.id)
                             }}
                             className="h-5 px-1 text-xs"
@@ -249,7 +262,6 @@ export function ArticlesGrid({ articles, selectedTags = [], searchTerm = '', sor
                 )}
                 </div>
                   </Card>
-                </SimpleTooltip>
               </div>
             )
           })}

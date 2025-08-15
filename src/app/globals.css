@@ -18,7 +18,10 @@
     --secondary-foreground: 120 25% 85%; /* hsl(120, 25%, 85%) - Ljus grön sekundär text */
     --muted: 85 25% 12%;             /* hsl(85, 25%, 12%) - Dämpad mörk grön */
     --muted-foreground: 120 15% 65%;  /* hsl(120, 15%, 65%) - Medium grön muted text */
-    --header-light: 167 18% 20%;       /* hsl(167, 18%, 20%) - Ljusare variant av background för floating header */
+    --header-accent: 167 18% 20%;       /* hsl(167, 18%, 20%) - Ljusare variant av background för top bar */
+    --header-accent-foreground: 120 25% 85%; /* hsl(120, 25%, 85%) - Ljus grön text för header-accent */
+    --floating-header: 167 25% 15%;     /* hsl(167, 25%, 15%) - Mörk grön för floating header */
+    --floating-header-foreground: 120 30% 90%; /* hsl(120, 30%, 90%) - Ljus grön text för floating header */
     --accent: 120 85% 60%;             /* hsl(120, 85%, 60%) - Ljus intensiv grön accent */
     --accent-foreground: 85 20% 6%; /* hsl(85, 20%, 6%) - Mycket mörk grön accent text */
     --destructive: 0 75% 55%;        /* hsl(0, 75%, 55%) - Röd för varningar */
@@ -34,33 +37,36 @@
     --radius: 0.875rem;
   }
 
-  /* Pink Mode (Bohemian Rose Tech - Cyber & Organic) */
+  /* Light Olive Mode (Soft Monochromatic Olive-Green) */
   .light {
-    --background: 20 100% 94%;         /* hsl(20, 100%, 94%) - Djup plommonlila bakgrund med mjuk underton */
-    --foreground: 320 25% 4%;        /* hsl(320, 25%, 94%) - Varm rosa-kräm text, mjuk och bohemisk */
-    --card: 7 99% 90%;               /* hsl(7, 99%, 89%) - Mjuk aubergine-rosa kort bakgrund */
-    --card-foreground: 290 43% 9%;     /* hsl(334, 100%, 88%) - Mjuk rosa-kräm text på kort */
-    --popover: 340 22% 7%;            /* hsl(340, 22%, 7%) - Mörk plommon popover */
-    --popover-foreground: 320 20% 92%; /* hsl(320, 20%, 92%) - Mjuk rosa-kräm popover text */
-    --primary: 1 100% 29%;              /* hsl(337, 99%, 71%) - Bohemisk lavendel-rosa, mjuk tech */
-    --primary-foreground: 60 69% 83%; /* hsl(340, 20%, 8%) - Mörk plommon text på primary */
-    --secondary: 290 43% 79%;         /* hsl(290, 43%, 79%) - Mjuk grå-rosa sekundär */
-    --secondary-foreground: 320 18% 88%; /* hsl(320, 18%, 88%) - Mjuk rosa sekundär text */
-    --muted: 290 43% 79%;             /* hsl(338, 18%, 12%) - Dämpad plommon-rosa */
-    --muted-foreground: 325 15% 22%;  /* hsl(325, 15%, 72%) - Mjuk grå-rosa muted text */
-    --header-light: 20 100% 96%;     /* hsl(20, 100%, 96%) - Ljusare variant av background för floating header */
-    --accent: 60 69% 73%;            /* hsl(280, 40%, 78%) - Bohemisk orkidé-lila accent */
-    --accent-foreground: 340 20% 8%;     /* hsl(340, 20%, 8%) - Mörk plommon accent text */
-    --destructive: 15 55% 68%;        /* hsl(15, 55%, 68%) - Mjuk korall-orange för varningar */
+    --background: 90 15% 92%;          /* hsl(90, 15%, 94%) - Mjuk ljus olive-grön bakgrund */
+    --foreground: 167 30% 35;          /* hsl(95, 25%, 20%) - Mörk olive-grön text */
+    --card: 88 12% 88%;                /* hsl(88, 12%, 90%) - Matt ljus olive kort bakgrund */
+    --card-foreground: 167 80% 30%;     /* hsl(95, 20%, 18%) - Mörk olive text på kort */
+    --popover: 92 10% 92%;             /* hsl(92, 10%, 92%) - Mjuk olive popover */
+    --popover-foreground: 95 25% 20%;  /* hsl(95, 25%, 20%) - Mörk olive popover text */
+    --primary: 95 35% 42%;             /* hsl(95, 35%, 42%) - Matt olive-grön primary */
+    --primary-foreground: 0 0% 98%;    /* hsl(0, 0%, 98%) - Vit text på primary */
+    --secondary: 100 80% 70%;            /* hsl(90, 8%, 85%) - Mycket mjuk olive sekundär */
+    --secondary-foreground: 95 20% 25%; /* hsl(95, 20%, 25%) - Mörk olive sekundär text */
+    --muted: 88 15% 68%;               /* hsl(88, 10%, 88%) - Dämpad matt olive */
+    --muted-foreground: 95 12% 45%;    /* hsl(95, 12%, 45%) - Medium olive muted text */
+    --header-accent: 95 50% 32%;     /* hsl(90, 62%, 26%) - Olive för top bar */
+    --header-accent-foreground: 95 45% 88%; /* hsl(95, 45%, 88%) - Ljus olive text för header-accent */
+    --floating-header: 90 20% 85%;     /* hsl(90, 30%, 85%) - Ljus olive för floating header */
+    --floating-header-foreground: 95 30% 20%; /* hsl(95, 30%, 20%) - Mörk olive text för floating header */
+    --accent: 95 30% 48%;              /* hsl(95, 30%, 48%) - Matt olive accent */
+    --accent-foreground: 0 0% 98%;     /* hsl(0, 0%, 98%) - Vit accent text */
+    --destructive: 0 75% 55%;          /* hsl(0, 75%, 55%) - Röd för varningar */
     --destructive-foreground: 0 0% 98%; /* hsl(0, 0%, 98%) - Vit destructive text */
-    --border: 290 43% 79%;         /* hsl(295, 65%, 72%) - Mjuk rosa-lila border */
-    --input: 338 18% 10%;             /* hsl(338, 18%, 10%) - Mjuk plommon input bakgrund */
-    --ring: 300 40% 78%;              /* hsl(300, 40%, 78%) - Mjuk lavendel focus ring */
-    --chart-1: 300 45% 75%;         /* hsl(300, 45%, 75%) */
-    --chart-2: 280 40% 78%;         /* hsl(280, 40%, 78%) */
-    --chart-3: 320 35% 72%;         /* hsl(320, 35%, 72%) */
-    --chart-4: 260 45% 80%;         /* hsl(260, 45%, 80%) */
-    --chart-5: 310 38% 76%;         /* hsl(310, 38%, 76%) */
+    --border: 90 12% 78%;              /* hsl(90, 12%, 78%) - Mjuk olive border */
+    --input: 88 8% 88%;                /* hsl(88, 8%, 88%) - Matt olive input bakgrund */
+    --ring: 95 35% 42%;                /* hsl(95, 35%, 42%) - Matt olive focus ring */
+    --chart-1: 120 60% 50%;            /* hsl(120, 60%, 50%) */
+    --chart-2: 140 55% 45%;            /* hsl(140, 55%, 45%) */
+    --chart-3: 100 65% 55%;            /* hsl(100, 65%, 55%) */
+    --chart-4: 150 50% 40%;            /* hsl(150, 50%, 40%) */
+    --chart-5: 130 70% 45%;            /* hsl(130, 70%, 45%) */
   }
 
   /* Dark mode - alias for consistency */
@@ -77,7 +83,10 @@
     --secondary-foreground: 155 59% 47%; /* hsl(155, 59%, 47%) - Light green secondary foreground */
     --muted: 167 8% 8%; /* hsl(167, 8%, 8%) - Dark green muted */
     --muted-foreground: 155 15% 65%; /* hsl(155, 15%, 65%) - Light green muted foreground */
-    --header-light: 167 18% 20%; /* hsl(167, 18%, 20%) - Ljusare variant av background för floating header */
+    --header-accent: 160 40% 20%; /* hsl(167, 18%, 20%) - Ljusare variant av background för top bar */
+    --header-accent-foreground: 120 25% 85%; /* hsl(120, 25%, 85%) - Ljus grön text för header-accent */
+    --floating-header: 167 25% 20%; /* hsl(167, 25%, 10%) - Mycket mörk grön för floating header */
+    --floating-header-foreground: 142 61% 67%; /* hsl(120, 30%, 95%) - Mycket ljus grön text för floating header */
     --accent: 120 85% 60%; /* hsl(120, 85%, 60%) - Light green accent */
     --accent-foreground: 85 20% 6%; /* hsl(85, 20%, 6%) - Dark green accent foreground */
     --destructive: 0 75% 55%; /* hsl(0, 75%, 55%) - Red destructive */
@@ -111,22 +120,22 @@
   }
 
   ::-webkit-scrollbar-track {
-    @apply bg-secondary;
+    @apply bg-background;
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-secondary rounded-full;
+    @apply bg-muted-foreground/30 rounded-full;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-secondary/80;
+    @apply bg-muted-foreground/50;
   }
 }
 
 @layer components {
   /* Custom component classes */
   .container {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+    @apply max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 w-full;
   }
 
   .card {
@@ -398,6 +407,108 @@
     border-radius: 0 12px 12px 0;
   }
 
+  /* Light mode - Remove glow effects */
+  .light .card:hover {
+    box-shadow: 
+      0 4px 6px -1px rgba(0, 0, 0, 0.1),
+      0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transform: translateY(-2px);
+  }
+
+  .light .button {
+    box-shadow: none;
+  }
+
+  .light .button:hover {
+    animation: none;
+    box-shadow: 
+      0 2px 4px -1px rgba(0, 0, 0, 0.1),
+      0 1px 2px -1px rgba(0, 0, 0, 0.06);
+  }
+
+  .light .button-primary:hover {
+    box-shadow: 
+      0 4px 6px -1px rgba(0, 0, 0, 0.1),
+      0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transform: translateY(-1px) scale(1.02);
+  }
+
+  .light .button-outline:hover {
+    box-shadow: 
+      0 1px 3px 0 rgba(0, 0, 0, 0.1),
+      0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  }
+
+  .light .glow-outline {
+    box-shadow: none;
+  }
+
+  .light .glow-outline:hover {
+    box-shadow: 
+      0 0 0 1px hsl(var(--primary)),
+      0 1px 3px 0 rgba(0, 0, 0, 0.1),
+      0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    filter: none;
+  }
+
+  .light .glow-outline:focus-visible {
+    box-shadow: 
+      0 0 0 2px hsl(var(--primary)),
+      0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    filter: none;
+  }
+
+  .light .input:focus {
+    box-shadow: 
+      0 0 0 1px hsl(var(--primary)),
+      0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  }
+
+  .light .textarea:focus {
+    box-shadow: 
+      0 0 0 1px hsl(var(--primary)),
+      0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  }
+
+  .light .loading-spinner {
+    box-shadow: none;
+  }
+
+  .light .tech-icon:hover {
+    filter: none;
+    animation: iconSpin 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+
+  .light .cyber-glow {
+    box-shadow: 
+      0 1px 3px 0 rgba(0, 0, 0, 0.1),
+      0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    backdrop-filter: none;
+  }
+
+  .light .floating-header-glow {
+    animation: none;
+  }
+
+  .light .scan-lines::before {
+    display: none;
+  }
+
+  /* Override sidebar glow effects in light mode */
+  .light aside.cyber-glow {
+    box-shadow: 
+      0 1px 3px 0 rgba(0, 0, 0, 0.1),
+      0 1px 2px 0 rgba(0, 0, 0, 0.06) !important;
+    backdrop-filter: blur(2px) !important;
+  }
+
+  /* Remove inline glow styles from sidebar in light mode */
+  .light aside[style*="boxShadow"] {
+    box-shadow: 
+      0 2px 4px -1px rgba(0, 0, 0, 0.1),
+      0 1px 2px -1px rgba(0, 0, 0, 0.06) !important;
+  }
+
   /* Matrix-like scan lines */
   .scan-lines::before {
     content: '';
@@ -581,20 +692,20 @@
     position: relative;
   }
   
-  /* Pink/Purple theme (light mode) */
+  /* Light Green theme (light mode) */
   .light .futuristic-gradient {
     background: 
-      radial-gradient(circle at 20% 80%, hsla(300, 45%, 75%, 0.30) 0%, transparent 50%),
-      radial-gradient(circle at 80% 20%, hsla(280, 40%, 78%, 0.25) 0%, transparent 50%),
-      radial-gradient(circle at 40% 40%, hsla(320, 35%, 72%, 0.20) 0%, transparent 50%),
-      radial-gradient(circle at 60% 10%, hsla(260, 45%, 80%, 0.22) 0%, transparent 60%),
-      radial-gradient(circle at 30% 70%, hsla(310, 38%, 76%, 0.18) 0%, transparent 55%),
+      radial-gradient(circle at 20% 80%, hsla(120, 40%, 70%, 0.25) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, hsla(140, 35%, 65%, 0.20) 0%, transparent 50%),
+      radial-gradient(circle at 40% 40%, hsla(100, 45%, 75%, 0.18) 0%, transparent 50%),
+      radial-gradient(circle at 60% 10%, hsla(160, 40%, 60%, 0.22) 0%, transparent 60%),
+      radial-gradient(circle at 30% 70%, hsla(110, 38%, 68%, 0.15) 0%, transparent 55%),
       linear-gradient(135deg, 
         hsla(var(--background), 1) 0%,
-        hsla(300, 45%, 75%, 0.12) 20%,
-        hsla(280, 40%, 78%, 0.15) 40%,
-        hsla(320, 35%, 72%, 0.08) 60%,
-        hsla(260, 45%, 80%, 0.10) 80%,
+        hsla(120, 40%, 70%, 0.08) 20%,
+        hsla(140, 35%, 65%, 0.10) 40%,
+        hsla(100, 45%, 75%, 0.06) 60%,
+        hsla(160, 40%, 60%, 0.08) 80%,
         hsla(var(--background), 1) 100%
       );
   }
@@ -616,9 +727,9 @@
   
   .light .futuristic-gradient::before {
     background: 
-      radial-gradient(ellipse 800px 600px at 50% 0%, hsla(300, 45%, 75%, 0.18) 0%, transparent 70%),
-      radial-gradient(ellipse 600px 400px at 20% 100%, hsla(280, 40%, 78%, 0.15) 0%, transparent 60%),
-      radial-gradient(ellipse 500px 300px at 80% 80%, hsla(320, 35%, 72%, 0.12) 0%, transparent 65%),
+      radial-gradient(ellipse 800px 600px at 50% 0%, hsla(120, 40%, 70%, 0.15) 0%, transparent 70%),
+      radial-gradient(ellipse 600px 400px at 20% 100%, hsla(140, 35%, 65%, 0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 500px 300px at 80% 80%, hsla(100, 45%, 75%, 0.10) 0%, transparent 65%),
       linear-gradient(180deg, transparent 0%, hsla(var(--background), 0.9) 100%);
   }
   
@@ -648,24 +759,24 @@
     animation: meshMove 25s ease-in-out infinite;
   }
   
-  /* Pink/Purple theme (light mode) */
+  /* Light Green theme (light mode) */
   .light .gradient-mesh {
     background: 
-      radial-gradient(circle at 25% 25%, hsla(300, 45%, 75%, 0.35) 0%, transparent 40%),
-      radial-gradient(circle at 75% 75%, hsla(280, 40%, 78%, 0.30) 0%, transparent 40%),
-      radial-gradient(circle at 75% 25%, hsla(320, 35%, 72%, 0.25) 0%, transparent 40%),
-      radial-gradient(circle at 25% 75%, hsla(260, 45%, 80%, 0.28) 0%, transparent 40%),
-      radial-gradient(circle at 50% 50%, hsla(310, 38%, 76%, 0.22) 0%, transparent 50%),
-      radial-gradient(circle at 40% 10%, hsla(290, 42%, 74%, 0.20) 0%, transparent 45%),
+      radial-gradient(circle at 25% 25%, hsla(120, 40%, 70%, 0.30) 0%, transparent 40%),
+      radial-gradient(circle at 75% 75%, hsla(140, 35%, 65%, 0.25) 0%, transparent 40%),
+      radial-gradient(circle at 75% 25%, hsla(100, 45%, 75%, 0.22) 0%, transparent 40%),
+      radial-gradient(circle at 25% 75%, hsla(160, 40%, 60%, 0.28) 0%, transparent 40%),
+      radial-gradient(circle at 50% 50%, hsla(130, 50%, 65%, 0.20) 0%, transparent 50%),
+      radial-gradient(circle at 40% 10%, hsla(110, 42%, 68%, 0.18) 0%, transparent 45%),
       linear-gradient(45deg, 
         hsla(var(--background), 1),
-        hsla(300, 45%, 75%, 0.15),
+        hsla(120, 40%, 70%, 0.12),
         hsla(var(--background), 0.98),
-        hsla(280, 40%, 78%, 0.18),
+        hsla(140, 35%, 65%, 0.15),
         hsla(var(--background), 0.95),
-        hsla(320, 35%, 72%, 0.12),
+        hsla(100, 45%, 75%, 0.10),
         hsla(var(--background), 0.92),
-        hsla(260, 45%, 80%, 0.14),
+        hsla(160, 40%, 60%, 0.12),
         hsla(var(--background), 1)
       );
   }
@@ -981,5 +1092,39 @@ body {
     0 0 30px hsla(var(--primary), 0.15);
   border-color: hsl(var(--primary));
   filter: brightness(1.1);
+}
+
+/* Sidebar button hover effects for better visibility */
+.sidebar-btn-hover {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar-btn-hover:hover {
+  background-color: hsl(var(--primary) / 0.15) !important;
+  color: hsl(var(--primary)) !important;
+  box-shadow: 
+    0 0 8px hsla(var(--primary), 0.2),
+    0 0 16px hsla(var(--primary), 0.1);
+  border-radius: 9999px;
+  transform: translateX(2px);
+}
+
+/* Light mode sidebar button hover */
+.light .sidebar-btn-hover:hover {
+  background-color: hsl(95, 25%, 85%) !important; /* Matt olive-grön bakgrund */
+  color: hsl(95, 30%, 25%) !important; /* Mörk matt olive text */
+  box-shadow: 
+    0 0 8px hsla(95, 20%, 45%, 0.12),
+    0 0 16px hsla(95, 20%, 45%, 0.06);
+}
+
+/* Dark mode sidebar button hover */
+.dark .sidebar-btn-hover:hover {
+  background-color: hsl(140, 60%, 15%) !important; /* Mörk grön bakgrund */
+  color: hsl(120, 70%, 70%) !important; /* Ljus grön text */
+  border: 1px solid hsl(120, 70%, 40%) !important; /* Grön border */
+  box-shadow: 
+    0 0 8px hsla(120, 70%, 60%, 0.2),
+    0 0 16px hsla(120, 70%, 60%, 0.1);
 }
 

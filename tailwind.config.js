@@ -13,7 +13,14 @@ module.exports = {
         ring: 'hsl(var(--ring))',
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
-        'header-light': 'hsl(var(--header-light))',
+        'header-accent': {
+          DEFAULT: 'hsl(var(--header-accent))',
+          foreground: 'hsl(var(--header-accent-foreground))',
+        },
+        'floating-header': {
+          DEFAULT: 'hsl(var(--floating-header))',
+          foreground: 'hsl(var(--floating-header-foreground))',
+        },
         primary: {
           DEFAULT: 'hsl(var(--primary))',
           foreground: 'hsl(var(--primary-foreground))',

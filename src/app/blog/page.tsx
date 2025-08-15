@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
-import { ThemeLogo } from '@/components/ui/theme-logo'
+import { HeroSection } from '@/components/ui/hero-section'
 import { createBrowserClient } from '@supabase/ssr'
 import { Database } from '@/types/database'
 import { ArticlesGrid } from '@/components/blog/articles-grid'
@@ -202,40 +202,17 @@ if (loading) {
 
   return (
     <PageWrapper>
-      {/* Hero Section */}
-      <section className="container py-24 md:py-32">
-        <div className="mx-auto max-w-7xl">
-          <div className="flex flex-col lg:grid lg:grid-cols-2 items-center text-center lg:text-left">
-            {/* Left side - Logo */}
-            <AnimatedSection animation="slide-in-left">
-              <div className="flex justify-center">
-                <ThemeLogo 
-                  alt="Bearbetar logotyp"
-                  width={400}
-                  height={160}
-                  className="w-auto h-24 md:h-32 lg:h-40"
-                  type="full"
-                />
-              </div>
-            </AnimatedSection>
-            
-            {/* Right side - Text content */}
-            <AnimatedSection animation="slide-up-delayed">
-              <div>
-                <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-5xl xl:text-6xl">
-                  Vad vi{' '}
-                  <span className="text-primary">
-                    skriver om
-                  </span>
-                </h1>
-                <p className="mt-6 text-lg text-muted-foreground sm:text-xl max-w-xl mx-auto lg:mx-0 lg:max-w-none">
-                  Tips, tankar och berättelser från vårt jobb som utvecklare. Plus lite random grejer vi tänker på.
-                </p>
-              </div>
-            </AnimatedSection>
-          </div>
-        </div>
-      </section>
+      <HeroSection>
+        <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-5xl xl:text-6xl">
+          Vad vi{' '}
+          <span className="text-primary">
+            skriver om
+          </span>
+        </h1>
+        <p className="mt-6 text-lg text-muted-foreground sm:text-xl max-w-xl mx-auto lg:mx-0 lg:max-w-none">
+          Tips, tankar och berättelser från vårt jobb som utvecklare. Plus lite random grejer vi tänker på.
+        </p>
+      </HeroSection>
 
 
       {/* Filters */}
