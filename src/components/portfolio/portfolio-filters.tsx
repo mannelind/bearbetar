@@ -119,7 +119,7 @@ export function PortfolioFilters() {
 
   return (
     <Card>
-      <CardContent className="p-6">
+      <CardContent className="p-1">
         <div className="space-y-6">
           {/* Search and View Toggle */}
           <div className="flex flex-col md:flex-row gap-4">

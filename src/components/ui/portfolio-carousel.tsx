@@ -118,7 +118,7 @@ export function PortfolioCarousel({ projects, title, description }: PortfolioCar
                         )}
                         
                         <CardHeader className="space-y-2">
-                          <div className="flex items-center gap-2 flex-wrap">
+                          <div className="flex justify-between flex-wrap">
                             <Badge variant="secondary">{project.category}</Badge>
                             <div className="flex items-center gap-1 text-xs text-muted-foreground">
                               <Calendar className="h-3 w-3" />
@@ -129,7 +129,7 @@ export function PortfolioCarousel({ projects, title, description }: PortfolioCar
                             </div>
                           </div>
                           
-                          <CardTitle className="leading-tight group-hover:text-primary transition-colors min-h-[3rem] flex items-start">
+                          <CardTitle className="leading-tight group-hover:text-primary transition-colors flex items-start">
                             {project.title}
                           </CardTitle>
                         </CardHeader>
@@ -157,7 +157,7 @@ export function PortfolioCarousel({ projects, title, description }: PortfolioCar
                         )}
 
                         {project.tags && project.tags.length > 0 && (
-                          <CardContent className="pt-2">
+                          <CardContent className="pt-0">
                             <div className="space-y-2">
                               <div className="text-xs text-muted-foreground font-medium">Kategori:</div>
                               <TagsDisplay 
@@ -170,8 +170,8 @@ export function PortfolioCarousel({ projects, title, description }: PortfolioCar
                           </CardContent>
                         )}
 
-                        <CardContent className="pt-2 mt-auto">
-                          <div className="flex items-center gap-2">
+                        <CardContent className="pt-0 mt-auto">
+                          <div className="flex items-center gap-1">
                             {project.project_url && (
                               <Button variant="outline" size="sm" asChild onClick={(e) => e.stopPropagation()}>
                                 <Link href={project.project_url} target="_blank" rel="noopener noreferrer">
@@ -211,7 +211,7 @@ export function PortfolioCarousel({ projects, title, description }: PortfolioCar
         </div>
       </div>
       
-      <div className="text-center pt-4">
+      <div className="text-center">
         <Button variant="outline" asChild>
           <Link href="/portfolio">
             Se alla projekt
