@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/checkbox'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { ImageUpload } from '@/components/ui/image-upload'
 import { createBrowserClient } from '@supabase/ssr'
 import { Database } from '@/types/database'
 import { X, Plus, Image as ImageIcon, Trash2 } from 'lucide-react'
@@ -374,8 +375,13 @@ export function PortfolioForm({ portfolioItem, onSave }: PortfolioFormProps) {
       )}
 
       <div className="space-y-2">
-        <Label htmlFor="featured_image">Huvudbild URL</Label>
-        <Input id="featured_image" type="url" {...register('featured_image')} />
+        <ImageUpload
+          value={watch('featured_image') || ''}
+          onChange={(url) => setValue('featured_image', url || '')}
+          bucket="portfolio-images"
+          path="featured"
+          label="Huvudbild"
+        />
       </div>
 
       {/* Gallery Images */}

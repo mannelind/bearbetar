@@ -60,7 +60,8 @@
     --destructive: 0 75% 55%;          /* hsl(0, 75%, 55%) - Röd för varningar */
     --destructive-foreground: 0 0% 98%; /* hsl(0, 0%, 98%) - Vit destructive text */
     --border: 90 12% 78%;              /* hsl(90, 12%, 78%) - Mjuk olive border */
-    --input: 88 8% 88%;                /* hsl(88, 8%, 88%) - Matt olive input bakgrund */
+    --input: 88 8% 88%;  
+    --input-light: 8 8% 88%;              /* hsl(88, 8%, 88%) - Matt olive input bakgrund */
     --ring: 95 35% 42%;                /* hsl(95, 35%, 42%) - Matt olive focus ring */
     --chart-1: 120 60% 50%;            /* hsl(120, 60%, 50%) */
     --chart-2: 140 55% 45%;            /* hsl(140, 55%, 45%) */
@@ -73,14 +74,14 @@
   .dark {
     --background: 167 18.2% 12%; /* hsl(167, 18.2%, 12%) - Dark green background */
     --foreground: 142 61% 67%; /* hsl(142, 61%, 67%) - Light green foreground */
-    --card: 160 20% 10%; /* hsl(160, 20%, 10%) - Dark green card */
+    --card: 160 20% 15%; /* hsl(160, 20%, 10%) - Dark green card */
     --card-foreground: 120 85% 60%; /* hsl(120, 85%, 60%) - Light green card foreground */
     --popover: 85 30% 8%; /* hsl(85, 30%, 8%) - Dark green popover */
     --popover-foreground: 120 25% 85%; /* hsl(120, 25%, 85%) - Light green popover foreground */
     --primary: 120 85% 60%; /* hsl(120, 85%, 60%) - Light green primary */
     --primary-foreground: 85 20% 6%; /* hsl(85, 20%, 6%) - Dark green primary foreground */
-    --secondary: 85 30% 15%; /* hsl(85, 30%, 15%) - Dark green secondary */
-    --secondary-foreground: 155 59% 47%; /* hsl(155, 59%, 47%) - Light green secondary foreground */
+    --secondary: 40 90% 45%; /* hsl(85, 30%, 15%) - Dark green secondary */
+    --secondary-foreground: 155 59% 97%; /* hsl(155, 59%, 47%) - Light green secondary foreground */
     --muted: 167 8% 8%; /* hsl(167, 8%, 8%) - Dark green muted */
     --muted-foreground: 155 15% 65%; /* hsl(155, 15%, 65%) - Light green muted foreground */
     --header-accent: 160 40% 20%; /* hsl(167, 18%, 20%) - Ljusare variant av background för top bar */
@@ -120,15 +121,21 @@
   }
 
   ::-webkit-scrollbar-track {
-    @apply bg-background;
+    @apply bg-background rounded-full;
   }
 
   ::-webkit-scrollbar-thumb {
     @apply bg-muted-foreground/30 rounded-full;
+    border: 2px solid transparent;
+    background-clip: content-box;
   }
 
   ::-webkit-scrollbar-thumb:hover {
     @apply bg-muted-foreground/50;
+  }
+
+  ::-webkit-scrollbar-corner {
+    @apply bg-background rounded-full;
   }
 }
 
@@ -274,12 +281,17 @@
 
   /* Tech hover effects */
   .tech-icon {
-    @apply transition-all duration-200 hover:scale-110 hover:rotate-12;
+    @apply transition-all duration-200;
+    transform-origin: center;
+    will-change: transform, filter;
   }
 
-  .tech-icon:hover {
+  .tech-icon:hover,
+  a:hover .tech-icon,
+  button:hover .tech-icon {
     filter: drop-shadow(0 0 8px hsla(var(--primary), 0.5));
     animation: iconSpin 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    transform: scale(1.1) rotate(12deg);
   }
 
   /* Bohemian cyber glow effects */
@@ -474,9 +486,12 @@
     box-shadow: none;
   }
 
-  .light .tech-icon:hover {
+  .light .tech-icon:hover,
+  .light a:hover .tech-icon,
+  .light button:hover .tech-icon {
     filter: none;
     animation: iconSpin 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    transform: scale(1.1) rotate(12deg);
   }
 
   .light .cyber-glow {
@@ -492,6 +507,58 @@
 
   .light .scan-lines::before {
     display: none;
+  }
+
+
+  /* Give filled/active buttons permanent glow in dark mode */
+  .dark .btn-glow:not([class*="outline"]),
+  .dark button[class*="bg-primary"],
+  .dark button[aria-current="page"],
+  .dark [class*="bg-primary"] {
+    box-shadow: 
+      0 0 4px hsla(120, 70%, 60%, 0.2),
+      0 0 8px hsla(120, 70%, 60%, 0.1) !important;
+    border: 1px solid hsl(120, 70%, 40%) !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Give header buttons same effect as sidebar buttons in dark mode on hover */
+  .dark button:hover,
+  .dark .btn-glow:hover,
+  .dark .btn-glow-outline:hover,
+  .dark [class*="btn-glow"]:hover,
+  .dark button[class*="outline"]:hover {
+    background-color: hsl(140, 60%, 15%) !important; /* Samma som sidebar */
+    color: hsl(120, 70%, 70%) !important; /* Samma som sidebar */
+    border: 1px solid hsl(120, 70%, 40%) !important; /* Samma som sidebar */
+    box-shadow: 
+      0 0 6px hsla(120, 70%, 60%, 0.15),
+      0 0 12px hsla(120, 70%, 60%, 0.08) !important; /* Samma som sidebar */
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Enhanced glow for filled buttons on hover */
+  .dark .btn-glow:not([class*="outline"]):hover,
+  .dark button[class*="bg-primary"]:hover {
+    box-shadow: 
+      0 0 8px hsla(120, 70%, 60%, 0.25),
+      0 0 16px hsla(120, 70%, 60%, 0.15),
+      inset 0 0 4px hsla(120, 70%, 60%, 0.1) !important;
+  }
+
+  /* Card hover glow in dark mode - very discrete border with original background */
+  .dark .card:hover,
+  .dark [class*="card"]:hover,
+  .dark [data-card]:hover {
+    background: linear-gradient(135deg, 
+      hsla(var(--background)) 0%, 
+      hsla(120, 70%, 5%, 0.15) 50%, 
+      hsla(var(--background)) 100%) !important;
+    border: 1px solid hsla(120, 70%, 70%, 0.12) !important;
+    box-shadow: 
+      0 0 4px hsla(120, 60%, 80%, 0.1),
+      0 0 8px hsla(120, 50%, 85%, 0.05) !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   /* Override sidebar glow effects in light mode */
@@ -650,6 +717,53 @@
   
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
+  }
+
+  /* Popover and dropdown specific styling */
+  [role="listbox"],
+  [data-radix-popper-content-wrapper],
+  .popover-content,
+  .dropdown-content,
+  .select-content {
+    overflow: hidden;
+    border-radius: var(--radius);
+  }
+
+  /* Ensure scrollable content inside popovers has rounded scrollbars */
+  [role="listbox"] ::-webkit-scrollbar,
+  [data-radix-popper-content-wrapper] ::-webkit-scrollbar,
+  .popover-content ::-webkit-scrollbar,
+  .dropdown-content ::-webkit-scrollbar,
+  .select-content ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  [role="listbox"] ::-webkit-scrollbar-track,
+  [data-radix-popper-content-wrapper] ::-webkit-scrollbar-track,
+  .popover-content ::-webkit-scrollbar-track,
+  .dropdown-content ::-webkit-scrollbar-track,
+  .select-content ::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
+    border-radius: 3px;
+  }
+
+  [role="listbox"] ::-webkit-scrollbar-thumb,
+  [data-radix-popper-content-wrapper] ::-webkit-scrollbar-thumb,
+  .popover-content ::-webkit-scrollbar-thumb,
+  .dropdown-content ::-webkit-scrollbar-thumb,
+  .select-content ::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground) / 0.5);
+    border-radius: 3px;
+    border: 1px solid transparent;
+    background-clip: content-box;
+  }
+
+  [role="listbox"] ::-webkit-scrollbar-thumb:hover,
+  [data-radix-popper-content-wrapper] ::-webkit-scrollbar-thumb:hover,
+  .popover-content ::-webkit-scrollbar-thumb:hover,
+  .dropdown-content ::-webkit-scrollbar-thumb:hover,
+  .select-content ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.7);
   }
 
   /* Skip links for accessibility */
@@ -1100,22 +1214,18 @@ body {
 }
 
 .sidebar-btn-hover:hover {
-  background-color: hsl(var(--primary) / 0.15) !important;
+  background-color: hsl(var(--primary) / 0.08) !important;
   color: hsl(var(--primary)) !important;
-  box-shadow: 
-    0 0 8px hsla(var(--primary), 0.2),
-    0 0 16px hsla(var(--primary), 0.1);
   border-radius: 9999px;
-  transform: translateX(2px);
 }
 
 /* Light mode sidebar button hover */
 .light .sidebar-btn-hover:hover {
-  background-color: hsl(95, 25%, 85%) !important; /* Matt olive-grön bakgrund */
+  background-color: hsl(95, 25%, 88%) !important; /* Matt olive-grön bakgrund */
   color: hsl(95, 30%, 25%) !important; /* Mörk matt olive text */
   box-shadow: 
-    0 0 8px hsla(95, 20%, 45%, 0.12),
-    0 0 16px hsla(95, 20%, 45%, 0.06);
+    0 0 6px hsla(95, 20%, 45%, 0.1),
+    0 0 12px hsla(95, 20%, 45%, 0.05);
 }
 
 /* Dark mode sidebar button hover */
@@ -1124,7 +1234,7 @@ body {
   color: hsl(120, 70%, 70%) !important; /* Ljus grön text */
   border: 1px solid hsl(120, 70%, 40%) !important; /* Grön border */
   box-shadow: 
-    0 0 8px hsla(120, 70%, 60%, 0.2),
-    0 0 16px hsla(120, 70%, 60%, 0.1);
+    0 0 6px hsla(120, 70%, 60%, 0.15),
+    0 0 12px hsla(120, 70%, 60%, 0.08);
 }
 

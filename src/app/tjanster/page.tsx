@@ -28,18 +28,18 @@ export default async function ServicesPage() {
     {
       id: '1',
       title: 'Webbsidor',
-      short_description: 'Snygga och snabba webbplatser',
-      description: 'Vi byggger moderna webbsidor som ser bra ut och laddar snabbt. Inga krångliga CMS eller konstiga administratörsverktyg - bara en sida som funkar.',
+      short_description: 'Modern webbutveckling',
+      description: 'WordPress-sidor, React-appar och statiska siter. Månadsabonnemang för att göra professionell design tillgänglig för fler småföretag.',
       icon: 'Globe',
-      price_info: 'Månadsabonnemang från 399 kr/mån'
+      price_info: null
     },
     {
       id: '2', 
       title: 'Mobilappar',
-      short_description: 'Appar för iOS och Android',
-      description: 'Behöver du en app? Vi kan både native och hybrid-appar som funkar på alla telefoner. Vi hjälper dig hela vägen från idé till App Store.',
+      short_description: 'Mobilappar och webbappar',
+      description: 'React Native för mobil och moderna webbappar. Vi hjälper från idé till färdig produkt - ingen app-butik-byråkrati om det inte behövs.',
       icon: 'Smartphone',
-      price_info: 'Från 50 000 kr för enkel app'
+      price_info: null
     },
     {
       id: '3',
@@ -47,15 +47,15 @@ export default async function ServicesPage() {
       short_description: 'När standardlösningar inte räcker',
       description: 'Har du något specifikt du vill bygga? Vi kan utveckla allt från enkla verktyg till komplexa system. Säg vad du behöver så fixar vi det.',
       icon: 'Code',
-      price_info: 'Från 1 200 kr/timme'
+      price_info: null
     },
     {
       id: '4',
-      title: 'Konsultation & rådgivning',
-      short_description: 'När du bara behöver prata',
-      description: 'Ibland behöver man bara bolla idéer med någon som förstår teknik. Vi hjälper dig att tänka igenom vad som är smart att satsa på.',
+      title: 'Design & rådgivning',
+      short_description: 'UX, grafisk design och teknikrådgivning',
+      description: 'Kompetens inom pedagogik, UX-design och grafisk formgivning. Vi hjälper dig hitta rätt lösning och undvika dyra misstag.',
       icon: 'Coffee', 
-      price_info: 'Första timmen gratis, sedan 800 kr/h'
+      price_info: null
     }
   ]
 
@@ -81,8 +81,8 @@ export default async function ServicesPage() {
           </span>
         </h1>
         <p className="mt-6 text-lg text-muted-foreground sm:text-xl max-w-xl mx-auto lg:mx-0 lg:max-w-none">
-          Från enkla webbsidor till komplicerade system - vi bygger det du behöver 
-          och hjälper dig att få det att funka.
+          Från enkla webbsidor till komplicerade system - vi tar emot kunder redan nu! 
+          Hemsidan är under utveckling men verksamheten är igång.
         </p>
       </HeroSection>
 
@@ -115,17 +115,14 @@ export default async function ServicesPage() {
                       {service.description}
                     </p>
                     
-                    {service.price_info && (
-                      <div className="flex items-center justify-between pt-4 border-t">
-                        <span className="font-semibold text-primary">
-                          {service.price_info}
-                        </span>
-                        <Button size="sm">
+                    <div className="flex items-center justify-center pt-4 border-t">
+                      <Button size="sm" asChild>
+                        <Link href="/kontakt">
                           Kontakta oss
                           <ArrowRight className="ml-2 h-4 w-4" />
-                        </Button>
-                      </div>
-                    )}
+                        </Link>
+                      </Button>
+                    </div>
                   </CardContent>
                 </Card>
               )
@@ -190,7 +187,7 @@ export default async function ServicesPage() {
               Låter det intressant?
             </h2>
             <p className="mt-4 text-muted-foreground">
-              Hör av dig så tar vi en kaffe och pratar om vad vi kan hjälpa dig med. Första timmen kostar inget.
+              Hör av dig så tar vi en kaffe och pratar om vad vi kan hjälpa dig med. Vi tar emot kunder redan nu!
             </p>
             <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:justify-center">
               <Button size="lg">

@@ -19,6 +19,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
 import { SimpleTooltip } from '@/components/ui/tooltip'
+import { ImageUpload } from '@/components/ui/image-upload'
 import { useSupabase } from '@/hooks/use-supabase'
 import { useAuth } from '@/hooks/use-auth'
 import { ADMIN_ROUTES } from '@/lib/constants'
@@ -289,12 +290,13 @@ export function ArticleForm({ article }: ArticleFormProps) {
           name="featured_image"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Utvald bild URL (valfritt)</FormLabel>
               <FormControl>
-                <Input
-                  {...field}
-                  type="url"
-                  placeholder="https://example.com/bild.jpg"
+                <ImageUpload
+                  value={field.value || ''}
+                  onChange={field.onChange}
+                  bucket="article-images"
+                  path="featured"
+                  label="Utvald bild (valfritt)"
                 />
               </FormControl>
               <FormMessage />

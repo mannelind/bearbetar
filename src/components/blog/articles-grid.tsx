@@ -8,7 +8,6 @@ import { Badge } from '@/components/ui/badge'
 import { ColoredBadge } from '@/components/ui/colored-badge'
 import { BlogModal } from './blog-modal'
 import { Database } from '@/types/database'
-import { SimpleTooltip } from '@/components/ui/tooltip'
 import { Calendar, User, ChevronDown, ChevronUp, Filter, BookOpen } from 'lucide-react'
 import { formatDistanceToNow } from 'date-fns'
 import { sv } from 'date-fns/locale'
@@ -141,7 +140,7 @@ export function ArticlesGrid({ articles, selectedTags = [], searchTerm = '', sor
                 >
                 <div className={viewMode === 'grid' ? 'h-full flex flex-col' : 'flex flex-col md:flex-row gap-6'}>
                   {article.featured_image && (
-                    <div className={viewMode === 'grid' ? 'aspect-video relative' : 'aspect-video md:aspect-square relative md:w-48 flex-shrink-0'}>
+                    <div className={viewMode === 'grid' ? 'aspect-video relative overflow-hidden rounded-t-lg' : 'aspect-video md:aspect-square relative md:w-48 flex-shrink-0 overflow-hidden rounded-lg'}>
                       <Image
                         src={article.featured_image}
                         alt={article.title}

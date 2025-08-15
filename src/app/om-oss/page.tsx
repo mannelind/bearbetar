@@ -14,7 +14,7 @@ export default function AboutPage() {
       id: '1',
       full_name: 'Manne',
       email: 'manne@bearbetar.se',
-      bio: 'Grundare och strateg med passion för affärsutveckling och innovation. Hjälper företag att växa genom strategisk rådgivning och praktiska lösningar.',
+      bio: 'Grundare och utvecklare med bakgrund inom pedagogik och affärsutveckling. Fokuserar på att göra teknik tillgänglig och användbar för vanliga människor.',
       profile_image: null,
       created_at: new Date().toISOString()
     },
@@ -22,13 +22,13 @@ export default function AboutPage() {
       id: '2',
       full_name: 'Adam',
       email: 'adam@bearbetar.se', 
-      bio: 'Expert inom teknisk utveckling och digitalisering. Specialiserad på att transformera affärsprocesser genom teknik och automation.',
+      bio: 'Utvecklare och UX-designer som älskar att bygga saker som faktiskt löser problem. Har bakgrund inom både teknik och design.',
       profile_image: null,
       created_at: new Date().toISOString()
     }
   ]
 
-  const companyDescription = 'Vi på Bearbetar hjälper företag att växa och utvecklas genom strategisk rådgivning och praktiska lösningar.'
+  const companyDescription = 'Vi har startat Bearbetar för att hjälpa småföretag och privatpersoner med webbutveckling, appar och design. Vi tar emot kunder redan nu även om hemsidan fortfarande utvecklas. Vår målsättning är att göra professionell teknik tillgänglig för fler genom månadsabonnemang och rättframma priser.'
 
   return (
     <PageWrapper>
@@ -40,7 +40,7 @@ export default function AboutPage() {
           </span>
         </h1>
         <p className="mt-6 text-lg text-muted-foreground sm:text-xl max-w-xl mx-auto lg:mx-0 lg:max-w-none">
-          Vi är bara två killar som gillar att bygga saker och hjälpa andra att få sina idéer till verklighet.
+          Vi är Manne och Adam - två utvecklare som har startat Bearbetar för att hjälpa andra få sina digitala idéer till verklighet. Vi tar emot kunder redan nu!
         </p>
       </HeroSection>
 

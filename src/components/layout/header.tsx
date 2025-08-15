@@ -94,7 +94,7 @@ export function Header() {
       </div>
 
       {/* Desktop Header - With floating panel behavior */}
-      <div className={`hidden md:block transition-all duration-500 ease-in-out ${isScrolled ? 'mx-auto max-w-fit bg-floating-header/40 text-floating-header-foreground backdrop-blur rounded-full px-4 py-2' : 'w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'}`}>
+      <div className={`hidden md:block transition-all duration-500 ease-in-out ${isScrolled ? 'mx-auto max-w-fit bg-floating-header/40 text-floating-header-foreground backdrop-blur-xl border border-white/5 shadow-2xl rounded-full px-4 py-2' : 'w-full bg-background/45 backdrop-blur supports-[backdrop-filter]:bg-background/40'}`}>
         <div className={`flex items-center transition-all duration-500 ease-in-out ${isScrolled ? 'h-10 justify-center gap-2' : 'h-20 justify-center w-full'}`}>
         
         {/* Logo - Left side - Hide when scrolled and hide on desktop/tablet (md+) where sidebar shows */}

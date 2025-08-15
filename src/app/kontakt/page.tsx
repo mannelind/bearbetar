@@ -17,7 +17,7 @@ export default function ContactPage() {
           </span>
         </h1>
         <p className="mt-6 text-lg text-muted-foreground sm:text-xl max-w-xl mx-auto lg:mx-0 lg:max-w-none">
-          Har du ett projekt i åtanke? Vill du bara prata om en idé? Vi älskar att höra från folk som vill bygga coola grejer.
+          Har du ett projekt i åtanke? Vill du bara prata om en idé? Vi tar emot kunder redan nu även om hemsidan inte är helt klar än!
         </p>
       </HeroSection>
 
@@ -30,7 +30,7 @@ export default function ContactPage() {
               <CardHeader>
                 <CardTitle className="text-2xl">Skicka ett meddelande</CardTitle>
                 <CardDescription>
-                  Berätta vad du tänker på så hör vi av oss snart. Första timmen kostar inget!
+                  Berätta vad du tänker på så hör vi av oss snart. Vi är öppna för nya projekt redan nu!
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -66,9 +66,9 @@ export default function ContactPage() {
                     <Phone className="h-4 w-4 text-muted-foreground" />
                     <div>
                       <p className="font-medium">Telefon</p>
-                      <a href="tel:+46123456789" className="text-sm text-muted-foreground hover:text-foreground">
-                        +46 12 345 67 89
-                      </a>
+                      <span className="text-sm text-muted-foreground">
+                        Kommer snart
+                      </span>
                     </div>
                   </div>
                   
@@ -138,7 +138,7 @@ export default function ContactPage() {
                   <div className="text-center space-y-4">
                     <h3 className="text-lg font-semibold">Vill du träffas på riktigt?</h3>
                     <p className="text-sm text-muted-foreground">
-                      Vi gillar att träffa folk över en kaffe och prata om projekt. Första timmen kostar inget!
+                      Vi gillar att träffa folk över en kaffe och prata om projekt. Vi tar emot kunder redan nu!
                     </p>
                     <Button asChild>
                       <Link href="/tjanster">

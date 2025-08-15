@@ -14,8 +14,7 @@ export default function PortfolioPage() {
             </span>
           </h1>
           <p className="text-lg text-muted-foreground sm:text-xl max-w-xl mx-auto lg:mx-0 lg:max-w-none">
-            Utforska våra projekt, från enkla webbsidor till avancerade case studies. 
-            Varje projekt berättar en historia om innovation och problemlösning.
+            Här kommer vi visa projekt vi jobbar på. Än så länge är det tomt här, men det kommer fyllas på efterhand!
           </p>
         </HeroSection>
 
