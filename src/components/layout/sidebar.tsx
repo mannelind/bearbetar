@@ -189,7 +189,7 @@ export function Sidebar() {
           // Mobile positioning and sizing (fixed for mobile overlay)
           isOpen 
             ? "fixed top-0 left-0 w-full h-full translate-y-0 z-[65]" 
-            : "fixed top-0 left-0 w-full h-screen -translate-y-full z-[65] md:sticky md:top-0 md:translate-y-0 md:h-screen",
+            : "fixed top-0 left-0 w-full h-screen -translate-y-full z-[65] md:fixed md:top-0 md:translate-y-0 md:h-[100vh] md:max-h-[100vh]",
           // Desktop positioning and sizing (sticky positioning)
           "md:flex-shrink-0",
           (showExpandedContent && !isOpen) ? "md:w-64" : "md:w-16"
@@ -198,14 +198,12 @@ export function Sidebar() {
           // Let Tailwind border class handle borders
           background: 'linear-gradient(135deg, transparent, rgba(139, 176, 129, 0.03), transparent 50%, rgba(151, 191, 133, 0.02))',
           boxShadow: '0 0 3px rgba(139, 176, 129, 0.08), 0 0 6px rgba(139, 176, 129, 0.04), 0 0 12px rgba(139, 176, 129, 0.02), inset 0 1px 0 rgba(205, 228, 204, 0.03)',
-          backdropFilter: 'blur(1px)',
-          // Simple solution: Let CSS handle the height naturally
-          height: isOpen ? '100vh' : undefined
+          backdropFilter: 'blur(1px)'
         }}
         onMouseEnter={!isOpen ? handleMouseEnter : undefined}
         onMouseLeave={!isOpen ? handleMouseLeave : undefined}
       >
-        <div className="flex h-full flex-col justify-between">
+        <div className="flex h-full flex-col justify-between overflow-y-auto">
           {/* Top section - Header, User Info, and Navigation */}
           <div className="flex flex-col">
             {/* Header */}

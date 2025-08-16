@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
+import { RichTextEditor } from '@/components/ui/rich-text-editor'
 import { Badge } from '@/components/ui/badge'
 import { SimpleTooltip } from '@/components/ui/tooltip'
 import { ImageUpload } from '@/components/ui/image-upload'
@@ -311,8 +312,9 @@ export function ArticleForm({ article }: ArticleFormProps) {
             <FormItem>
               <FormLabel>Innehåll</FormLabel>
               <FormControl>
-                <Textarea
-                  {...field}
+                <RichTextEditor
+                  content={field.value}
+                  onChange={field.onChange}
                   placeholder="Skriv artikelns innehåll..."
                   className="min-h-[400px]"
                 />

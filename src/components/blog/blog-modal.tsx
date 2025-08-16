@@ -188,7 +188,7 @@ export function BlogModal({ article, open, onOpenChange }: BlogModalProps) {
 
   return (
     <Modal open={open} onOpenChange={onOpenChange}>
-      <ModalContent size="xl" className="max-h-[95vh] overflow-hidden">
+      <ModalContent size="lg" className="max-h-[80vh] max-w-lg overflow-hidden h-[80vh] flex flex-col">
         {loading ? (
           <div className="p-8 text-center">
             <div className="loading-spinner w-8 h-8 mx-auto mb-4" />
@@ -292,7 +292,7 @@ export function BlogModal({ article, open, onOpenChange }: BlogModalProps) {
             </ModalHeader>
 
             {/* Body with scrollable content */}
-            <ModalBody className="flex-1 overflow-y-auto">
+            <ModalBody className="flex-1 overflow-y-auto pr-2 -mr-2">
               {fullArticle.content && (
                 <div 
                   className="prose prose-lg max-w-none dark:prose-invert prose-headings:text-foreground prose-p:text-muted-foreground prose-strong:text-foreground prose-code:text-foreground prose-pre:bg-muted prose-pre:border"

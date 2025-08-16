@@ -178,14 +178,14 @@ export function ModalContent({
 
   const sizeClasses = {
     sm: 'max-w-md',
-    md: 'max-w-2xl',
-    lg: 'max-w-4xl',
-    xl: 'max-w-6xl',
+    md: 'max-w-lg',
+    lg: 'max-w-xl',
+    xl: 'max-w-2xl',
     full: 'max-w-[95vw] max-h-[95vh]'
   }
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[70] flex items-center justify-center p-4">
       {/* Backdrop */}
       <div 
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
@@ -201,7 +201,7 @@ export function ModalContent({
         aria-labelledby="modal-title"
         tabIndex={-1}
         className={cn(
-          "relative bg-background border rounded-lg shadow-xl max-h-[90vh] overflow-auto w-full focus:outline-none",
+          "relative bg-background border rounded-lg shadow-xl max-h-[80vh] overflow-hidden w-full focus:outline-none",
           sizeClasses[size],
           className
         )}

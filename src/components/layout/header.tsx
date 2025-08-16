@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { ThemeLogo } from '@/components/ui/theme-logo'
 import { SimpleTooltip } from '@/components/ui/tooltip'
+import { ThemeToggle } from '@/components/ui/theme-toggle'
 import { useState, useEffect } from 'react'
 import { useAuth } from '@/hooks/use-auth'
 import { Briefcase, BookOpen, FolderOpen, Users, LogIn } from 'lucide-react'
@@ -53,7 +54,7 @@ export function Header() {
           <nav role="navigation" aria-label="Mobil huvudnavigation">
             <div className="flex items-center gap-2">
             <SimpleTooltip text="Om oss 👥" side="bottom">
-              <Button variant="ghost" size="sm" asChild>
+              <Button variant="ghost" size="sm" asChild className="min-h-[44px]">
                 <Link href="/om-oss" className="text-sm font-medium" style={{color: 'hsl(var(--foreground))'}}>
                   Om oss
                 </Link>
@@ -61,7 +62,7 @@ export function Header() {
             </SimpleTooltip>
             
             <SimpleTooltip text="Kontakt 📞" side="bottom">
-              <Button variant="ghost" size="sm" asChild>
+              <Button variant="ghost" size="sm" asChild className="min-h-[44px]">
                 <Link href="/kontakt" className="text-sm font-medium" style={{color: 'hsl(var(--foreground))'}}>
                   Kontakt
                 </Link>
@@ -71,7 +72,7 @@ export function Header() {
             {/* Auth button */}
             {!user ? (
               <SimpleTooltip text="Logga in 🔑" side="bottom">
-                <Button variant="ghost" size="sm" asChild>
+                <Button variant="ghost" size="sm" asChild className="min-h-[44px] min-w-[44px]">
                   <Link href="/admin/login" aria-label="Logga in som administratör">
                     <LogIn className="h-5 w-5" style={{color: 'hsl(var(--foreground))'}} aria-hidden="true" />
                     <span className="sr-only">Logga in</span>
@@ -80,7 +81,7 @@ export function Header() {
               </SimpleTooltip>
             ) : isAdmin ? (
               <SimpleTooltip text="Admin 👑" side="bottom">
-                <Button variant="ghost" size="sm" asChild>
+                <Button variant="ghost" size="sm" asChild className="min-h-[44px] min-w-[44px]">
                   <Link href="/admin" aria-label="Gå till adminpanelen">
                     <Users className="h-5 w-5" style={{color: 'hsl(var(--foreground))'}} aria-hidden="true" />
                     <span className="sr-only">Admin</span>
@@ -88,6 +89,13 @@ export function Header() {
                 </Button>
               </SimpleTooltip>
             ) : null}
+            
+            {/* Theme Toggle - Mobile */}
+            <SimpleTooltip text="Byt tema 🌙☀️" side="bottom">
+              <div className="min-h-[44px] min-w-[44px] flex items-center justify-center">
+                <ThemeToggle />
+              </div>
+            </SimpleTooltip>
             </div>
           </nav>
         </div>

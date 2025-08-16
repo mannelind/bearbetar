@@ -74,7 +74,7 @@ export function ConditionalLayout({ children }: ConditionalLayoutProps) {
       <div className="flex min-h-screen flex-col">
         <div className="flex flex-1">
           <Sidebar />
-          <div className="flex flex-1 flex-col">
+          <div className="flex flex-1 flex-col md:ml-16 transition-all duration-300">
             <TopBar />
             <Header />
             <main id="main-content" className="flex-1 pb-20 md:pb-0">{children}</main>

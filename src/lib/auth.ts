@@ -9,11 +9,7 @@ const ADMIN_EMAILS = process.env.ADMIN_EMAILS?.split(',').map(email => email.tri
  * Check if an email is in the admin list
  */
 export function isAdminEmail(email: string): boolean {
-  // Temporary bypass for development - accept any email
-  if (process.env.NODE_ENV === 'development') {
-    return true
-  }
-  
+  // Only accept emails in ADMIN_EMAILS environment variable
   return ADMIN_EMAILS.includes(email)
 }
 
@@ -21,21 +17,6 @@ export function isAdminEmail(email: string): boolean {
  * Get current user session (server-side)
  */
 export async function getUser(): Promise<User | null> {
-  // Development mode bypass - return mock user
-  if (process.env.NODE_ENV === 'development') {
-    return {
-      id: 'dev-user-123',
-      email: 'dev@example.com',
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      aud: 'authenticated',
-      role: 'authenticated',
-      email_confirmed_at: new Date().toISOString(),
-      user_metadata: {},
-      app_metadata: {}
-    } as User
-  }
-
   const supabase = await createServerComponentClient()
   
   try {

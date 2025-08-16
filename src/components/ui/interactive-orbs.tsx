@@ -1,13 +1,33 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 export function InteractiveOrbs() {
   const containerRef = useRef<HTMLDivElement>(null)
   const cursorGlowRef = useRef<HTMLDivElement>(null)
   const orbsRef = useRef<HTMLDivElement[]>([])
+  const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
+    // Detektera mobil-enheter
+    const checkIfMobile = () => {
+      return window.innerWidth < 768 || 'ontouchstart' in window
+    }
+    
+    setIsMobile(checkIfMobile())
+    
+    const handleResize = () => {
+      setIsMobile(checkIfMobile())
+    }
+    
+    window.addEventListener('resize', handleResize)
+    
+    // Avsluta tidigt för mobila enheter för bättre prestanda
+    if (checkIfMobile()) {
+      return () => {
+        window.removeEventListener('resize', handleResize)
+      }
+    }
     const handleMouseMove = (e: MouseEvent) => {
       // Update cursor glow position
       if (cursorGlowRef.current) {
@@ -86,15 +106,17 @@ export function InteractiveOrbs() {
 
   return (
     <>
-      {/* Cursor glow effect */}
-      <div
-        ref={cursorGlowRef}
-        className="cursor-glow"
-        style={{ opacity: 0 }}
-      />
+      {/* Cursor glow effect - endast på desktop */}
+      {!isMobile && (
+        <div
+          ref={cursorGlowRef}
+          className="cursor-glow hidden md:block"
+          style={{ opacity: 0 }}
+        />
+      )}
 
-      {/* Interactive orbs container */}
-      <div ref={containerRef} className="interactive-orbs">
+      {/* Interactive orbs container - förenklade på mobil */}
+      <div ref={containerRef} className={`interactive-orbs ${isMobile ? 'mobile-optimized' : ''}`}>
         {/* Orb 1 - Large primary */}
         <div
           ref={el => { if (el) orbsRef.current[0] = el }}

@@ -53,6 +53,13 @@ export default function BlogPage() {
           tags (
             name
           )
+        ),
+        article_categories (
+          categories (
+            id,
+            name,
+            slug
+          )
         )
       `)
       .eq('published', true)
@@ -73,6 +80,7 @@ export default function BlogPage() {
             published_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
             featured_image: null,
             tags: ['Digitalisering', 'Småföretag', 'Teknik'],
+            categories: [{ id: 'foretagande', name: 'Företagande', slug: 'foretagande' }],
             admin_users: {
               full_name: 'Manne',
               email: 'manne@bearbetar.se',
@@ -88,6 +96,7 @@ export default function BlogPage() {
             published_at: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
             featured_image: null,
             tags: ['Säkerhet', 'Webbutveckling', 'Best Practices'],
+            categories: [{ id: 'utveckling', name: 'Utveckling', slug: 'utveckling' }],
             admin_users: {
               full_name: 'Adam',
               email: 'adam@bearbetar.se',
@@ -103,6 +112,7 @@ export default function BlogPage() {
             published_at: new Date(Date.now() - 21 * 24 * 60 * 60 * 1000).toISOString(),
             featured_image: null,
             tags: ['AI', 'Maskininlärning', 'Innovation'],
+            categories: [{ id: 'teknik', name: 'Teknik', slug: 'teknik' }],
             admin_users: {
               full_name: 'Manne',
               email: 'manne@bearbetar.se',
@@ -118,6 +128,7 @@ export default function BlogPage() {
             published_at: new Date(Date.now() - 28 * 24 * 60 * 60 * 1000).toISOString(),
             featured_image: null,
             tags: ['Molntjänster', 'DevOps', 'Infrastruktur'],
+            categories: [{ id: 'utveckling', name: 'Utveckling', slug: 'utveckling' }],
             admin_users: {
               full_name: 'Adam',
               email: 'adam@bearbetar.se',
@@ -131,10 +142,11 @@ export default function BlogPage() {
     } else {
       console.log('Fetched articles:', articles?.length || 0)
       
-      // Transform articles to include tags array
+      // Transform articles to include tags and categories arrays
       const transformedArticles = articles?.map(article => ({
         ...article,
-        tags: article.article_tags?.map((at: any) => at.tags.name) || []
+        tags: article.article_tags?.map((at: any) => at.tags.name) || [],
+        categories: article.article_categories?.map((ac: any) => ac.categories) || []
       })) || []
       
       setArticlesWithTags(transformedArticles)
@@ -154,6 +166,7 @@ export default function BlogPage() {
           published_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
           featured_image: null,
           tags: ['Next.js', 'React', 'Tips'],
+          categories: [{ id: 'smatt-och-gott', name: 'Smått och gott', slug: 'smatt-och-gott' }],
           admin_users: {
             full_name: 'Manne',
             email: 'manne@bearbetar.se',
@@ -222,13 +235,14 @@ if (loading) {
             config={{
               contentType: 'blog',
               enableSearch: true,
-              enableCategories: false, // Blog använder taggar istället för kategorier
+              enableCategories: true,
               enableTags: true,
               enableSort: true,
               enableViewToggle: true,
               enableDateFilter: true,
               enableAuthorFilter: true,
               searchPlaceholder: 'Sök i artiklar...',
+              categoryTable: 'categories',
               sortOptions: [
                 { value: 'newest', label: 'Senaste' },
                 { value: 'oldest', label: 'Äldsta' },
@@ -260,6 +274,7 @@ if (loading) {
             <ArticlesGrid 
               articles={allArticlesForGrid} 
               selectedTags={filters.tags}
+              selectedCategory={filters.category}
               searchTerm={filters.search}
               sortBy={filters.sort}
               viewMode={filters.viewMode}

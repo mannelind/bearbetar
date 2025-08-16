@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
+import { RichTextEditor } from '@/components/ui/rich-text-editor'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -365,11 +366,11 @@ export function PortfolioForm({ portfolioItem, onSave }: PortfolioFormProps) {
       {projectType === 'case_study' && (
         <div className="space-y-2">
           <Label htmlFor="content">Case Study Innehåll</Label>
-          <Textarea 
-            id="content" 
-            {...register('content')} 
-            placeholder="Detaljerat case study innehåll (stöder Markdown)..."
-            rows={8}
+          <RichTextEditor
+            content={watch('content') || ''}
+            onChange={(content) => setValue('content', content)}
+            placeholder="Detaljerat case study innehåll med formatering..."
+            className="min-h-[300px]"
           />
         </div>
       )}

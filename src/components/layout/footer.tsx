@@ -19,13 +19,13 @@ export function Footer() {
   return (
     <footer className="border-t bg-muted/50">
       <div className="container py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center md:text-left">
           {/* Brand */}
           <div className="md:col-span-2">
-            <Link href="/" className="flex items-center space-x-2 mb-4">
+            <Link href="/" className="flex items-center justify-center md:justify-start space-x-2 mb-4">
               <span className="font-bold text-xl">{APP_NAME}</span>
             </Link>
-            <p className="text-sm text-muted-foreground mb-4 max-w-md">
+            <p className="text-sm text-muted-foreground mb-4 max-w-md mx-auto md:mx-0">
               Vi hjälper företag att utvecklas och växa genom strategisk rådgivning, 
               affärsutveckling och professionella konsulttjänster.
             </p>
@@ -71,7 +71,7 @@ export function Footer() {
 
         {/* Bottom */}
         <div className="border-t pt-8 mt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0 text-center md:text-left">
             <p className="text-sm text-muted-foreground">
               © {currentYear} {APP_NAME}. Alla rättigheter förbehållna.
             </p>

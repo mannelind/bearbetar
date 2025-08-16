@@ -169,21 +169,21 @@ export default async function HomePage() {
   return (
     <div className="flex flex-col">
       <HeroSection>
-        <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-5xl xl:text-6xl animate-slide-up">
+        <h1 className="text-2xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl animate-slide-up">
           Välkommen till{' '}
           <span className="text-primary">
             Bearbetar
           </span>
         </h1>
-        <p className="mt-6 text-lg text-muted-foreground sm:text-xl max-w-xl mx-auto lg:mx-0 lg:max-w-none animate-slide-up-delayed">
+        <p className="mt-6 text-base text-muted-foreground sm:text-lg md:text-xl max-w-xl mx-auto lg:mx-0 lg:max-w-none animate-slide-up-delayed">
           Vi är öppna för kunder och tar redan emot projekt! Webbplatser, appar och systemlösningar. 
           Kompetens inom utveckling, design, pedagogik och UX - allt för att skapa lösningar som verkligen fungerar.
         </p>
-        <div className="mt-8 flex gap-4 justify-center lg:justify-start animate-slide-up-delayed-2">
-          <Button asChild size="lg">
+        <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-slide-up-delayed-2">
+          <Button asChild size="lg" className="w-full sm:w-auto min-h-[44px]">
             <Link href="/kontakt">Hör av dig</Link>
           </Button>
-          <Button variant="outline" asChild size="lg">
+          <Button variant="outline" asChild size="lg" className="w-full sm:w-auto min-h-[44px]">
             <Link href="/tjanster">Våra tjänster</Link>
           </Button>
         </div>
@@ -193,7 +193,7 @@ export default async function HomePage() {
       <section className="relative py-16 bg-gradient-to-b from-transparent via-primary/5 to-transparent">
         <div className="container">
           <div className="mx-auto max-w-6xl">
-          <h2 className="text-center text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl animate-slide-up">
+          <h2 className="text-center text-xl font-bold tracking-tighter sm:text-3xl md:text-4xl lg:text-5xl animate-slide-up">
             Vad vi gör
           </h2>
           <p className="mt-4 text-center text-muted-foreground animate-slide-up-delayed">
@@ -290,7 +290,7 @@ export default async function HomePage() {
               Hör av dig så tar vi en kaffe och pratar om vad vi kan hjälpa dig med.
             </p>
             <div className="mt-8">
-              <Button asChild size="lg">
+              <Button asChild size="lg" className="min-h-[44px] w-full sm:w-auto">
                 <Link href="/kontakt">Hör av dig</Link>
               </Button>
             </div>

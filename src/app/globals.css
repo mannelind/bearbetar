@@ -1166,6 +1166,93 @@ body {
   padding-top: 2rem; /* 32px för h-8 bannern */
 }
 
+/* Säkerställ korrekt mobilvisning */
+@media (max-width: 767px), (hover: none) and (pointer: coarse) {
+  /* Grundläggande mobilfixar */
+  html {
+    font-size: 16px !important; /* Förhindra zoom på iOS */
+    overflow-x: hidden !important;
+    max-width: 100vw !important;
+  }
+  
+  body {
+    padding-top: 2rem; /* Behåll samma padding på mobil */
+    overflow-x: hidden !important;
+    max-width: 100vw !important;
+    font-size: 16px !important; /* Förhindra zoom på iOS inputs */
+  }
+  
+  /* Säkerställ att alla element respekterar viewport */
+  * {
+    max-width: 100vw !important;
+    box-sizing: border-box !important;
+  }
+  
+  /* Container optimering */
+  .container {
+    max-width: 100% !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  
+  /* Text storlek kontroll - Override alla Tailwind text sizes på mobil */
+  .text-4xl, .text-5xl, .text-6xl {
+    font-size: 1.875rem !important; /* text-3xl equivalent */
+    line-height: 1.2 !important;
+  }
+  
+  .text-3xl {
+    font-size: 1.5rem !important; /* text-2xl equivalent */
+    line-height: 1.3 !important;
+  }
+  
+  .text-2xl {
+    font-size: 1.25rem !important; /* text-xl equivalent */
+    line-height: 1.4 !important;
+  }
+  
+  /* Allmän heading-kontroll */
+  h1 {
+    font-size: 1.875rem !important;
+    line-height: 1.2 !important;
+  }
+  
+  h2 {
+    font-size: 1.5rem !important;
+    line-height: 1.3 !important;
+  }
+  
+  h3 {
+    font-size: 1.25rem !important;
+    line-height: 1.4 !important;
+  }
+  
+  /* Hero section mobiloptimering */
+  .hero-section, section {
+    width: 100% !important;
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+  }
+  
+  /* Optimera orbs för mobil */
+  .mobile-optimized .glow-orb {
+    animation-duration: 10s !important; /* Långsammare animationer */
+    will-change: auto !important; /* Reduced performance cost */
+    transform: none !important; /* Disable mouse tracking */
+  }
+  
+  .mobile-optimized .lava-orb {
+    animation: none !important; /* Disable complex lava animation */
+  }
+  
+  /* Dölj cursor glow helt på mobil */
+  .cursor-glow {
+    display: none !important;
+  }
+}
+
 /* Glow border effekt för knappar */
 .btn-glow {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -16,7 +16,7 @@ import { isAdminEmail } from '@/lib/auth'
 import { APP_NAME, ERROR_MESSAGES, SUCCESS_MESSAGES } from '@/lib/constants'
 import { Mail, AlertCircle, CheckCircle } from 'lucide-react'
 
-export default function AdminLoginPage() {
+function AdminLoginForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
@@ -204,5 +204,24 @@ export default function AdminLoginPage() {
         </CardContent>
       </Card>
     </div>
+  )
+}
+
+export default function AdminLoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center min-h-screen bg-muted/50">
+        <Card className="w-full max-w-md">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-center">
+              <LoadingSpinner size="sm" />
+              <span className="ml-2">Laddar...</span>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    }>
+      <AdminLoginForm />
+    </Suspense>
   )
 }

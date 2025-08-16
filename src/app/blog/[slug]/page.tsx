@@ -8,7 +8,7 @@ import { AnimatedSection, PageWrapper } from '@/components/ui/page-animations'
 import { Calendar, User, ArrowLeft } from 'lucide-react'
 import { formatDistanceToNow } from 'date-fns'
 import { sv } from 'date-fns/locale'
-import { marked } from 'marked'
+import { HtmlContent } from '@/components/ui/html-content'
 
 interface ArticlePageProps {
   params: {
@@ -196,11 +196,10 @@ Digitalisering behöver inte vara komplicerat. Börja smått, fokusera på anvä
       <AnimatedSection animation="scale-in">
         <section className="container py-8">
           <div className="mx-auto max-w-4xl">
-            <article className="prose prose-lg max-w-none dark:prose-invert">
-              <div dangerouslySetInnerHTML={{ 
-                __html: marked(article.content)
-              }} />
-            </article>
+            <HtmlContent 
+              content={article.content}
+              className="prose-lg"
+            />
           </div>
         </section>
       </AnimatedSection>

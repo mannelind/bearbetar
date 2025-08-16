@@ -3,10 +3,8 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { TagsDisplay } from '@/components/ui/tags-display'
+import { ArticleCard } from './article-card'
 import {
   Carousel,
   CarouselContent,
@@ -15,19 +13,15 @@ import {
   CarouselPrevious,
   CarouselDots,
 } from '@/components/ui/carousel'
-import { ArticleModal } from '@/components/modals/article-modal'
-import { Calendar, User, ArrowRight, FileText } from 'lucide-react'
+import { BlogModal } from '@/components/blog/blog-modal'
+import { Database } from '@/types/database'
+import { Calendar, ArrowRight, FileText, Info } from 'lucide-react'
 import { formatDistanceToNow } from 'date-fns'
 import { sv } from 'date-fns/locale'
 
-interface Article {
-  id: string
-  title: string
-  slug: string
-  excerpt: string | null
-  featured_image: string | null
-  published_at: string | null
+type Article = Database['public']['Tables']['articles']['Row'] & {
   tags?: string[]
+  categories?: Database['public']['Tables']['categories']['Row'][]
   admin_users?: {
     full_name: string | null
     email: string
@@ -88,85 +82,23 @@ export function ArticleCarousel({ articles, title, description }: ArticleCarouse
 
       <div className="relative py-4 px-4">
         <div className="relative overflow-hidden">
-          {/* Fade gradient masks */}
-          <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
-          <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
+          {/* Fade gradient masks - optimerat för centrerad layout */}
+          <div className="absolute left-0 top-0 bottom-0 w-12 sm:w-16 md:w-20 bg-gradient-to-r from-background via-background/80 to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-12 sm:w-16 md:w-20 bg-gradient-to-l from-background via-background/80 to-transparent z-10 pointer-events-none" />
           
           <Carousel
             opts={{
-              align: "start",
+              align: "center",
               loop: true,
+              startIndex: Math.floor((articles.length - 1) / 2),
             }}
             className="w-full max-w-6xl mx-auto overflow-visible"
           >
             <CarouselContent className="-ml-2 md:-ml-4">
               {articles.map((article) => (
-                <CarouselItem key={article.id} className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/3 flex">
+                <CarouselItem key={article.id} className="pl-2 md:pl-4 basis-[85%] sm:basis-[60%] md:basis-[45%] lg:basis-1/3 flex">
                   <div className="p-2 flex flex-col w-full">
-                    <Card className="h-full overflow-visible transition-shadow flex flex-col cursor-pointer" onClick={() => handleArticleClick(article)}>
-                      <div className="flex flex-col h-full">
-                        {article.featured_image && (
-                          <div className="aspect-video relative overflow-hidden rounded-t-lg">
-                            <Image
-                              src={article.featured_image}
-                              alt={article.title}
-                              fill
-                              className="object-cover transition-transform hover:scale-105"
-                              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                            />
-                          </div>
-                        )}
-                        
-                        <CardHeader className="space-y-2">
-                          <div className="flex items-center gap-2">
-                            <Badge variant="secondary">Artikel</Badge>
-                            {article.published_at && (
-                              <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                                <Calendar className="h-3 w-3" />
-                                {formatDistanceToNow(new Date(article.published_at), {
-                                  addSuffix: true,
-                                  locale: sv
-                                })}
-                              </div>
-                            )}
-                          </div>
-                          
-                          <CardTitle className="leading-tight hover:text-primary transition-colors min-h-[3rem] flex items-start">
-                            {article.title}
-                          </CardTitle>
-                        </CardHeader>
-
-                        {article.excerpt && (
-                          <CardContent className="pt-0 flex-grow">
-                            <CardDescription className="line-clamp-3">
-                              {article.excerpt}
-                            </CardDescription>
-                          </CardContent>
-                        )}
-
-                        {article.tags && article.tags.length > 0 && (
-                          <CardContent className="pt-0">
-                            <TagsDisplay 
-                              tags={article.tags} 
-                              maxVisible={3}
-                              size="sm"
-                              variant="outline"
-                            />
-                          </CardContent>
-                        )}
-
-                        {article.admin_users && (
-                          <CardContent className="pt-0 mt-auto">
-                            <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                              <User className="h-3 w-3" />
-                              <span>
-                                {article.admin_users.full_name || article.admin_users.email}
-                              </span>
-                            </div>
-                          </CardContent>
-                        )}
-                      </div>
-                    </Card>
+                    <ArticleCard article={article} onClick={() => handleArticleClick(article)} />
                   </div>
                 </CarouselItem>
               ))}
@@ -189,7 +121,7 @@ export function ArticleCarousel({ articles, title, description }: ArticleCarouse
         </Button>
       </div>
       
-      <ArticleModal 
+      <BlogModal 
         article={selectedArticle}
         open={modalOpen}
         onOpenChange={setModalOpen}
