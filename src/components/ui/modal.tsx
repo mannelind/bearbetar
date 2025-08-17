@@ -1,6 +1,7 @@
 'use client'
 
 import { createContext, useContext, useEffect, useState, useCallback, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -58,14 +59,44 @@ export function Modal({ children, open, onOpenChange }: ModalProps) {
 
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = 'unset'
+      // Store current scroll position
+      const scrollY = window.scrollY
+      const body = document.body
+      const html = document.documentElement
+      
+      // Get scrollbar width to prevent layout shift
+      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth
+      
+      // Lock body scroll and prevent layout shift
+      body.style.overflow = 'hidden'
+      body.style.position = 'fixed'
+      body.style.top = `-${scrollY}px`
+      body.style.left = '0'
+      body.style.right = '0'
+      body.style.paddingRight = `${scrollbarWidth}px`
+      
+      // Also lock html element
+      html.style.overflow = 'hidden'
+      
+      return () => {
+        // Restore body scroll
+        body.style.overflow = ''
+        body.style.position = ''
+        body.style.top = ''
+        body.style.left = ''
+        body.style.right = ''
+        body.style.paddingRight = ''
+        
+        // Restore html
+        html.style.overflow = ''
+        
+        // Restore scroll position
+        window.scrollTo(0, scrollY)
+      }
     }
-
-    return () => {
-      document.body.style.overflow = 'unset'
-    }
+    
+    // Return empty cleanup function when modal is closed
+    return () => {}
   }, [isOpen])
 
   return (
@@ -167,6 +198,8 @@ export function ModalContent({
   showCloseButton = true 
 }: ModalContentProps) {
   const context = useContext(ModalContext)
+  const [mounted, setMounted] = useState(false)
+  
   if (!context) {
     throw new Error('ModalContent must be used within a Modal')
   }
@@ -174,39 +207,45 @@ export function ModalContent({
   const { isOpen, close } = context
   const focusTrapRef = useFocusTrap(isOpen)
 
-  if (!isOpen) return null
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!isOpen || !mounted) return null
 
   const sizeClasses = {
     sm: 'max-w-md',
     md: 'max-w-lg',
-    lg: 'max-w-xl',
-    xl: 'max-w-2xl',
+    lg: 'max-w-2xl',
+    xl: 'max-w-4xl',
     full: 'max-w-[95vw] max-h-[95vh]'
   }
 
-  return (
-    <div className="fixed inset-0 z-[70] flex items-center justify-center p-4">
-      {/* Backdrop */}
+  return createPortal(
+    <>
+      {/* Backdrop - separate layer covering entire viewport */}
       <div 
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+        className="fixed inset-0 z-[80] bg-muted/80 backdrop-blur-sm"
         onClick={close}
         aria-hidden="true"
       />
       
-      {/* Content */}
-      <div 
-        ref={focusTrapRef}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="modal-title"
-        tabIndex={-1}
-        className={cn(
-          "relative bg-background border rounded-lg shadow-xl max-h-[80vh] overflow-hidden w-full focus:outline-none",
-          sizeClasses[size],
-          className
-        )}
-        onClick={(e) => e.stopPropagation()}
-      >
+      {/* Modal container */}
+      <div className="fixed inset-0 z-[85] flex items-center justify-center p-4 pointer-events-none">
+        {/* Content */}
+        <div 
+          ref={focusTrapRef}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="modal-title"
+          tabIndex={-1}
+          className={cn(
+            "relative bg-background border rounded-lg shadow-xl max-h-[90vh] overflow-hidden w-full focus:outline-none pointer-events-auto",
+            sizeClasses[size],
+            className
+          )}
+          onClick={(e) => e.stopPropagation()}
+        >
         {showCloseButton && (
           <button
             onClick={close}
@@ -218,8 +257,10 @@ export function ModalContent({
           </button>
         )}
         {children}
+        </div>
       </div>
-    </div>
+    </>,
+    document.body
   )
 }
 
@@ -231,9 +272,9 @@ export function ModalHeader({ children, className }: { children: React.ReactNode
   )
 }
 
-export function ModalBody({ children, className }: { children: React.ReactNode, className?: string }) {
+export function ModalBody({ children, className, ...props }: { children: React.ReactNode, className?: string } & React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className={cn("p-6", className)}>
+    <div className={cn("p-6", className)} {...props}>
       {children}
     </div>
   )

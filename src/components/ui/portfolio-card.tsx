@@ -47,7 +47,7 @@ export function PortfolioCard({ project, onClick, className = '' }: PortfolioCar
           
           {/* Top metadata - project type and date */}
           <div className="absolute top-2 left-2 flex items-center gap-2">
-            <Badge variant="secondary" className="bg-white/90 text-black hover:bg-white">
+            <Badge variant="secondary" className="bg-white/90 text-black hover:bg-white text-center">
               {project.project_type === 'case_study' ? (
                 <>
                   <FileText className="h-3 w-3 mr-1" />
@@ -61,7 +61,7 @@ export function PortfolioCard({ project, onClick, className = '' }: PortfolioCar
               )}
             </Badge>
             {project.completion_date && (
-              <Badge variant="outline" className="bg-white/20 text-white border-white/30 backdrop-blur-sm">
+              <Badge variant="outline" className="bg-white/20 text-white border-white/30 backdrop-blur-sm text-center">
                 <Calendar className="h-3 w-3 mr-1" />
                 {new Date(project.completion_date).toLocaleDateString('sv-SE')}
               </Badge>
@@ -71,7 +71,7 @@ export function PortfolioCard({ project, onClick, className = '' }: PortfolioCar
           {/* Gallery indicator */}
           {project.gallery_count && project.gallery_count > 0 && (
             <div className="absolute top-2 right-2">
-              <Badge variant="outline" className="bg-white/20 text-white border-white/30 backdrop-blur-sm">
+              <Badge variant="outline" className="bg-white/20 text-white border-white/30 backdrop-blur-sm text-center">
                 +{project.gallery_count} bilder
               </Badge>
             </div>
@@ -108,7 +108,7 @@ export function PortfolioCard({ project, onClick, className = '' }: PortfolioCar
                   <ColoredBadge key={category.id} tag={category.name} className="text-xs" />
                 ))}
                 {project.portfolio_categories.length > 3 && (
-                  <Badge variant="secondary" className="text-xs">
+                  <Badge variant="secondary" className="text-xs text-center">
                     +{project.portfolio_categories.length - 3}
                   </Badge>
                 )}
@@ -127,7 +127,7 @@ export function PortfolioCard({ project, onClick, className = '' }: PortfolioCar
                   <ColoredBadge key={tag.id} tag={tag.name} className="text-xs" />
                 ))}
                 {project.tags.length > 3 && (
-                  <Badge variant="outline" className="text-xs">
+                  <Badge variant="outline" className="text-xs text-center">
                     +{project.tags.length - 3}
                   </Badge>
                 )}

@@ -105,7 +105,20 @@ export function PortfolioGrid() {
             id: '1',
             title: 'E-handelsplattform för lokalföretag',
             slug: 'e-handelsplattform-lokalforetag',
-            description: 'Modern e-handelslösning med fokus på användarvänlighet och snabba laddningstider. Integrerad betalning och lagerhantering.',
+            description: `
+              <div class="space-y-6">
+                <p>Modern e-handelslösning med fokus på användarvänlighet och snabba laddningstider. Integrerad betalning och lagerhantering.</p>
+                
+                <h2>Projektöversikt</h2>
+                <p>Detta projekt involverade utveckling av en komplett e-handelslösning för ett lokalt företag som ville digitalisera sin verksamhet.</p>
+                
+                <h2>Teknisk implementation</h2>
+                <p>Vi använde Next.js för att skapa en snabb och SEO-vänlig frontend, medan Stripe hanterade alla betalningar säkert.</p>
+                
+                <h2>Resultat</h2>
+                <p>Företaget såg en 300% ökning av online-försäljning inom första kvartalet efter lansering.</p>
+              </div>
+            `,
             content: 'Detta projekt involverade utveckling av en komplett e-handelslösning för ett lokalt företag.',
             excerpt: 'Modern e-handelslösning med fokus på användarvänlighet och snabba laddningstider.',
             featured_image: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&h=600&fit=crop&crop=center',
@@ -134,7 +147,23 @@ export function PortfolioGrid() {
             id: '2',
             title: 'Bokningssystem för frisörsalong',
             slug: 'bokningssystem-frisor',
-            description: 'Digitalt bokningssystem som gjorde det enkelt för kunder att boka tid och för personalen att hantera schema.',
+            description: `
+              <div class="space-y-6">
+                <p>Digitalt bokningssystem som gjorde det enkelt för kunder att boka tid och för personalen att hantera schema.</p>
+                
+                <h2>Utmaningen</h2>
+                <p>Salongen hade problem med dubbelbokningar och kunde inte effektivt hantera sina tider.</p>
+                
+                <h2>Lösningen</h2>
+                <p>Ett skräddarsytt bokningssystem som revolutionerade hur salongen hanterar sina bokningar.</p>
+                
+                <h2>Teknisk arkitektur</h2>
+                <p>Vi byggde systemet med React för en responsiv frontend och Node.js för backend-logiken.</p>
+                
+                <h2>Resultat och påverkan</h2>
+                <p>Systemet minskade dubbelbokningar med 95% och ökade kundnöjdheten markant.</p>
+              </div>
+            `,
             content: 'Ett skräddarsytt bokningssystem som revolutionerade hur salongen hanterar sina bokningar.',
             excerpt: 'Digitalt bokningssystem för enkel tidsbokning och schemahantering.',
             featured_image: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=800&h=600&fit=crop&crop=center',
@@ -163,7 +192,20 @@ export function PortfolioGrid() {
             id: '3',
             title: 'Mobilapp för träningslogg',
             slug: 'mobilapp-traningslogg',
-            description: 'Enkel och intuitiv app för att logga träningspass och följa framsteg över tid.',
+            description: `
+              <div class="space-y-6">
+                <p>Enkel och intuitiv app för att logga träningspass och följa framsteg över tid.</p>
+                
+                <h2>Användarupplevelse</h2>
+                <p>En motiverande träningsapp som hjälper användare att hålla koll på sina träningspass.</p>
+                
+                <h2>Funktioner</h2>
+                <p>Appen inkluderar träningslogg, progressspårning, statistik och motiverande notifikationer.</p>
+                
+                <h2>Teknologi</h2>
+                <p>Utvecklad med React Native för att fungera på både iOS och Android med en gemensam kodbas.</p>
+              </div>
+            `,
             content: 'En motiverande träningsapp som hjälper användare att hålla koll på sina träningspass.',
             excerpt: 'Enkel och intuitiv app för träningslogg och framstegsspårning.',
             featured_image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=600&fit=crop&crop=center',

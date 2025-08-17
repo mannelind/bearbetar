@@ -1,14 +1,15 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import Image from 'next/image'
 import { createBrowserClient } from '@supabase/ssr'
 import { Database } from '@/types/database'
-import { Modal, ModalContent, ModalHeader, ModalBody } from '@/components/ui/modal'
+import { Modal, ModalContent } from '@/components/ui/modal'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
-import { Calendar, Clock, User, Tag } from 'lucide-react'
+import { Calendar, Clock, User, Tag, List } from 'lucide-react'
 
 type Article = Database['public']['Tables']['articles']['Row'] & {
   categories?: Database['public']['Tables']['categories']['Row'][]
@@ -35,6 +36,13 @@ export function BlogModal({ article, open, onOpenChange }: BlogModalProps) {
   const [fullArticle, setFullArticle] = useState<Article | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [scrollTop, setScrollTop] = useState(0)
+  const [scrollHeight, setScrollHeight] = useState(0)
+  const [clientHeight, setClientHeight] = useState(0)
+  const [mounted, setMounted] = useState(false)
+  const [headings, setHeadings] = useState<Array<{id: string, text: string, level: number}>>([])
+  const [activeHeading, setActiveHeading] = useState<string | null>(null)
+  const contentRef = useRef<HTMLDivElement>(null)
 
   const loadFullArticle = useCallback(async (articleId: string) => {
     setLoading(true)
@@ -84,16 +92,41 @@ export function BlogModal({ article, open, onOpenChange }: BlogModalProps) {
             content: `<div class="space-y-6">
               <p>Detta är mock-innehåll för artikeln "<strong>${article.title}</strong>" i utvecklingsläge.</p>
               
-              <p>I en riktig miljö skulle detta innehåll komma från Supabase-databasen och innehålla den fullständiga artikeltexten med formatering.</p>
+              <p>I en riktig miljö skulle detta innehåll komma från Supabase-databasen och innehålla den fullständiga artikeltexten med formatering. Detta är en mycket lång text som ska visa hur scrollbaren fungerar när innehållet är längre än vad som får plats i modal-fönstret.</p>
               
               <h2>Om denna artikel</h2>
               <p>${article.excerpt || 'Ingen sammanfattning tillgänglig.'}</p>
               
-              <p>Detta är bara en demonstration av hur modal-fönstret fungerar när en artikel öppnas.</p>
+              <p>Detta är bara en demonstration av hur modal-fönstret fungerar när en artikel öppnas. Vi vill se till att scrollbaren visas korrekt när innehållet är för långt för att få plats i modal-fönstret.</p>
+              
+              <h2>Mer innehåll för att testa scrollning</h2>
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+              
+              <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+              
+              <h2>Ännu mer text</h2>
+              <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+              
+              <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.</p>
+              
+              <h2>Tekniska detaljer</h2>
+              <p>Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.</p>
+              
+              <p>Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur?</p>
+              
+              <h2>Sammanfattning</h2>
+              <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident.</p>
+              
+              <p>Similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio.</p>
               
               <blockquote class="border-l-4 border-primary pl-4 italic">
-                "I produktionsmiljön kommer detta att ersättas med verkligt innehåll från databasen."
+                "I produktionsmiljön kommer detta att ersättas med verkligt innehåll från databasen. Detta längre mock-innehåll hjälper oss att testa scrollning-funktionaliteten."
               </blockquote>
+              
+              <h2>Slutkommentar</h2>
+              <p>Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus.</p>
+              
+              <p>Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae.</p>
             </div>`,
             categories: [],
             tags: [],
@@ -138,12 +171,27 @@ export function BlogModal({ article, open, onOpenChange }: BlogModalProps) {
           content: `<div class="space-y-6">
             <p>Detta är mock-innehåll för artikeln "<strong>${article.title}</strong>" (fallback-läge).</p>
             
-            <p>Supabase-anslutningen misslyckades, så vi visar mock-data istället i utvecklingsläge.</p>
+            <p>Supabase-anslutningen misslyckades, så vi visar mock-data istället i utvecklingsläge. Detta är en mycket lång text som ska visa hur scrollbaren fungerar när innehållet är längre än vad som får plats i modal-fönstret.</p>
             
             <h2>Artikel-sammanfattning</h2>
             <p>${article.excerpt || 'Ingen sammanfattning tillgänglig.'}</p>
             
-            <p>I produktionsmiljön skulle detta visa det verkliga innehållet från databasen.</p>
+            <p>I produktionsmiljön skulle detta visa det verkliga innehållet från databasen. Vi vill se till att scrollbaren visas korrekt när innehållet är för långt för att få plats i modal-fönstret.</p>
+            
+            <h2>Ytterligare innehåll för scrolltest</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+            
+            <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            
+            <h2>Mer test-innehåll</h2>
+            <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+            
+            <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.</p>
+            
+            <h2>Fallback-läge information</h2>
+            <p>Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.</p>
+            
+            <p>Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur?</p>
           </div>`,
           categories: [],
           tags: [],
@@ -184,11 +232,116 @@ export function BlogModal({ article, open, onOpenChange }: BlogModalProps) {
     return `${minutes} min läsning`
   }
 
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const target = e.currentTarget
+    setScrollTop(target.scrollTop)
+    setScrollHeight(target.scrollHeight)
+    setClientHeight(target.clientHeight)
+    updateActiveHeading()
+  }
+
+  const handleScrollbarDrag = (e: React.MouseEvent<HTMLDivElement>) => {
+    const container = document.getElementById('article-content')
+    if (!container) return
+
+    const scrollbar = e.currentTarget
+    const rect = scrollbar.getBoundingClientRect()
+    const percentage = (e.clientY - rect.top) / rect.height
+    const maxScroll = scrollHeight - clientHeight
+    container.scrollTop = percentage * maxScroll
+  }
+
+  const extractHeadings = useCallback(() => {
+    // Wait a bit for content to be fully rendered with dangerouslySetInnerHTML
+    setTimeout(() => {
+      const container = document.getElementById('article-content')
+      if (!container) return
+
+      const headingElements = container.querySelectorAll('h1, h2, h3, h4, h5, h6')
+
+      if (headingElements.length === 0) return
+
+      const extractedHeadings = Array.from(headingElements).map((heading, index) => {
+        const text = heading.textContent?.trim() || ''
+        const level = parseInt(heading.tagName.charAt(1))
+        const id = `blog-heading-${index}`
+        heading.id = id
+        return { id, text, level }
+      })
+
+      setHeadings(extractedHeadings)
+    }, 200) // Increased timeout to ensure HTML is rendered
+  }, [])
+
+  const scrollToHeading = (headingId: string) => {
+    const element = document.getElementById(headingId)
+    const container = document.getElementById('article-content')
+    
+    if (element && container) {
+      // Calculate the position relative to the container's scroll area
+      const elementTop = element.offsetTop
+      const containerPadding = 20 // Add some padding from the top
+      const targetScrollTop = elementTop - containerPadding
+      
+      container.scrollTo({ 
+        top: Math.max(0, targetScrollTop), 
+        behavior: 'smooth' 
+      })
+    }
+  }
+
+  const updateActiveHeading = useCallback(() => {
+    if (!contentRef.current || headings.length === 0) return
+
+    const container = document.getElementById('article-content')
+    if (!container) return
+
+    const containerRect = container.getBoundingClientRect()
+    let activeId = null
+
+    for (const heading of headings) {
+      const element = document.getElementById(heading.id)
+      if (element) {
+        const rect = element.getBoundingClientRect()
+        if (rect.top - containerRect.top <= 100) {
+          activeId = heading.id
+        }
+      }
+    }
+
+    setActiveHeading(activeId)
+  }, [headings])
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  useEffect(() => {
+    if (open && fullArticle) {
+      setTimeout(() => {
+        const container = document.getElementById('article-content')
+        if (container) {
+          setScrollHeight(container.scrollHeight)
+          setClientHeight(container.clientHeight)
+          setScrollTop(container.scrollTop)
+        }
+      }, 100)
+      
+      // Extract headings with a longer delay to ensure dangerouslySetInnerHTML content is rendered
+      extractHeadings()
+    }
+    if (!open) {
+      setHeadings([])
+      setActiveHeading(null)
+    }
+  }, [open, fullArticle, extractHeadings])
+
   if (!article) return null
 
   return (
-    <Modal open={open} onOpenChange={onOpenChange}>
-      <ModalContent size="lg" className="max-h-[80vh] max-w-lg overflow-hidden h-[80vh] flex flex-col">
+    <>
+      <Modal open={open} onOpenChange={onOpenChange}>
+        <ModalContent size="full" className="overflow-hidden h-[75vh] max-w-5xl p-0">
         {loading ? (
           <div className="p-8 text-center">
             <div className="loading-spinner w-8 h-8 mx-auto mb-4" />
@@ -202,107 +355,202 @@ export function BlogModal({ article, open, onOpenChange }: BlogModalProps) {
             </Button>
           </div>
         ) : fullArticle ? (
-          <div className="flex flex-col h-full">
-            {/* Header */}
-            <ModalHeader className="flex-shrink-0">
-              <div className="space-y-4">
-                {/* Featured Image */}
-                {fullArticle.featured_image && (
-                  <div className="relative aspect-video bg-muted rounded-lg overflow-hidden">
+          <div className="relative flex h-full">
+            {/* Left 40% - Featured Image + Metadata */}
+            <div className="w-2/5 flex-shrink-0 flex flex-col">
+              {/* Image */}
+              <div className="flex-1">
+                {fullArticle.featured_image ? (
+                  <div className="relative h-full bg-background">
                     <Image 
                       src={fullArticle.featured_image} 
                       alt={fullArticle.title}
                       fill
-                      className="object-cover"
-                      sizes="(max-width: 768px) 100vw, 80vw"
+                      className="object-contain"
+                      sizes="40vw"
                     />
+                  </div>
+                ) : (
+                  <div className="h-full bg-background flex items-center justify-start">
+                    <div className="text-muted-foreground text-center">
+                      <div className="text-4xl mb-2">📰</div>
+                      <p>Ingen bild tillgänglig</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+              
+              {/* Metadata under image */}
+              <div className="p-4 space-y-3 border-t border-border">
+                {/* Author */}
+                {fullArticle.author && (
+                  <div className="flex items-center gap-3">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={fullArticle.author.avatar_url || undefined} />
+                      <AvatarFallback>
+                        <User className="h-4 w-4" />
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <p className="text-sm font-medium">
+                        {fullArticle.author.full_name || fullArticle.author.email}
+                      </p>
+                      <p className="text-xs text-muted-foreground">Författare</p>
+                    </div>
+                  </div>
+                )}
+                
+                {/* Date and Reading time */}
+                <div className="flex items-center gap-6 text-sm text-muted-foreground">
+                  <div className="flex items-center gap-1">
+                    <Calendar className="h-4 w-4" />
+                    {new Date(fullArticle.created_at).toLocaleDateString('sv-SE')}
+                  </div>
+                  
+                  {fullArticle.content && (
+                    <div className="flex items-center gap-1">
+                      <Clock className="h-4 w-4" />
+                      {formatReadingTime(fullArticle.content)}
+                    </div>
+                  )}
+                </div>
+
+                {/* Updated date */}
+                {fullArticle.updated_at && new Date(fullArticle.updated_at) > new Date(fullArticle.created_at) && (
+                  <div className="text-xs text-muted-foreground">
+                    Uppdaterad: {new Date(fullArticle.updated_at).toLocaleDateString('sv-SE')}
                   </div>
                 )}
 
+                {/* Categories and Tags */}
+                <div className="flex flex-wrap gap-2">
+                  {fullArticle.categories?.map((category: any) => (
+                    <Badge key={category.id} variant="default" className="text-xs">
+                      {category.name}
+                    </Badge>
+                  ))}
+                  
+                  {fullArticle.tags?.map((tag: any) => (
+                    <Badge key={tag.id} variant="secondary" className="text-xs">
+                      <Tag className="h-3 w-3 mr-1" />
+                      {tag.name}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Right 60% - Content */}
+            <div className="w-3/5 flex-shrink-0 flex flex-col overflow-hidden">
+              <div className="flex-1 pl-6 py-6 pr-6 overflow-hidden">
+                <div 
+                  id="article-content" 
+                  className="h-full overflow-y-auto"
+                  style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                  onScroll={handleScroll}
+                >
+                  <style jsx>{`
+                    div::-webkit-scrollbar {
+                      display: none;
+                    }
+                  `}</style>
+                
                 {/* Title and Meta */}
-                <div className="space-y-3">
-                  <h1 className="text-3xl font-bold leading-tight">{fullArticle.title}</h1>
+                <div className="space-y-4 mb-6">
+                  <h1 className="text-2xl font-bold leading-tight">{fullArticle.title}</h1>
                   
                   {fullArticle.excerpt && (
-                    <p className="text-lg text-muted-foreground leading-relaxed">
+                    <p className="text-muted-foreground leading-relaxed">
                       {fullArticle.excerpt}
                     </p>
                   )}
+                </div>
 
-                  {/* Author and Date */}
-                  <div className="flex items-center justify-between flex-wrap gap-4">
-                    <div className="flex items-center gap-4">
-                      {fullArticle.author && (
-                        <div className="flex items-center gap-3">
-                          <Avatar className="h-10 w-10">
-                            <AvatarImage src={fullArticle.author.avatar_url || undefined} />
-                            <AvatarFallback>
-                              <User className="h-5 w-5" />
-                            </AvatarFallback>
-                          </Avatar>
-                          <div>
-                            <p className="text-sm font-medium">
-                              {fullArticle.author.full_name || fullArticle.author.email}
-                            </p>
-                            <p className="text-xs text-muted-foreground">Författare</p>
-                          </div>
-                        </div>
-                      )}
-                      
-                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                        <div className="flex items-center gap-1">
-                          <Calendar className="h-4 w-4" />
-                          {new Date(fullArticle.created_at).toLocaleDateString('sv-SE')}
-                        </div>
-                        
-                        {fullArticle.content && (
-                          <div className="flex items-center gap-1">
-                            <Clock className="h-4 w-4" />
-                            {formatReadingTime(fullArticle.content)}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Updated date */}
-                    {fullArticle.updated_at && new Date(fullArticle.updated_at) > new Date(fullArticle.created_at) && (
-                      <div className="text-xs text-muted-foreground">
-                        Uppdaterad: {new Date(fullArticle.updated_at).toLocaleDateString('sv-SE')}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Categories and Tags */}
-                  <div className="flex flex-wrap gap-2">
-                    {fullArticle.categories?.map((category: any) => (
-                      <Badge key={category.id} variant="default">
-                        {category.name}
-                      </Badge>
-                    ))}
-                    
-                    {fullArticle.tags?.map((tag: any) => (
-                      <Badge key={tag.id} variant="secondary">
-                        <Tag className="h-3 w-3 mr-1" />
-                        {tag.name}
-                      </Badge>
-                    ))}
-                  </div>
+                {/* Article Content */}
+                {fullArticle.content && (
+                  <div 
+                    ref={contentRef}
+                    className="prose prose-sm max-w-none dark:prose-invert prose-headings:text-foreground prose-p:text-muted-foreground prose-strong:text-foreground prose-code:text-foreground prose-pre:bg-muted prose-pre:border"
+                    dangerouslySetInnerHTML={{ __html: fullArticle.content }}
+                  />
+                )}
                 </div>
               </div>
-            </ModalHeader>
-
-            {/* Body with scrollable content */}
-            <ModalBody className="flex-1 overflow-y-auto pr-2 -mr-2">
-              {fullArticle.content && (
-                <div 
-                  className="prose prose-lg max-w-none dark:prose-invert prose-headings:text-foreground prose-p:text-muted-foreground prose-strong:text-foreground prose-code:text-foreground prose-pre:bg-muted prose-pre:border"
-                  dangerouslySetInnerHTML={{ __html: fullArticle.content }}
-                />
-              )}
-            </ModalBody>
+            </div>
           </div>
         ) : null}
-      </ModalContent>
-    </Modal>
+        </ModalContent>
+      </Modal>
+
+      {/* External Navigation Menu */}
+      {mounted && open && fullArticle && headings.length > 0 && createPortal(
+        <div className="fixed top-1/2 right-8 -translate-y-1/2 w-56 z-[999]">
+          <div className="flex items-center gap-2 mb-4 text-sm font-medium text-muted-foreground">
+            <List className="h-4 w-4" />
+            Innehåll
+          </div>
+          <nav className="space-y-1 max-h-[60vh] overflow-y-auto">
+            {headings.map((heading) => (
+              <button
+                key={heading.id}
+                onClick={() => scrollToHeading(heading.id)}
+                className={`
+                  w-full text-left text-xs px-2 py-1.5 transition-colors border border-transparent
+                  ${activeHeading === heading.id 
+                    ? 'text-primary font-medium border-primary/20' 
+                    : 'text-muted-foreground hover:text-foreground hover:border-muted/30'
+                  }
+                `}
+                style={{ paddingLeft: `${(heading.level - 1) * 8 + 8}px` }}
+              >
+                {heading.text}
+              </button>
+            ))}
+          </nav>
+        </div>,
+        document.body
+      )}
+
+      {/* External Scrollbar rendered via Portal to ensure highest z-index */}
+      {mounted && open && fullArticle && scrollHeight > clientHeight && createPortal(
+        <div className="fixed top-1/2 left-[calc(50vw+32rem+1rem)] -translate-y-1/2 w-3 h-[75vh] z-[999]">
+          <div className="relative h-full w-full bg-muted rounded-full">
+            <div
+              className="absolute left-0 w-full bg-muted-foreground/30 rounded-full cursor-pointer hover:bg-muted-foreground/70 transition-colors"
+              style={{
+                height: `${Math.max(20, (clientHeight / scrollHeight) * 100)}%`,
+                top: `${(scrollTop / (scrollHeight - clientHeight)) * (100 - Math.max(20, (clientHeight / scrollHeight) * 100))}%`
+              }}
+              onClick={handleScrollbarDrag}
+              onMouseDown={(e) => {
+                const startY = e.clientY
+                const startScrollTop = scrollTop
+                
+                const handleMouseMove = (e: MouseEvent) => {
+                  const container = document.getElementById('article-content')
+                  if (!container) return
+                  
+                  const deltaY = e.clientY - startY
+                  const scrollbarHeight = clientHeight - (clientHeight / scrollHeight) * clientHeight
+                  const scrollRatio = deltaY / scrollbarHeight
+                  const newScrollTop = Math.max(0, Math.min(scrollHeight - clientHeight, startScrollTop + scrollRatio * (scrollHeight - clientHeight)))
+                  
+                  container.scrollTop = newScrollTop
+                }
+                
+                const handleMouseUp = () => {
+                  document.removeEventListener('mousemove', handleMouseMove)
+                  document.removeEventListener('mouseup', handleMouseUp)
+                }
+                
+                document.addEventListener('mousemove', handleMouseMove)
+                document.addEventListener('mouseup', handleMouseUp)
+              }}
+            />
+          </div>
+        </div>,
+        document.body
+      )}
+    </>
   )
 }

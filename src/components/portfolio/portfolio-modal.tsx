@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import Image from 'next/image'
 import { createBrowserClient } from '@supabase/ssr'
 import { Database } from '@/types/database'
@@ -14,7 +15,8 @@ import {
   FileText, 
   Image as ImageIcon,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  List
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -38,6 +40,10 @@ export function PortfolioModal({ item, open, onOpenChange }: PortfolioModalProps
   const [fullItem, setFullItem] = useState<PortfolioItem | null>(null)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [loading, setLoading] = useState(false)
+  const [headings, setHeadings] = useState<Array<{id: string, text: string, level: number}>>([])
+  const [activeHeading, setActiveHeading] = useState<string | null>(null)
+  const [mounted, setMounted] = useState(false)
+  const contentRef = useRef<HTMLDivElement>(null)
 
   const loadFullItem = useCallback(async (itemId: string) => {
     setLoading(true)
@@ -108,8 +114,80 @@ export function PortfolioModal({ item, open, onOpenChange }: PortfolioModalProps
     if (!open) {
       setFullItem(null)
       setCurrentImageIndex(0)
+      setHeadings([])
+      setActiveHeading(null)
     }
   }, [open, item, fullItem, loadFullItemCallback])
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  const extractHeadings = useCallback(() => {
+    setTimeout(() => {
+      const container = document.querySelector('[data-portfolio-content]')
+      if (!container) return
+
+      const headingElements = container.querySelectorAll('h1, h2, h3, h4, h5, h6')
+
+      if (headingElements.length === 0) return
+
+      const extractedHeadings = Array.from(headingElements).map((heading, index) => {
+        const text = heading.textContent?.trim() || ''
+        const level = parseInt(heading.tagName.charAt(1))
+        const id = `portfolio-heading-${index}`
+        heading.id = id
+        return { id, text, level }
+      })
+
+      setHeadings(extractedHeadings)
+    }, 200)
+  }, [])
+
+  const scrollToHeading = (headingId: string) => {
+    const element = document.getElementById(headingId)
+    const container = document.querySelector('[data-portfolio-content]') as HTMLElement
+    if (element && container) {
+      const elementTop = element.offsetTop
+      const containerPadding = 20
+      const targetScrollTop = elementTop - containerPadding
+      
+      container.scrollTo({ 
+        top: Math.max(0, targetScrollTop), 
+        behavior: 'smooth' 
+      })
+    }
+  }
+
+  const updateActiveHeading = useCallback(() => {
+    if (!contentRef.current || headings.length === 0) return
+
+    const container = document.querySelector('[data-portfolio-content]')
+    if (!container) return
+
+    const containerRect = container.getBoundingClientRect()
+    let activeId = null
+
+    for (const heading of headings) {
+      const element = document.getElementById(heading.id)
+      if (element) {
+        const rect = element.getBoundingClientRect()
+        if (rect.top - containerRect.top <= 100) {
+          activeId = heading.id
+        }
+      }
+    }
+
+    setActiveHeading(activeId)
+  }, [headings])
+
+  useEffect(() => {
+    if (open && fullItem) {
+      setTimeout(() => {
+        extractHeadings()
+      }, 100)
+    }
+  }, [open, fullItem, extractHeadings])
 
   const allImages = fullItem ? [
     ...(fullItem.featured_image ? [{ url: fullItem.featured_image, caption: 'Huvudbild' }] : []),
@@ -127,8 +205,9 @@ export function PortfolioModal({ item, open, onOpenChange }: PortfolioModalProps
   if (!item) return null
 
   return (
-    <Modal open={open} onOpenChange={onOpenChange}>
-      <ModalContent size="xl" className="max-h-[95vh] overflow-hidden">
+    <>
+      <Modal open={open} onOpenChange={onOpenChange}>
+        <ModalContent size="xl" className="overflow-hidden">
         {loading ? (
           <div className="p-8 text-center">
             <div className="loading-spinner w-8 h-8 mx-auto mb-4" />
@@ -205,7 +284,7 @@ export function PortfolioModal({ item, open, onOpenChange }: PortfolioModalProps
             </ModalHeader>
 
             {/* Body with scrollable content */}
-            <ModalBody className="flex-1 overflow-y-auto space-y-6">
+            <ModalBody className="flex-1 overflow-y-auto space-y-6" data-portfolio-content onScroll={updateActiveHeading}>
               {/* Image Gallery */}
               {allImages.length > 0 && (
                 <div className="space-y-4">
@@ -293,6 +372,7 @@ export function PortfolioModal({ item, open, onOpenChange }: PortfolioModalProps
                   <div>
                     <h3 className="text-lg font-semibold mb-2">Beskrivning</h3>
                     <div 
+                      ref={contentRef}
                       className="prose prose-sm max-w-none dark:prose-invert"
                       dangerouslySetInnerHTML={{ __html: fullItem.description }}
                     />
@@ -325,7 +405,37 @@ export function PortfolioModal({ item, open, onOpenChange }: PortfolioModalProps
             </ModalBody>
           </div>
         ) : null}
-      </ModalContent>
-    </Modal>
+        </ModalContent>
+      </Modal>
+
+      {/* External Navigation Menu */}
+      {mounted && open && fullItem && headings.length > 0 && createPortal(
+        <div className="fixed top-1/2 right-8 -translate-y-1/2 w-56 z-[999]">
+          <div className="flex items-center gap-2 mb-4 text-sm font-medium text-muted-foreground">
+            <List className="h-4 w-4" />
+            Innehåll
+          </div>
+          <nav className="space-y-1 max-h-[60vh] overflow-y-auto">
+            {headings.map((heading) => (
+              <button
+                key={heading.id}
+                onClick={() => scrollToHeading(heading.id)}
+                className={`
+                  w-full text-left text-xs px-2 py-1.5 transition-colors border border-transparent
+                  ${activeHeading === heading.id 
+                    ? 'text-primary font-medium border-primary/20' 
+                    : 'text-muted-foreground hover:text-foreground hover:border-muted/30'
+                  }
+                `}
+                style={{ paddingLeft: `${(heading.level - 1) * 8 + 8}px` }}
+              >
+                {heading.text}
+              </button>
+            ))}
+          </nav>
+        </div>,
+        document.body
+      )}
+    </>
   )
 }

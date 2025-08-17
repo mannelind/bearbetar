@@ -232,7 +232,7 @@ export function Sidebar() {
                       size="sm"
                       onClick={handlePinToggle}
                       className={cn(
-                        "hidden md:flex text-foreground sidebar-btn-hover hover:scale-110 rounded-full",
+                        "hidden md:flex text-foreground sidebar-btn-hover rounded-full",
                         isPinned && "text-primary hover:text-primary/80"
                       )}
                     >
@@ -434,7 +434,7 @@ export function Sidebar() {
                   variant="ghost"
                   size="sm"
                   className={cn(
-                    "text-foreground hover:text-accent-foreground transition-all duration-300 ease-out hover:scale-105 hover:bg-destructive/10 rounded-full",
+                    "text-foreground hover:text-accent-foreground transition-all duration-300 ease-out hover:bg-destructive/10 rounded-full",
                     !showExpandedContent 
                       ? "h-8 w-8 p-0" 
                       : "w-full justify-start"

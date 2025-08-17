@@ -291,7 +291,7 @@
   button:hover .tech-icon {
     filter: drop-shadow(0 0 8px hsla(var(--primary), 0.5));
     animation: iconSpin 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    transform: scale(1.1) rotate(12deg);
+    transform: rotate(12deg);
   }
 
   /* Bohemian cyber glow effects */
@@ -491,7 +491,7 @@
   .light button:hover .tech-icon {
     filter: none;
     animation: iconSpin 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    transform: scale(1.1) rotate(12deg);
+    transform: rotate(12deg);
   }
 
   .light .cyber-glow {

@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import Image from 'next/image'
 import { Modal, ModalContent, ModalHeader, ModalBody } from '@/components/ui/modal'
 import { Button } from '@/components/ui/button'
@@ -11,16 +12,16 @@ import { Badge } from '@/components/ui/badge'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Mail, Phone, Clock, CheckCircle } from 'lucide-react'
+import { Mail, Phone, Clock, CheckCircle, List } from 'lucide-react'
 
 interface Service {
   id: string
   title: string
   description: string
-  short_description?: string
-  icon?: string
-  featured_image?: string
-  price_info?: string
+  short_description?: string | null
+  icon?: string | null
+  featured_image?: string | null
+  price_info?: string | null
   features?: string[]
   process_steps?: string[]
   estimated_timeline?: string
@@ -47,6 +48,10 @@ type ContactFormData = z.infer<typeof contactFormSchema>
 export function ServiceModal({ service, open, onOpenChange }: ServiceModalProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [headings, setHeadings] = useState<Array<{id: string, text: string, level: number}>>([])
+  const [activeHeading, setActiveHeading] = useState<string | null>(null)
+  const [mounted, setMounted] = useState(false)
+  const contentRef = useRef<HTMLDivElement>(null)
 
   const form = useForm<ContactFormData>({
     resolver: zodResolver(contactFormSchema),
@@ -84,6 +89,80 @@ export function ServiceModal({ service, open, onOpenChange }: ServiceModalProps)
     }
   }
 
+  const extractHeadings = useCallback(() => {
+    setTimeout(() => {
+      const container = document.querySelector('[data-service-content]')
+      if (!container) return
+
+      const headingElements = container.querySelectorAll('h1, h2, h3, h4, h5, h6')
+
+      if (headingElements.length === 0) return
+
+      const extractedHeadings = Array.from(headingElements).map((heading, index) => {
+        const text = heading.textContent?.trim() || ''
+        const level = parseInt(heading.tagName.charAt(1))
+        const id = `service-heading-${index}`
+        heading.id = id
+        return { id, text, level }
+      })
+
+      setHeadings(extractedHeadings)
+    }, 200)
+  }, [])
+
+  const scrollToHeading = (headingId: string) => {
+    const element = document.getElementById(headingId)
+    const container = document.querySelector('[data-service-content]') as HTMLElement
+    if (element && container) {
+      const elementTop = element.offsetTop
+      const containerPadding = 20
+      const targetScrollTop = elementTop - containerPadding
+      
+      container.scrollTo({ 
+        top: Math.max(0, targetScrollTop), 
+        behavior: 'smooth' 
+      })
+    }
+  }
+
+  const updateActiveHeading = useCallback(() => {
+    if (!contentRef.current || headings.length === 0) return
+
+    const container = document.querySelector('[data-service-content]')
+    if (!container) return
+
+    const containerRect = container.getBoundingClientRect()
+    let activeId = null
+
+    for (const heading of headings) {
+      const element = document.getElementById(heading.id)
+      if (element) {
+        const rect = element.getBoundingClientRect()
+        if (rect.top - containerRect.top <= 100) {
+          activeId = heading.id
+        }
+      }
+    }
+
+    setActiveHeading(activeId)
+  }, [headings])
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  useEffect(() => {
+    if (open && service) {
+      setTimeout(() => {
+        extractHeadings()
+      }, 100)
+    }
+    if (!open) {
+      setHeadings([])
+      setActiveHeading(null)
+    }
+  }, [open, service, extractHeadings])
+
   if (!service) return null
 
   // Simulerade features om de inte finns
@@ -105,8 +184,9 @@ export function ServiceModal({ service, open, onOpenChange }: ServiceModalProps)
   ]
 
   return (
-    <Modal open={open} onOpenChange={onOpenChange}>
-      <ModalContent size="xl" className="max-h-[95vh] overflow-hidden">
+    <>
+      <Modal open={open} onOpenChange={onOpenChange}>
+        <ModalContent size="xl" className="overflow-hidden">
         <div className="flex flex-col h-full">
           {/* Header */}
           <ModalHeader className="flex-shrink-0">
@@ -151,10 +231,10 @@ export function ServiceModal({ service, open, onOpenChange }: ServiceModalProps)
           </ModalHeader>
 
           {/* Body with scrollable content */}
-          <ModalBody className="flex-1 overflow-y-auto">
+          <ModalBody className="flex-1 overflow-y-auto" data-service-content onScroll={updateActiveHeading}>
             <div className="grid lg:grid-cols-2">
               {/* Left Column - Service Details */}
-              <div className="space-y-6">
+              <div className="space-y-6" ref={contentRef}>
                 {/* Features */}
                 <div>
                   <h3 className="text-xl font-semibold mb-4">Vad ingår</h3>
@@ -328,7 +408,37 @@ export function ServiceModal({ service, open, onOpenChange }: ServiceModalProps)
             </div>
           </ModalBody>
         </div>
-      </ModalContent>
-    </Modal>
+        </ModalContent>
+      </Modal>
+
+      {/* External Navigation Menu */}
+      {mounted && open && service && headings.length > 0 && createPortal(
+        <div className="fixed top-1/2 right-8 -translate-y-1/2 w-56 z-[999]">
+          <div className="flex items-center gap-2 mb-4 text-sm font-medium text-muted-foreground">
+            <List className="h-4 w-4" />
+            Innehåll
+          </div>
+          <nav className="space-y-1 max-h-[60vh] overflow-y-auto">
+            {headings.map((heading) => (
+              <button
+                key={heading.id}
+                onClick={() => scrollToHeading(heading.id)}
+                className={`
+                  w-full text-left text-xs px-2 py-1.5 transition-colors border border-transparent
+                  ${activeHeading === heading.id 
+                    ? 'text-primary font-medium border-primary/20' 
+                    : 'text-muted-foreground hover:text-foreground hover:border-muted/30'
+                  }
+                `}
+                style={{ paddingLeft: `${(heading.level - 1) * 8 + 8}px` }}
+              >
+                {heading.text}
+              </button>
+            ))}
+          </nav>
+        </div>,
+        document.body
+      )}
+    </>
   )
 }

@@ -1,15 +1,14 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { HeroSection } from '@/components/ui/hero-section'
 import { AnimatedSection, AnimatedGrid, PageWrapper } from '@/components/ui/page-animations'
+import { ServicesGrid } from '@/components/services/services-grid'
 import { createServerComponentClient } from '@/lib/supabase'
 import { 
   Globe, 
   Smartphone, 
   Code, 
   Coffee,
-  ArrowRight,
   CheckCircle,
   Heart,
   Zap 
@@ -29,25 +28,70 @@ export default async function ServicesPage() {
       id: '1',
       title: 'Webbsidor',
       short_description: 'Modern webbutveckling',
-      description: 'WordPress-sidor, React-appar och statiska siter. Månadsabonnemang för att göra professionell design tillgänglig för fler småföretag.',
+      description: `
+        <div class="space-y-6">
+          <p>WordPress-sidor, React-appar och statiska siter. Månadsabonnemang för att göra professionell design tillgänglig för fler småföretag.</p>
+          
+          <h2>Vad vi erbjuder</h2>
+          <p>Vi utvecklar moderna, responsiva webbsidor som fungerar perfekt på alla enheter. Från enkla WordPress-sidor till avancerade React-applikationer.</p>
+          
+          <h2>Teknologier vi använder</h2>
+          <p>WordPress, React, Next.js, Node.js, och moderna CSS-ramverk som Tailwind CSS för optimal prestanda och design.</p>
+          
+          <h2>Månadsabonnemang</h2>
+          <p>Genom vårt månadsabonnemang gör vi professionell webbutveckling tillgänglig för småföretag som tidigare inte haft råd med skräddarsydda lösningar.</p>
+        </div>
+      `,
       icon: 'Globe',
-      price_info: null
+      price_info: 'Från 2,000 kr/mån',
+      features: ['Responsiv design', 'SEO-optimering', 'Snabba laddningstider', 'Säkerhetsuppdateringar'],
+      process_steps: ['Konsultation', 'Design', 'Utveckling', 'Lansering', 'Support']
     },
     {
       id: '2', 
       title: 'Mobilappar',
       short_description: 'Mobilappar och webbappar',
-      description: 'React Native för mobil och moderna webbappar. Vi hjälper från idé till färdig produkt - ingen app-butik-byråkrati om det inte behövs.',
+      description: `
+        <div class="space-y-6">
+          <p>React Native för mobil och moderna webbappar. Vi hjälper från idé till färdig produkt - ingen app-butik-byråkrati om det inte behövs.</p>
+          
+          <h2>Mobilutveckling</h2>
+          <p>Med React Native kan vi utveckla appar som fungerar på både iOS och Android med en gemensam kodbas, vilket sparar tid och kostnad.</p>
+          
+          <h2>Webbappar</h2>
+          <p>Progressive Web Apps (PWA) ger app-liknande upplevelse direkt i webbläsaren utan installation från app-butiker.</p>
+          
+          <h2>Från idé till färdig produkt</h2>
+          <p>Vi guidar dig genom hela processen från konceptualisering till lansering och underhåll av din mobilapp.</p>
+        </div>
+      `,
       icon: 'Smartphone',
-      price_info: null
+      price_info: 'Projektbaserat',
+      features: ['Cross-platform utveckling', 'Native prestanda', 'Push-notifikationer', 'Offline-funktionalitet'],
+      process_steps: ['Idéutveckling', 'Prototyping', 'Utveckling', 'Testning', 'Lansering']
     },
     {
       id: '3',
       title: 'Skräddarsydd utveckling', 
       short_description: 'När standardlösningar inte räcker',
-      description: 'Har du något specifikt du vill bygga? Vi kan utveckla allt från enkla verktyg till komplexa system. Säg vad du behöver så fixar vi det.',
+      description: `
+        <div class="space-y-6">
+          <p>Har du något specifikt du vill bygga? Vi kan utveckla allt från enkla verktyg till komplexa system. Säg vad du behöver så fixar vi det.</p>
+          
+          <h2>Unika lösningar</h2>
+          <p>Varje företag har unika behov. Vi utvecklar skräddarsydda system som passar exakt dina krav och arbetsprocesser.</p>
+          
+          <h2>Omfattande expertis</h2>
+          <p>Från enkla automatiseringsverktyg till komplexa datahanteringssystem - vi har erfarenhet av att lösa många olika tekniska utmaningar.</p>
+          
+          <h2>Flexibel process</h2>
+          <p>Vi anpassar vår utvecklingsprocess efter ditt projekt och dina önskemål för att leverera bästa möjliga resultat.</p>
+        </div>
+      `,
       icon: 'Code',
-      price_info: null
+      price_info: 'Offereras per projekt',
+      features: ['Skräddarsydd lösning', 'Skalbar arkitektur', 'Integrationer', 'Löpande support'],
+      process_steps: ['Behovsanalys', 'Arkitektur', 'Utveckling', 'Testning', 'Lansering', 'Support']
     },
     {
       id: '4',
@@ -90,44 +134,7 @@ export default async function ServicesPage() {
       {/* Services Grid */}
       <AnimatedSection animation="scale-in">
         <section className="container py-16">
-          <AnimatedGrid className="grid gap-8 md:grid-cols-2 lg:grid-cols-2">
-            {displayServices.map((service: any) => {
-              const IconComponent = getIcon(service.icon || 'Target')
-              return (
-                <Card key={service.id} className="relative overflow-hidden hover:shadow-lg transition-shadow">
-                  <CardHeader>
-                    <div className="flex items-center gap-4">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
-                        <IconComponent className="h-6 w-6 text-primary" />
-                      </div>
-                      <div>
-                        <CardTitle className="text-xl">{service.title}</CardTitle>
-                        {service.short_description && (
-                          <CardDescription className="mt-1">
-                            {service.short_description}
-                          </CardDescription>
-                        )}
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <p className="text-muted-foreground">
-                      {service.description}
-                    </p>
-                    
-                    <div className="flex items-center justify-center pt-4 border-t">
-                      <Button size="sm" asChild>
-                        <Link href="/kontakt">
-                          Kontakta oss
-                          <ArrowRight className="ml-2 h-4 w-4" />
-                        </Link>
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              )
-            })}
-          </AnimatedGrid>
+          <ServicesGrid services={displayServices} getIcon={getIcon} />
         </section>
       </AnimatedSection>
 
