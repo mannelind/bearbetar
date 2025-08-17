@@ -5,20 +5,16 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { ColoredBadge } from '@/components/ui/colored-badge'
 import { Calendar, User, Eye, FileText, Image as ImageIcon } from 'lucide-react'
-import { formatDistanceToNow } from 'date-fns'
-import { sv } from 'date-fns/locale'
 import { Database } from '@/types/database'
 
-type PortfolioProject = Database['public']['Tables']['portfolio_items']['Row'] & {
+type PortfolioItem = Database['public']['Tables']['portfolio_items']['Row'] & {
   portfolio_categories?: Database['public']['Tables']['portfolio_categories']['Row'][]
   tags?: Database['public']['Tables']['tags']['Row'][]
-  technologies: string[]
-  category: string
   gallery_count?: number
 }
 
 interface PortfolioCardProps {
-  project: PortfolioProject
+  project: PortfolioItem
   onClick: () => void
   className?: string
 }

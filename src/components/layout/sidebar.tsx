@@ -185,13 +185,13 @@ export function Sidebar() {
       <aside 
         ref={sidebarRef}
         className={cn(
-          "bg-background/55 backdrop-blur transition-all duration-300 ease-out border-r border-input cyber-glow",
+          "bg-background/55 backdrop-blur transition-all duration-300 ease-out border-r border-input cyber-glow flex-shrink-0",
           // Mobile positioning and sizing (fixed for mobile overlay)
           isOpen 
             ? "fixed top-0 left-0 w-full h-full translate-y-0 z-[65]" 
-            : "fixed top-0 left-0 w-full h-screen -translate-y-full z-[65] md:fixed md:top-0 md:translate-y-0 md:h-[100vh] md:max-h-[100vh]",
-          // Desktop positioning and sizing (sticky positioning)
-          "md:flex-shrink-0",
+            : "fixed top-0 left-0 w-full h-screen -translate-y-full z-[65]",
+          // Desktop positioning and sizing (sticky positioning for push effect + follows scroll)
+          "md:sticky md:top-0 md:left-auto md:translate-y-0 md:h-[100vh]",
           (showExpandedContent && !isOpen) ? "md:w-64" : "md:w-16"
         )}
         style={{ 

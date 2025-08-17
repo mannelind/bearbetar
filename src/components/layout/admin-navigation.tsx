@@ -175,8 +175,10 @@ export function AdminNavigation({ user }: AdminNavigationProps) {
       <aside 
         ref={sidebarRef}
         className={cn(
-          "fixed left-0 top-0 z-[60] h-full transform bg-background/95 backdrop-blur transition-all duration-300 ease-in-out md:translate-x-0 cyber-border cyber-glow",
-          showExpandedContent ? "w-64" : "w-16",
+          "z-[60] transform bg-background/95 backdrop-blur transition-all duration-300 ease-in-out cyber-border cyber-glow flex-shrink-0",
+          // Mobile: fixed overlay positioning, Desktop: sticky positioning
+          "fixed left-0 top-0 h-screen md:sticky md:left-auto md:top-0 md:h-[100vh]",
+          showExpandedContent ? "w-64" : "w-16", 
           isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         )}
         style={{ 

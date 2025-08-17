@@ -150,126 +150,127 @@ export function ArticlesGrid({ articles, selectedTags = [], selectedCategory = '
                     className="w-full overflow-hidden hover:shadow-lg transition-shadow cursor-pointer group"
                     onClick={() => handleArticleClick(article)}
                   >
-                  // List view - horizontal layout with image on left
-                  <div className="flex flex-col md:flex-row gap-6">
-                    {article.featured_image && (
-                      <div className="aspect-video md:aspect-square relative md:w-48 flex-shrink-0 overflow-hidden rounded-lg">
-                        <Image
-                          src={article.featured_image}
-                          alt={article.title}
-                          fill
-                          className="object-cover transition-transform group-hover:scale-105"
-                          sizes="(max-width: 768px) 100vw, 192px"
-                        />
-                      </div>
-                    )}
-                    
-                    <div className="flex-1 flex flex-col">
-                      <CardHeader className="space-y-2">
-                        <div className="flex items-center gap-2">
-                          <Badge variant="secondary">Artikel</Badge>
-                          {article.published_at && (
-                            <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                              <Calendar className="h-3 w-3" />
-                              {formatDistanceToNow(new Date(article.published_at), {
-                                addSuffix: true,
-                                locale: sv
-                              })}
+                    {/* List view - horizontal layout with image on left */}
+                    <div className="flex flex-col md:flex-row gap-6">
+                      {article.featured_image && (
+                        <div className="aspect-video md:aspect-square relative md:w-48 flex-shrink-0 overflow-hidden rounded-lg">
+                          <Image
+                            src={article.featured_image}
+                            alt={article.title}
+                            fill
+                            className="object-cover transition-transform group-hover:scale-105"
+                            sizes="(max-width: 768px) 100vw, 192px"
+                          />
+                        </div>
+                      )}
+                      
+                      <div className="flex-1 flex flex-col">
+                        <CardHeader className="space-y-2">
+                          <div className="flex items-center gap-2">
+                            <Badge variant="secondary">Artikel</Badge>
+                            {article.published_at && (
+                              <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                                <Calendar className="h-3 w-3" />
+                                {formatDistanceToNow(new Date(article.published_at), {
+                                  addSuffix: true,
+                                  locale: sv
+                                })}
+                              </div>
+                            )}
+                          </div>
+                          
+                          <CardTitle className="line-clamp-2 hover:text-primary transition-colors">
+                            {article.title}
+                          </CardTitle>
+                        </CardHeader>
+
+                        {article.excerpt && (
+                          <CardContent className="pt-0">
+                            <CardDescription className="line-clamp-3">
+                              {article.excerpt}
+                            </CardDescription>
+                            <div className="mt-4">
+                              <Button 
+                                variant="outline" 
+                                size="sm"
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  handleArticleClick(article)
+                                }}
+                                className="flex items-center gap-2"
+                              >
+                                <BookOpen className="h-4 w-4" />
+                                Läs mer
+                              </Button>
                             </div>
+                          </CardContent>
+                        )}
+
+                        {/* Tags and author in list view */}
+                        <div className="mt-auto">
+                          {articleTags.length > 0 && (
+                            <CardContent className="pt-0">
+                              <div className="space-y-2">
+                                <div className="flex flex-wrap gap-1">
+                                  {visibleCardTags.map((tag, index) => (
+                                    <ColoredBadge
+                                      key={index}
+                                      tag={tag}
+                                      selected={selectedTags.includes(tag)}
+                                      className="text-xs"
+                                    />
+                                  ))}
+                                  
+                                  {hasMoreCardTags && (
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      onClick={(e) => {
+                                        e.stopPropagation()
+                                        toggleShowMoreCardTags(article.id)
+                                      }}
+                                      className="h-5 px-1 text-xs"
+                                    >
+                                      {showMoreCardTags[article.id] ? (
+                                        <>
+                                          mindre <ChevronUp className="ml-1 h-2 w-2" />
+                                        </>
+                                      ) : (
+                                        <>
+                                          +{articleTags.length - 3} <ChevronDown className="ml-1 h-2 w-2" />
+                                        </>
+                                      )}
+                                    </Button>
+                                  )}
+                                </div>
+                              </div>
+                            </CardContent>
+                          )}
+
+                          {/* Author */}
+                          {article.admin_users && (
+                            <CardContent className="pt-0">
+                              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                {article.admin_users.profile_image ? (
+                                  <div className="relative w-4 h-4 rounded-full overflow-hidden border border-border">
+                                    <Image
+                                      src={article.admin_users.profile_image}
+                                      alt={article.admin_users.full_name || article.admin_users.email}
+                                      fill
+                                      className="object-cover"
+                                      sizes="16px"
+                                    />
+                                  </div>
+                                ) : (
+                                  <User className="h-3 w-3" />
+                                )}
+                                <span>
+                                  {article.admin_users.full_name || article.admin_users.email}
+                                </span>
+                              </div>
+                            </CardContent>
                           )}
                         </div>
-                        
-                        <CardTitle className="line-clamp-2 hover:text-primary transition-colors">
-                          {article.title}
-                        </CardTitle>
-                      </CardHeader>
-
-                      {article.excerpt && (
-                        <CardContent className="pt-0">
-                          <CardDescription className="line-clamp-3">
-                            {article.excerpt}
-                          </CardDescription>
-                          <div className="mt-4">
-                            <Button 
-                              variant="outline" 
-                              size="sm"
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                handleArticleClick(article)
-                              }}
-                              className="flex items-center gap-2"
-                            >
-                              <BookOpen className="h-4 w-4" />
-                              Läs mer
-                            </Button>
-                          </div>
-                        </CardContent>
-                      )}
-
-                      {/* Tags and author in list view */}
-                      <div className="mt-auto">
-                        {articleTags.length > 0 && (
-                          <CardContent className="pt-0">
-                            <div className="space-y-2">
-                              <div className="flex flex-wrap gap-1">
-                                {visibleCardTags.map((tag, index) => (
-                                  <ColoredBadge
-                                    key={index}
-                                    tag={tag}
-                                    selected={selectedTags.includes(tag)}
-                                    className="text-xs"
-                                  />
-                                ))}
-                                
-                                {hasMoreCardTags && (
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={(e) => {
-                                      e.stopPropagation()
-                                      toggleShowMoreCardTags(article.id)
-                                    }}
-                                    className="h-5 px-1 text-xs"
-                                  >
-                                    {showMoreCardTags[article.id] ? (
-                                      <>
-                                        mindre <ChevronUp className="ml-1 h-2 w-2" />
-                                      </>
-                                    ) : (
-                                      <>
-                                        +{articleTags.length - 3} <ChevronDown className="ml-1 h-2 w-2" />
-                                      </>
-                                    )}
-                                  </Button>
-                                )}
-                              </div>
-                            </div>
-                          </CardContent>
-                        )}
-
-                        {/* Author */}
-                        {article.admin_users && (
-                          <CardContent className="pt-0">
-                            <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                              {article.admin_users.profile_image ? (
-                                <div className="relative w-4 h-4 rounded-full overflow-hidden border border-border">
-                                  <Image
-                                    src={article.admin_users.profile_image}
-                                    alt={article.admin_users.full_name || article.admin_users.email}
-                                    fill
-                                    className="object-cover"
-                                    sizes="16px"
-                                  />
-                                </div>
-                              ) : (
-                                <User className="h-3 w-3" />
-                              )}
-                              <span>
-                                {article.admin_users.full_name || article.admin_users.email}
-                              </span>
-                            </div>
-                          </CardContent>
-                        )}
                       </div>
                     </div>
                   </Card>

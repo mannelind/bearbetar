@@ -22,7 +22,7 @@ async function AdminPageWrapper({ children }: AdminPageWrapperProps) {
     <AdminSidebarProvider>
       <div className="flex min-h-screen bg-background">
         <AdminNavigation user={userData} />
-        <div className="flex-1 transition-all duration-300 ease-in-out lg:pl-[var(--admin-sidebar-width)]">
+        <div className="flex-1 transition-all duration-300 ease-in-out overflow-auto">
           <main className="container py-6">
             {children}
           </main>

@@ -1,4 +1,3 @@
-import { Badge } from '@/components/ui/badge'
 
 // Define tag categories and their colors
 const tagColors: Record<string, string> = {

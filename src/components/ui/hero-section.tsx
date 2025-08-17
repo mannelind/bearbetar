@@ -15,9 +15,9 @@ export function HeroSection({ children, showLogo = true, className = '' }: HeroS
     <section className={`relative futuristic-gradient gradient-mesh overflow-hidden ${className}`}>
       <InteractiveOrbs />
       
-      <div className="container px-4 py-16 md:py-32 lg:py-40">
+      <div className="container px-4 py-16 md:py-20">
         <div className="mx-auto w-full">
-          <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 lg:gap-6 items-center text-center lg:text-left">
+          <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 lg:gap-8 items-center text-center lg:text-left">
             {/* Left side - Logo */}
             {showLogo && (
               <div className="flex justify-center animate-slide-in-left">
@@ -25,7 +25,7 @@ export function HeroSection({ children, showLogo = true, className = '' }: HeroS
                   alt="Bearbetar logotyp"
                   width={600}
                   height={240}
-                  className="w-full h-auto max-w-xs md:max-w-sm lg:max-w-lg"
+                  className="h-auto"
                   type="full"
                   priority
                 />

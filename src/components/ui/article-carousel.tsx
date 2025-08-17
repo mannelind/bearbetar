@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { ArticleCard } from './article-card'
 import {
@@ -15,9 +14,7 @@ import {
 } from '@/components/ui/carousel'
 import { BlogModal } from '@/components/blog/blog-modal'
 import { Database } from '@/types/database'
-import { Calendar, ArrowRight, FileText, Info } from 'lucide-react'
-import { formatDistanceToNow } from 'date-fns'
-import { sv } from 'date-fns/locale'
+import { ArrowRight, FileText } from 'lucide-react'
 
 type Article = Database['public']['Tables']['articles']['Row'] & {
   tags?: string[]
@@ -28,6 +25,12 @@ type Article = Database['public']['Tables']['articles']['Row'] & {
   }
 }
 
+type BlogModalArticle = Database['public']['Tables']['articles']['Row'] & {
+  categories?: Database['public']['Tables']['categories']['Row'][]
+  tags?: Database['public']['Tables']['tags']['Row'][]
+  author?: Database['public']['Tables']['admin_users']['Row']
+}
+
 interface ArticleCarouselProps {
   articles: Article[]
   title: string
@@ -35,11 +38,18 @@ interface ArticleCarouselProps {
 }
 
 export function ArticleCarousel({ articles, title, description }: ArticleCarouselProps) {
-  const [selectedArticle, setSelectedArticle] = useState<Article | null>(null)
+  const [selectedArticle, setSelectedArticle] = useState<BlogModalArticle | null>(null)
   const [modalOpen, setModalOpen] = useState(false)
 
   const handleArticleClick = (article: Article) => {
-    setSelectedArticle(article)
+    // Convert Article to BlogModalArticle for the modal
+    const blogModalArticle: BlogModalArticle = {
+      ...article,
+      tags: undefined, // BlogModal will fetch proper tag objects
+      categories: undefined,
+      author: undefined
+    }
+    setSelectedArticle(blogModalArticle)
     setModalOpen(true)
   }
 

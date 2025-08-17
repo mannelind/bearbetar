@@ -7,11 +7,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { ColoredBadge } from '@/components/ui/colored-badge'
 import { Button } from '@/components/ui/button'
+import { PortfolioCard } from '@/components/ui/portfolio-card'
 import { createBrowserClient } from '@supabase/ssr'
 import { Database } from '@/types/database'
 import { SimpleTooltip } from '@/components/ui/tooltip'
 import { PortfolioModal } from './portfolio-modal'
-import { Calendar, ExternalLink, Eye, FileText, Image as ImageIcon, User } from 'lucide-react'
+import { Calendar, ExternalLink, FileText, Image as ImageIcon, User } from 'lucide-react'
 
 type PortfolioItem = Database['public']['Tables']['portfolio_items']['Row'] & {
   portfolio_categories?: Database['public']['Tables']['portfolio_categories']['Row'][]
@@ -19,9 +20,6 @@ type PortfolioItem = Database['public']['Tables']['portfolio_items']['Row'] & {
   gallery_count?: number
 }
 
-interface PortfolioGridProps {
-  viewMode?: 'grid' | 'list'
-}
 
 export function PortfolioGrid() {
   const searchParams = useSearchParams()
@@ -98,6 +96,188 @@ export function PortfolioGrid() {
 
     if (error) {
       console.error('Error loading portfolio items:', error)
+      
+      // Use mock data in development when Supabase fails
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Using mock portfolio data for development...')
+        const mockPortfolioItems: PortfolioItem[] = [
+          {
+            id: '1',
+            title: 'E-handelsplattform för lokalföretag',
+            slug: 'e-handelsplattform-lokalforetag',
+            description: 'Modern e-handelslösning med fokus på användarvänlighet och snabba laddningstider. Integrerad betalning och lagerhantering.',
+            content: 'Detta projekt involverade utveckling av en komplett e-handelslösning för ett lokalt företag.',
+            excerpt: 'Modern e-handelslösning med fokus på användarvänlighet och snabba laddningstider.',
+            featured_image: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&h=600&fit=crop&crop=center',
+            project_type: 'simple',
+            client_name: 'Lokalt företag AB',
+            project_url: null,
+            completion_date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+            case_study_content: 'Detaljerad fallstudie om utvecklingsprocessen och resultaten.',
+            technologies_used: 'Next.js, Stripe, Supabase, Tailwind CSS',
+            published: true,
+            published_at: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+            created_at: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+            updated_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+            author_id: 'mock-author-id',
+            portfolio_categories: [
+              { id: '1', name: 'Webbutveckling', slug: 'webbutveckling', description: 'Utveckling av webbplatser och webbapplikationer', created_at: new Date().toISOString() }
+            ],
+            tags: [
+              { id: '1', name: 'Next.js', slug: 'nextjs', created_at: new Date().toISOString() },
+              { id: '2', name: 'E-handel', slug: 'e-handel', created_at: new Date().toISOString() },
+              { id: '3', name: 'Stripe', slug: 'stripe', created_at: new Date().toISOString() }
+            ],
+            gallery_count: 5
+          },
+          {
+            id: '2',
+            title: 'Bokningssystem för frisörsalong',
+            slug: 'bokningssystem-frisor',
+            description: 'Digitalt bokningssystem som gjorde det enkelt för kunder att boka tid och för personalen att hantera schema.',
+            content: 'Ett skräddarsytt bokningssystem som revolutionerade hur salongen hanterar sina bokningar.',
+            excerpt: 'Digitalt bokningssystem för enkel tidsbokning och schemahantering.',
+            featured_image: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=800&h=600&fit=crop&crop=center',
+            project_type: 'case_study',
+            client_name: 'Hår & Skönhet Salon',
+            project_url: null,
+            completion_date: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
+            case_study_content: 'Analys av användning och effektivisering av bokningsprocessen.',
+            technologies_used: 'React, Node.js, MongoDB, Calendly API',
+            published: true,
+            published_at: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000).toISOString(),
+            created_at: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000).toISOString(),
+            updated_at: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
+            author_id: 'mock-author-id',
+            portfolio_categories: [
+              { id: '2', name: 'Systemutveckling', slug: 'systemutveckling', description: 'Utveckling av affärssystem och mjukvara', created_at: new Date().toISOString() }
+            ],
+            tags: [
+              { id: '4', name: 'React', slug: 'react', created_at: new Date().toISOString() },
+              { id: '5', name: 'Node.js', slug: 'nodejs', created_at: new Date().toISOString() },
+              { id: '6', name: 'MongoDB', slug: 'mongodb', created_at: new Date().toISOString() }
+            ],
+            gallery_count: 8
+          },
+          {
+            id: '3',
+            title: 'Mobilapp för träningslogg',
+            slug: 'mobilapp-traningslogg',
+            description: 'Enkel och intuitiv app för att logga träningspass och följa framsteg över tid.',
+            content: 'En motiverande träningsapp som hjälper användare att hålla koll på sina träningspass.',
+            excerpt: 'Enkel och intuitiv app för träningslogg och framstegsspårning.',
+            featured_image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=600&fit=crop&crop=center',
+            project_type: 'simple',
+            client_name: null,
+            project_url: null,
+            completion_date: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+            case_study_content: 'Användarfeedback och appens påverkan på träningsvanor.',
+            technologies_used: 'React Native, Firebase, TypeScript',
+            published: true,
+            published_at: new Date(Date.now() - 35 * 24 * 60 * 60 * 1000).toISOString(),
+            created_at: new Date(Date.now() - 35 * 24 * 60 * 60 * 1000).toISOString(),
+            updated_at: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+            author_id: 'mock-author-id',
+            portfolio_categories: [
+              { id: '3', name: 'Mobilutveckling', slug: 'mobilutveckling', description: 'Utveckling av mobilapplikationer för iOS och Android', created_at: new Date().toISOString() }
+            ],
+            tags: [
+              { id: '7', name: 'React Native', slug: 'react-native', created_at: new Date().toISOString() },
+              { id: '8', name: 'Firebase', slug: 'firebase', created_at: new Date().toISOString() },
+              { id: '9', name: 'TypeScript', slug: 'typescript', created_at: new Date().toISOString() }
+            ],
+            gallery_count: 3
+          },
+          {
+            id: '4',
+            title: 'Företagshemsida med CMS',
+            slug: 'foretagshemsida-cms',
+            description: 'Responsiv företagswebbplats med enkelt innehållshanteringssystem.',
+            content: 'En professionell företagswebbplats med kraftfullt CMS.',
+            excerpt: 'Responsiv företagswebbplats med enkelt innehållshanteringssystem.',
+            featured_image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=600&fit=crop&crop=center',
+            project_type: 'simple',
+            client_name: 'Professional Services AB',
+            project_url: null,
+            completion_date: new Date(Date.now() - 45 * 24 * 60 * 60 * 1000).toISOString(),
+            case_study_content: 'SEO-förbättringar och prestanda optimeringar.',
+            technologies_used: 'WordPress, PHP, MySQL, SCSS',
+            published: true,
+            published_at: new Date(Date.now() - 50 * 24 * 60 * 60 * 1000).toISOString(),
+            created_at: new Date(Date.now() - 50 * 24 * 60 * 60 * 1000).toISOString(),
+            updated_at: new Date(Date.now() - 45 * 24 * 60 * 60 * 1000).toISOString(),
+            author_id: 'mock-author-id',
+            portfolio_categories: [
+              { id: '1', name: 'Webbutveckling', slug: 'webbutveckling', description: 'Utveckling av webbplatser och webbapplikationer', created_at: new Date().toISOString() }
+            ],
+            tags: [
+              { id: '10', name: 'WordPress', slug: 'wordpress', created_at: new Date().toISOString() },
+              { id: '11', name: 'PHP', slug: 'php', created_at: new Date().toISOString() },
+              { id: '12', name: 'MySQL', slug: 'mysql', created_at: new Date().toISOString() }
+            ],
+            gallery_count: 12
+          },
+          {
+            id: '5',
+            title: 'Pedagogisk lärplattform',
+            slug: 'pedagogisk-larplattform',
+            description: 'Interaktiv lärplattform med fokus på pedagogik och användbarhet.',
+            content: 'En innovativ lärplattform utvecklad i nära samarbete med lärare.',
+            excerpt: 'Interaktiv lärplattform med fokus på pedagogik och användbarhet.',
+            featured_image: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800&h=600&fit=crop&crop=center',
+            project_type: 'case_study',
+            client_name: 'Utbildningscentrum',
+            project_url: null,
+            completion_date: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString(),
+            case_study_content: 'Pedagogisk utvärdering och användarupplevelse.',
+            technologies_used: 'Vue.js, Laravel, PostgreSQL, Docker',
+            published: true,
+            published_at: new Date(Date.now() - 65 * 24 * 60 * 60 * 1000).toISOString(),
+            created_at: new Date(Date.now() - 65 * 24 * 60 * 60 * 1000).toISOString(),
+            updated_at: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString(),
+            author_id: 'mock-author-id',
+            portfolio_categories: [
+              { id: '4', name: 'EdTech', slug: 'edtech', description: 'Utbildningsteknologi och lärplattformar', created_at: new Date().toISOString() }
+            ],
+            tags: [
+              { id: '13', name: 'Vue.js', slug: 'vuejs', created_at: new Date().toISOString() },
+              { id: '14', name: 'Laravel', slug: 'laravel', created_at: new Date().toISOString() },
+              { id: '15', name: 'PostgreSQL', slug: 'postgresql', created_at: new Date().toISOString() }
+            ],
+            gallery_count: 6
+          },
+          {
+            id: '6',
+            title: 'Dashboard för dataanalys',
+            slug: 'dashboard-dataanalys',
+            description: 'Kraftfull dashboard för visualisering och analys av affärsdata.',
+            content: 'Ett omfattande dashboard som hjälper företag att förstå sina data.',
+            excerpt: 'Kraftfull dashboard för visualisering och analys av affärsdata.',
+            featured_image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=600&fit=crop&crop=center',
+            project_type: 'simple',
+            client_name: 'Data Analytics Corp',
+            project_url: null,
+            completion_date: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000).toISOString(),
+            case_study_content: 'Prestanda optimering och skalbarhet.',
+            technologies_used: 'React, D3.js, Python, FastAPI',
+            published: true,
+            published_at: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+            created_at: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+            updated_at: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000).toISOString(),
+            author_id: 'mock-author-id',
+            portfolio_categories: [
+              { id: '5', name: 'Datavisualisering', slug: 'datavisualisering', description: 'Visualisering och analys av data', created_at: new Date().toISOString() }
+            ],
+            tags: [
+              { id: '4', name: 'React', slug: 'react', created_at: new Date().toISOString() },
+              { id: '16', name: 'D3.js', slug: 'd3js', created_at: new Date().toISOString() },
+              { id: '17', name: 'Python', slug: 'python', created_at: new Date().toISOString() }
+            ],
+            gallery_count: 4
+          }
+        ]
+        setItems(mockPortfolioItems)
+      }
       setLoading(false)
       return
     }
@@ -199,128 +379,16 @@ export function PortfolioGrid() {
       <div className={viewMode === 'grid' ? 'grid gap-6 md:grid-cols-2 lg:grid-cols-3' : 'space-y-6'}>
         {items.map((item) => (
           <SimpleTooltip key={item.id} text={`Klicka för att se mer om ${item.title} 🔍`} side="top">
-            <Card 
-              className={`group cursor-pointer hover:shadow-lg transition-all duration-300 overflow-hidden ${
-                viewMode === 'grid' ? 'h-full flex flex-col' : 'w-full'
-              }`}
-              onClick={() => handleItemClick(item)}
-            >
             {viewMode === 'grid' ? (
-              // Grid view - matches carousel design
-              <div className="flex flex-col h-full">
-                {/* Image with overlay */}
-                <div className="relative aspect-video bg-muted overflow-hidden">
-                  {item.featured_image ? (
-                    <Image 
-                      src={item.featured_image} 
-                      alt={item.title}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-300"
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <ImageIcon className="h-12 w-12 text-muted-foreground" />
-                    </div>
-                  )}
-                  
-                  {/* Overlay gradient */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/40" />
-                  
-                  {/* Top metadata - project type and date */}
-                  <div className="absolute top-2 left-2 flex items-center gap-2">
-                    <Badge variant="secondary" className="bg-white/90 text-black hover:bg-white">
-                      {item.project_type === 'case_study' ? (
-                        <>
-                          <FileText className="h-3 w-3 mr-1" />
-                          Case Study
-                        </>
-                      ) : (
-                        <>
-                          <ImageIcon className="h-3 w-3 mr-1" />
-                          Portfolio
-                        </>
-                      )}
-                    </Badge>
-                    {item.completion_date && (
-                      <Badge variant="outline" className="bg-white/20 text-white border-white/30 backdrop-blur-sm">
-                        <Calendar className="h-3 w-3 mr-1" />
-                        {new Date(item.completion_date).toLocaleDateString('sv-SE')}
-                      </Badge>
-                    )}
-                  </div>
-
-                  {/* Gallery indicator */}
-                  {item.gallery_count && item.gallery_count > 0 && (
-                    <div className="absolute top-2 right-2">
-                      <Badge variant="outline" className="bg-white/20 text-white border-white/30 backdrop-blur-sm">
-                        +{item.gallery_count} bilder
-                      </Badge>
-                    </div>
-                  )}
-                  
-                  {/* Bottom right info button */}
-                  <div className="absolute bottom-2 right-2">
-                    <div className="bg-white/20 backdrop-blur-sm rounded-full p-2 group-hover:bg-white/30 transition-colors">
-                      <Eye className="h-4 w-4 text-white" />
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Header with title */}
-                <CardHeader className="pb-2 pt-4">
-                  <CardTitle className="leading-tight group-hover:text-primary transition-colors text-sm line-clamp-2">
-                    {item.title}
-                  </CardTitle>
-                  {item.client_name && (
-                    <div className="flex items-center text-xs text-muted-foreground">
-                      <User className="h-3 w-3 mr-1" />
-                      {item.client_name}
-                    </div>
-                  )}
-                </CardHeader>
-
-                {/* Categories under title */}
-                {item.portfolio_categories && item.portfolio_categories.length > 0 && (
-                  <CardContent className="pt-0 pb-2">
-                    <div className="space-y-2">
-                      <div className="text-xs text-muted-foreground font-medium">Kategorier:</div>
-                      <div className="flex flex-wrap gap-1">
-                        {item.portfolio_categories.slice(0, 3).map((category: any) => (
-                          <ColoredBadge key={category.id} tag={category.name} className="text-xs" />
-                        ))}
-                        {item.portfolio_categories.length > 3 && (
-                          <Badge variant="secondary" className="text-xs">
-                            +{item.portfolio_categories.length - 3}
-                          </Badge>
-                        )}
-                      </div>
-                    </div>
-                  </CardContent>
-                )}
-
-                {/* Tags under categories */}
-                {item.tags && item.tags.length > 0 && (
-                  <CardContent className="pt-0 pb-3">
-                    <div className="space-y-2">
-                      <div className="text-xs text-muted-foreground font-medium">Teknologier:</div>
-                      <div className="flex flex-wrap gap-1">
-                        {item.tags.slice(0, 3).map((tag: any) => (
-                          <ColoredBadge key={tag.id} tag={tag.name} className="text-xs" />
-                        ))}
-                        {item.tags.length > 3 && (
-                          <Badge variant="outline" className="text-xs">
-                            +{item.tags.length - 3}
-                          </Badge>
-                        )}
-                      </div>
-                    </div>
-                  </CardContent>
-                )}
-              </div>
+              // Grid view - use shared PortfolioCard
+              <PortfolioCard project={item} onClick={() => handleItemClick(item)} />
             ) : (
-              // List view - horizontal layout with image on left
-              <div className="flex flex-col md:flex-row gap-6">
+              <Card 
+                className="w-full overflow-hidden hover:shadow-lg transition-shadow cursor-pointer group"
+                onClick={() => handleItemClick(item)}
+              >
+                {/* List view - horizontal layout with image on left */}
+                <div className="flex flex-col md:flex-row gap-6">
                 {/* Image */}
                 <div className="aspect-video md:aspect-square relative md:w-48 flex-shrink-0 overflow-hidden rounded-lg bg-muted">
                   {item.featured_image ? (
@@ -449,8 +517,8 @@ export function PortfolioGrid() {
                   </div>
                 </div>
               </div>
+              </Card>
             )}
-            </Card>
           </SimpleTooltip>
         ))}
       </div>

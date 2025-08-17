@@ -74,8 +74,8 @@
   .dark {
     --background: 167 18.2% 12%; /* hsl(167, 18.2%, 12%) - Dark green background */
     --foreground: 142 61% 67%; /* hsl(142, 61%, 67%) - Light green foreground */
-    --card: 160 20% 15%; /* hsl(160, 20%, 10%) - Dark green card */
-    --card-foreground: 120 85% 60%; /* hsl(120, 85%, 60%) - Light green card foreground */
+    --card: 160 20% 13%; /* hsl(160, 20%, 10%) - Dark green card */
+    --card-foreground: 120 45% 70%; /* hsl(120, 85%, 60%) - Light green card foreground */
     --popover: 85 30% 8%; /* hsl(85, 30%, 8%) - Dark green popover */
     --popover-foreground: 120 25% 85%; /* hsl(120, 25%, 85%) - Light green popover foreground */
     --primary: 120 85% 60%; /* hsl(120, 85%, 60%) - Light green primary */

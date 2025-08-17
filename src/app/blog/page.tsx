@@ -74,66 +74,97 @@ export default function BlogPage() {
         const mockArticles = [
           {
             id: '1',
-            title: 'Digitalisering av småföretag - En praktisk guide',
-            slug: 'digitalisering-av-smaforetag-praktisk-guide',
-            excerpt: 'Lär dig hur ditt småföretag kan dra nytta av digitaliseringens möjligheter med praktiska tips och strategier.',
-            published_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-            featured_image: null,
-            tags: ['Digitalisering', 'Småföretag', 'Teknik'],
-            categories: [{ id: 'foretagande', name: 'Företagande', slug: 'foretagande' }],
+            title: 'Varför Next.js är vårt favoritramverk',
+            slug: 'varfor-nextjs-ar-vart-favoritramverk',
+            content: 'Vi har testat massor av ramverk genom åren, men Next.js har verkligen imponerat på oss. Här berättar vi varför det blivit vårt första val för nya projekt och vad som gör det så kraftfullt.',
+            excerpt: 'Vi har testat massor av ramverk genom åren, men Next.js har verkligen imponerat på oss. Här berättar vi varför det blivit vårt första val för nya projekt.',
+            featured_image: 'https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=800&h=600&fit=crop&crop=center',
+            published: true,
+            published_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+            created_at: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+            updated_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+            author_id: 'mock-author-id',
+            tags: ['Next.js', 'React', 'JavaScript', 'Webbutveckling', 'Framework'],
+            categories: [{ id: 'webbutveckling', name: 'Webbutveckling', slug: 'webbutveckling' }],
             admin_users: {
               full_name: 'Manne',
-              email: 'manne@bearbetar.se',
-              bio: 'Grundare och strateg med passion för affärsutveckling.',
-              profile_image: null
+              email: 'manne@bearbetar.se'
             }
           },
           {
             id: '2',
-            title: 'Säkerhetsrutiner för moderna webbapplikationer',
-            slug: 'sakerhetsrutiner-moderna-webbapplikationer',
-            excerpt: 'Grundläggande säkerhetsrutiner som alla utvecklare bör känna till för att skydda sina webbapplikationer.',
-            published_at: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
-            featured_image: null,
-            tags: ['Säkerhet', 'Webbutveckling', 'Best Practices'],
-            categories: [{ id: 'utveckling', name: 'Utveckling', slug: 'utveckling' }],
+            title: 'Så designar man för användbarhet',
+            slug: 'sa-designar-man-for-anvandbarhet',
+            content: 'Användarupplevelse handlar inte bara om att något ser snyggt ut. Det ska framför allt vara lätt att använda. Här är våra bästa tips för bättre UX och hur man skapar verkligt användbara gränssnitt.',
+            excerpt: 'Användarupplevelse handlar inte bara om att något ser snyggt ut. Det ska framför allt vara lätt att använda. Här är våra bästa tips för bättre UX.',
+            featured_image: 'https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?w=800&h=600&fit=crop&crop=center',
+            published: true,
+            published_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+            created_at: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString(),
+            updated_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+            author_id: 'mock-author-id-2',
+            tags: ['UX', 'Design', 'Användbarhet'],
+            categories: [{ id: 'design', name: 'Design', slug: 'design' }],
             admin_users: {
               full_name: 'Adam',
-              email: 'adam@bearbetar.se',
-              bio: 'Expert inom teknisk utveckling och digitalisering.',
-              profile_image: null
+              email: 'adam@bearbetar.se'
             }
           },
           {
             id: '3',
-            title: 'AI och maskininlärning i affärsprocesser',
-            slug: 'ai-maskininlarning-affarsprocesser',
-            excerpt: 'Upptäck hur artificiell intelligens och maskininlärning kan automatisera och förbättra dina affärsprocesser.',
-            published_at: new Date(Date.now() - 21 * 24 * 60 * 60 * 1000).toISOString(),
-            featured_image: null,
-            tags: ['AI', 'Maskininlärning', 'Innovation'],
-            categories: [{ id: 'teknik', name: 'Teknik', slug: 'teknik' }],
+            title: 'Månadsabonnemang vs engångsköp',
+            slug: 'manadsabonnemang-vs-engangskop',
+            content: 'Varför vi tror på månadsabonnemang för webbplatser och appar. Det blir bättre för alla parter - både kunder och utvecklare. Vi förklarar fördelarna och hur modellen fungerar i praktiken.',
+            excerpt: 'Varför vi tror på månadsabonnemang för webbplatser och appar. Det blir bättre för alla parter - både kunder och utvecklare.',
+            featured_image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&h=600&fit=crop&crop=center',
+            published: true,
+            published_at: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
+            created_at: new Date(Date.now() - 9 * 24 * 60 * 60 * 1000).toISOString(),
+            updated_at: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
+            author_id: 'mock-author-id',
+            tags: ['Affärsmodell', 'Prenumeration', 'Prissättning', 'Strategi', 'Webbutveckling', 'SaaS'],
+            categories: [{ id: 'foretagande', name: 'Företagande', slug: 'foretagande' }],
             admin_users: {
               full_name: 'Manne',
-              email: 'manne@bearbetar.se',
-              bio: 'Grundare och strateg med passion för affärsutveckling.',
-              profile_image: null
+              email: 'manne@bearbetar.se'
             }
           },
           {
             id: '4',
-            title: 'Molnmigration - Planering och genomförande',
-            slug: 'molnmigration-planering-genomforande',
-            excerpt: 'En steg-för-steg guide till att migrera dina system till molnet på ett säkert och effektivt sätt.',
-            published_at: new Date(Date.now() - 28 * 24 * 60 * 60 * 1000).toISOString(),
-            featured_image: null,
-            tags: ['Molntjänster', 'DevOps', 'Infrastruktur'],
-            categories: [{ id: 'utveckling', name: 'Utveckling', slug: 'utveckling' }],
+            title: 'WordPress vs modern utveckling',
+            slug: 'wordpress-vs-modern-utveckling',
+            content: 'WordPress får mycket skit från utvecklare, men för många användningsområden är det fortfarande ett bra val. Vi förklarar när och varför du bör välja WordPress och när du bör satsa på modernare tekniker.',
+            excerpt: 'WordPress får mycket skit från utvecklare, men för många användningsområden är det fortfarande ett bra val. Vi förklarar när och varför.',
+            featured_image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=600&fit=crop&crop=center',
+            published: true,
+            published_at: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
+            created_at: new Date(Date.now() - 13 * 24 * 60 * 60 * 1000).toISOString(),
+            updated_at: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
+            author_id: 'mock-author-id-2',
+            tags: ['WordPress', 'CMS', 'PHP', 'Webbutveckling'],
+            categories: [{ id: 'webbutveckling', name: 'Webbutveckling', slug: 'webbutveckling' }],
             admin_users: {
               full_name: 'Adam',
-              email: 'adam@bearbetar.se',
-              bio: 'Expert inom teknisk utveckling och digitalisering.',
-              profile_image: null
+              email: 'adam@bearbetar.se'
+            }
+          },
+          {
+            id: '5',
+            title: 'Så undviker du vanliga designmisstag',
+            slug: 'sa-undviker-du-vanliga-designmisstag',
+            content: 'Vi har sett samma designmisstag om och om igen. Här är de vanligaste fällorna och hur du undviker dem i ditt nästa projekt. Från navigation till färgval - allt som kan gå snett.',
+            excerpt: 'Vi har sett samma designmisstag om och om igen. Här är de vanligaste fällorna och hur du undviker dem i ditt nästa projekt.',
+            featured_image: 'https://images.unsplash.com/photo-1586717791821-3f44a563fa4c?w=800&h=600&fit=crop&crop=center',
+            published: true,
+            published_at: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
+            created_at: new Date(Date.now() - 16 * 24 * 60 * 60 * 1000).toISOString(),
+            updated_at: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
+            author_id: 'mock-author-id-2',
+            tags: ['Design', 'UX', 'UI', 'Bästa praxis', 'Tips'],
+            categories: [{ id: 'design', name: 'Design', slug: 'design' }],
+            admin_users: {
+              full_name: 'Adam',
+              email: 'adam@bearbetar.se'
             }
           }
         ]
@@ -160,18 +191,59 @@ export default function BlogPage() {
       const mockArticles = [
         {
           id: '1',
-          title: 'Varför Next.js är så bra (och lite irriterande)',
-          slug: 'varfor-nextjs-ar-sa-bra-och-lite-irriterande',
-          excerpt: 'Vi har använt Next.js i flera år nu och älskar det mesta. Men det finns några saker som är riktigt irriterande också.',
-          published_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-          featured_image: null,
-          tags: ['Next.js', 'React', 'Tips'],
-          categories: [{ id: 'smatt-och-gott', name: 'Smått och gott', slug: 'smatt-och-gott' }],
+          title: 'Varför Next.js är vårt favoritramverk',
+          slug: 'varfor-nextjs-ar-vart-favoritramverk',
+          content: 'Vi har testat massor av ramverk genom åren, men Next.js har verkligen imponerat på oss. Här berättar vi varför det blivit vårt första val för nya projekt och vad som gör det så kraftfullt.',
+          excerpt: 'Vi har testat massor av ramverk genom åren, men Next.js har verkligen imponerat på oss. Här berättar vi varför det blivit vårt första val för nya projekt.',
+          featured_image: 'https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=800&h=600&fit=crop&crop=center',
+          published: true,
+          published_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+          created_at: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+          updated_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+          author_id: 'mock-author-id',
+          tags: ['Next.js', 'React', 'JavaScript', 'Webbutveckling', 'Framework'],
+          categories: [{ id: 'webbutveckling', name: 'Webbutveckling', slug: 'webbutveckling' }],
           admin_users: {
             full_name: 'Manne',
-            email: 'manne@bearbetar.se',
-            bio: 'Utvecklare som gillar att bygga saker.',
-            profile_image: null
+            email: 'manne@bearbetar.se'
+          }
+        },
+        {
+          id: '2',
+          title: 'Så designar man för användbarhet',
+          slug: 'sa-designar-man-for-anvandbarhet',
+          content: 'Användarupplevelse handlar inte bara om att något ser snyggt ut. Det ska framför allt vara lätt att använda. Här är våra bästa tips för bättre UX och hur man skapar verkligt användbara gränssnitt.',
+          excerpt: 'Användarupplevelse handlar inte bara om att något ser snyggt ut. Det ska framför allt vara lätt att använda. Här är våra bästa tips för bättre UX.',
+          featured_image: 'https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?w=800&h=600&fit=crop&crop=center',
+          published: true,
+          published_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+          created_at: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString(),
+          updated_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+          author_id: 'mock-author-id-2',
+          tags: ['UX', 'Design', 'Användbarhet'],
+          categories: [{ id: 'design', name: 'Design', slug: 'design' }],
+          admin_users: {
+            full_name: 'Adam',
+            email: 'adam@bearbetar.se'
+          }
+        },
+        {
+          id: '3',
+          title: 'Månadsabonnemang vs engångsköp',
+          slug: 'manadsabonnemang-vs-engangskop',
+          content: 'Varför vi tror på månadsabonnemang för webbplatser och appar. Det blir bättre för alla parter - både kunder och utvecklare. Vi förklarar fördelarna och hur modellen fungerar i praktiken.',
+          excerpt: 'Varför vi tror på månadsabonnemang för webbplatser och appar. Det blir bättre för alla parter - både kunder och utvecklare.',
+          featured_image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&h=600&fit=crop&crop=center',
+          published: true,
+          published_at: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
+          created_at: new Date(Date.now() - 9 * 24 * 60 * 60 * 1000).toISOString(),
+          updated_at: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
+          author_id: 'mock-author-id',
+          tags: ['Affärsmodell', 'Prenumeration', 'Prissättning', 'Strategi', 'Webbutveckling', 'SaaS'],
+          categories: [{ id: 'foretagande', name: 'Företagande', slug: 'foretagande' }],
+          admin_users: {
+            full_name: 'Manne',
+            email: 'manne@bearbetar.se'
           }
         }
       ]

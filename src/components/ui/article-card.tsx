@@ -45,12 +45,12 @@ export function ArticleCard({ article, onClick, className = '' }: ArticleCardPro
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/40" />
             
             {/* Top metadata - endast ämnestaggar och datum */}
-            <div className="absolute top-2 left-2 flex items-center gap-2">
-              <Badge variant="secondary" className="bg-white/90 text-black hover:bg-white">
+            <div className="absolute top-3 left-3 flex items-center gap-2">
+              <Badge variant="secondary" className="flex bg-primary/90 text-black hover:bg-white">
                 Artikel
               </Badge>
               {article.published_at && (
-                <Badge variant="outline" className="bg-white/20 text-white border-white/30 backdrop-blur-sm">
+                <Badge variant="outline" className="flex bg-white/20 text-white border-white/30 backdrop-blur-sm">
                   <Calendar className="h-3 w-3 mr-1" />
                   {formatDistanceToNow(new Date(article.published_at), {
                     addSuffix: true,
@@ -62,7 +62,7 @@ export function ArticleCard({ article, onClick, className = '' }: ArticleCardPro
             
             {/* Bottom right info button */}
             <div className="absolute bottom-2 right-2">
-              <div className="bg-white/20 backdrop-blur-sm rounded-full p-2 group-hover:bg-white/30 transition-colors">
+              <div className="bg-white/10 backdrop-blur-sm rounded-full p-2 group-hover:bg-white/15 transition-colors">
                 <BookOpen className="h-4 w-4 text-white" />
               </div>
             </div>
@@ -78,8 +78,8 @@ export function ArticleCard({ article, onClick, className = '' }: ArticleCardPro
 
         {/* Tags under rubriken - färgkodade */}
         {article.tags && article.tags.length > 0 && (
-          <CardContent className="pt-0 pb-3">
-            <div className="flex flex-wrap gap-1">
+          <CardContent className="pt-1 pb-6">
+            <div className="flex flex-wrap gap-2">
               {article.tags.slice(0, 3).map((tag, index) => (
                 <ColoredBadge key={index} tag={tag} className="text-xs" />
               ))}
