@@ -100,6 +100,78 @@ export interface FormState extends LoadingState {
   success?: boolean
 }
 
+// Post types
+export const POST_TYPES = {
+  article: 'artikel',
+  business_law: 'affärsrätt',
+  strategy: 'strategi',
+  rant: 'rant',
+  guide: 'guide',
+  opinion: 'åsikt',
+  analysis: 'analys',
+  news: 'nyheter',
+  review: 'recension'
+} as const
+
+export type PostType = typeof POST_TYPES[keyof typeof POST_TYPES]
+
+export const POST_TYPE_CONFIG = {
+  [POST_TYPES.article]: {
+    label: 'Artikel',
+    emoji: '📰',
+    color: 'primary',
+    description: 'Standardartikel för allmänt innehåll'
+  },
+  [POST_TYPES.business_law]: {
+    label: 'Affärsrätt',
+    emoji: '⚖️',
+    color: 'blue',
+    description: 'Juridiska frågor och affärsrätt'
+  },
+  [POST_TYPES.strategy]: {
+    label: 'Strategi',
+    emoji: '🎯',
+    color: 'purple',
+    description: 'Strategiska analyser och råd'
+  },
+  [POST_TYPES.rant]: {
+    label: 'Rant',
+    emoji: '🔥',
+    color: 'red',
+    description: 'Personliga åsikter och rantar (might delete later)'
+  },
+  [POST_TYPES.guide]: {
+    label: 'Guide',
+    emoji: '📚',
+    color: 'green',
+    description: 'Praktiska guider och instruktioner'
+  },
+  [POST_TYPES.opinion]: {
+    label: 'Åsikt',
+    emoji: '💭',
+    color: 'orange',
+    description: 'Personliga åsikter och perspektiv'
+  },
+  [POST_TYPES.analysis]: {
+    label: 'Analys',
+    emoji: '📊',
+    color: 'cyan',
+    description: 'Djupgående analyser och utredningar'
+  },
+  [POST_TYPES.news]: {
+    label: 'Nyheter',
+    emoji: '📡',
+    color: 'indigo',
+    description: 'Branschnyheter och uppdateringar'
+  },
+  [POST_TYPES.review]: {
+    label: 'Recension',
+    emoji: '⭐',
+    color: 'pink',
+    description: 'Recensioner av produkter eller tjänster'
+  }
+} as const
+
 // Filter and search types
 export interface ArticleFilters {
   published?: boolean
@@ -107,6 +179,7 @@ export interface ArticleFilters {
   tag_id?: string
   search?: string
   author_id?: string
+  post_type?: PostType
 }
 
 export interface ServiceFilters {

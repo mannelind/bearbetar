@@ -5,6 +5,7 @@ import { ArticleCarousel } from '@/components/ui/article-carousel'
 import { PortfolioCarousel } from '@/components/ui/portfolio-carousel'
 import { HeroSection } from '@/components/ui/hero-section'
 import { createServerComponentClient } from '@/lib/supabase'
+import { Article } from '@/types'
 import { Code, Globe, Smartphone, Coffee } from 'lucide-react'
 
 export default async function HomePage() {
@@ -28,53 +29,55 @@ export default async function HomePage() {
   const mockArticles = [
     {
       id: '1',
-      title: 'Varför Next.js är vårt favoritramverk',
-      slug: 'varfor-nextjs-ar-vart-favoritramverk',
-      content: 'Vi har testat massor av ramverk genom åren, men Next.js har verkligen imponerat på oss. Här berättar vi varför det blivit vårt första val för nya projekt och vad som gör det så kraftfullt.',
-      excerpt: 'Vi har testat massor av ramverk genom åren, men Next.js har verkligen imponerat på oss. Här berättar vi varför det blivit vårt första val för nya projekt.',
+      title: 'Lorem Ipsum Dolor Sit Amet',
+      slug: 'lorem-ipsum-dolor-sit-amet',
+      content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+      excerpt: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
       featured_image: 'https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=800&h=600&fit=crop&crop=center',
       published: true,
       published_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+      post_type: 'artikel',
       created_at: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
       updated_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
       author_id: 'mock-author-id',
-      tags: ['Next.js', 'React', 'JavaScript', 'Webbutveckling', 'Framework'],
+      tags: ['Lorem', 'Ipsum', 'Dolor', 'Consectetur', 'Adipiscing'],
       admin_users: {
-        full_name: 'Manne',
-        email: 'manne@bearbetar.se'
+        full_name: 'Lorem Ipsum',
+        email: 'lorem@example.com'
       }
     },
     {
       id: '2',
-      title: 'Så designar man för användbarhet',
-      slug: 'sa-designar-man-for-anvandbarhet',
-      content: 'Användarupplevelse handlar inte bara om att något ser snyggt ut. Det ska framför allt vara lätt att använda. Här är våra bästa tips för bättre UX och hur man skapar verkligt användbara gränssnitt.',
-      excerpt: 'Användarupplevelse handlar inte bara om att något ser snyggt ut. Det ska framför allt vara lätt att använda. Här är våra bästa tips för bättre UX.',
+      title: 'Consectetur Adipiscing Elite',
+      slug: 'consectetur-adipiscing-elite',
+      content: 'Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+      excerpt: 'Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
       featured_image: 'https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?w=800&h=600&fit=crop&crop=center',
       published: true,
       published_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+      post_type: 'guide',
       created_at: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString(),
       updated_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
       author_id: 'mock-author-id-2',
-      tags: ['UX', 'Design', 'Användbarhet'],
+      tags: ['Consectetur', 'Adipiscing', 'Tempor'],
       admin_users: {
-        full_name: 'Adam',
-        email: 'adam@bearbetar.se'
+        full_name: 'Dolor Sit',
+        email: 'dolor@example.com'
       }
     },
     {
       id: '3',
-      title: 'Månadsabonnemang vs engångsköp',
-      slug: 'manadsabonnemang-vs-engangskop',
-      content: 'Varför vi tror på månadsabonnemang för webbplatser och appar. Det blir bättre för alla parter - både kunder och utvecklare. Vi förklarar fördelarna och hur modellen fungerar i praktiken.',
-      excerpt: 'Varför vi tror på månadsabonnemang för webbplatser och appar. Det blir bättre för alla parter - både kunder och utvecklare.',
+      title: 'Sed Do Eiusmod Tempor Incididunt',
+      slug: 'sed-do-eiusmod-tempor-incididunt',
+      content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip.',
+      excerpt: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
       featured_image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&h=600&fit=crop&crop=center',
       published: true,
       published_at: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
       created_at: new Date(Date.now() - 9 * 24 * 60 * 60 * 1000).toISOString(),
       updated_at: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
       author_id: 'mock-author-id',
-      tags: ['Affärsmodell', 'Prenumeration', 'Prissättning', 'Strategi', 'Webbutveckling', 'SaaS'],
+      tags: ['Business', 'Strategy', 'Pricing', 'Development', 'Technology', 'SaaS'],
       admin_users: {
         full_name: 'Manne',
         email: 'manne@bearbetar.se'
@@ -82,17 +85,17 @@ export default async function HomePage() {
     },
     {
       id: '4',
-      title: 'WordPress vs modern utveckling',
-      slug: 'wordpress-vs-modern-utveckling',
-      content: 'WordPress får mycket skit från utvecklare, men för många användningsområden är det fortfarande ett bra val. Vi förklarar när och varför du bör välja WordPress och när du bör satsa på modernare tekniker.',
-      excerpt: 'WordPress får mycket skit från utvecklare, men för många användningsområden är det fortfarande ett bra val. Vi förklarar när och varför.',
+      title: 'Ut Enim Ad Minim Veniam',
+      slug: 'ut-enim-ad-minim-veniam',
+      content: 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
+      excerpt: 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
       featured_image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=600&fit=crop&crop=center',
       published: true,
       published_at: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
       created_at: new Date(Date.now() - 13 * 24 * 60 * 60 * 1000).toISOString(),
       updated_at: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
       author_id: 'mock-author-id-2',
-      tags: ['WordPress', 'CMS', 'PHP', 'Webbutveckling'],
+      tags: ['WordPress', 'CMS', 'PHP', 'Development'],
       admin_users: {
         full_name: 'Adam',
         email: 'adam@bearbetar.se'
@@ -100,17 +103,17 @@ export default async function HomePage() {
     },
     {
       id: '5',
-      title: 'Så undviker du vanliga designmisstag',
-      slug: 'sa-undviker-du-vanliga-designmisstag',
-      content: 'Vi har sett samma designmisstag om och om igen. Här är de vanligaste fällorna och hur du undviker dem i ditt nästa projekt. Från navigation till färgval - allt som kan gå snett.',
-      excerpt: 'Vi har sett samma designmisstag om och om igen. Här är de vanligaste fällorna och hur du undviker dem i ditt nästa projekt.',
+      title: 'Excepteur Sint Occaecat Cupidatat',
+      slug: 'excepteur-sint-occaecat-cupidatat',
+      content: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+      excerpt: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
       featured_image: 'https://images.unsplash.com/photo-1586717791821-3f44a563fa4c?w=800&h=600&fit=crop&crop=center',
       published: true,
       published_at: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
       created_at: new Date(Date.now() - 16 * 24 * 60 * 60 * 1000).toISOString(),
       updated_at: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
       author_id: 'mock-author-id-2',
-      tags: ['Design', 'UX', 'UI', 'Bästa praxis', 'Tips'],
+      tags: ['Design', 'UX', 'UI', 'Best Practices', 'Tips'],
       admin_users: {
         full_name: 'Adam',
         email: 'adam@bearbetar.se'
@@ -118,49 +121,54 @@ export default async function HomePage() {
     }
   ]
 
-  // Use mock articles if no real articles found
-  const articlesToShow = recentArticles && recentArticles.length > 0 ? recentArticles : mockArticles
+  // Use mock articles if no real articles found, and ensure post_type is set
+  const articlesToShow = recentArticles && recentArticles.length > 0 
+    ? recentArticles.map(article => ({ ...article, post_type: article.post_type || 'artikel' }))
+    : mockArticles
+  
+  // Ensure type consistency
+  const typedArticlesToShow = articlesToShow as Article[]
 
   // Mock portfolio projects for demonstration
   const mockProjects = [
     {
       id: '1',
-      title: 'E-handelsplattform för lokalföretag',
-      slug: 'e-handelsplattform-lokalforetag',
-      description: 'Modern e-handelslösning med fokus på användarvänlighet och snabba laddningstider. Integrerad betalning och lagerhantering.',
-      content: 'Detta projekt involverade utveckling av en komplett e-handelslösning för ett lokalt företag. Vi fokuserade på användarvänlighet och prestanda för att säkerställa en smidig kundupplevelse.',
-      excerpt: 'Modern e-handelslösning med fokus på användarvänlighet och snabba laddningstider.',
+      title: 'Lorem Ipsum Project Alpha',
+      slug: 'lorem-ipsum-project-alpha',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+      content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.',
+      excerpt: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt.',
       featured_image: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&h=600&fit=crop&crop=center',
-      project_type: 'E-handel',
-      client_name: 'Lokalt företag AB',
+      project_type: 'Lorem Type',
+      client_name: 'Lorem Client AB',
       project_url: null,
       completion_date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-      case_study_content: 'Detaljerad fallstudie om utvecklingsprocessen och resultaten.',
-      technologies_used: 'Next.js, Stripe, Supabase, Tailwind CSS',
+      case_study_content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+      technologies_used: 'Lorem, Ipsum, Dolor, Consectetur',
       published: true,
       published_at: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
       created_at: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
       updated_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
       author_id: 'mock-author-id',
-      technologies: ['Next.js', 'Stripe', 'Supabase', 'Tailwind CSS'],
+      technologies: ['Lorem', 'Ipsum', 'Dolor', 'Consectetur'],
       tags: [
-        { id: '1', name: 'E-handel', slug: 'e-handel', created_at: new Date().toISOString() },
-        { id: '2', name: 'Företag', slug: 'foretag', created_at: new Date().toISOString() },
-        { id: '3', name: 'Betalning', slug: 'betalning', created_at: new Date().toISOString() },
-        { id: '4', name: 'Lager', slug: 'lager', created_at: new Date().toISOString() }
+        { id: '1', name: 'Lorem', slug: 'lorem', created_at: new Date().toISOString() },
+        { id: '2', name: 'Ipsum', slug: 'ipsum', created_at: new Date().toISOString() },
+        { id: '3', name: 'Dolor', slug: 'dolor', created_at: new Date().toISOString() },
+        { id: '4', name: 'Sit', slug: 'sit', created_at: new Date().toISOString() }
       ],
-      category: 'Webbutveckling'
+      category: 'Lorem Category'
     },
     {
       id: '2',
-      title: 'Bokningssystem för frisörsalong',
-      slug: 'bokningssystem-frisor',
-      description: 'Digitalt bokningssystem som gjorde det enkelt för kunder att boka tid och för personalen att hantera schema.',
-      content: 'Ett skräddarsytt bokningssystem som revolutionerade hur salongen hanterar sina bokningar och kundinteraktioner.',
-      excerpt: 'Digitalt bokningssystem för enkel tidsbokning och schemahantering.',
+      title: 'Lorem Ipsum Project Beta',
+      slug: 'lorem-ipsum-project-beta',
+      description: 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+      content: 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit.',
+      excerpt: 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.',
       featured_image: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=800&h=600&fit=crop&crop=center',
-      project_type: 'Bokningssystem',
-      client_name: 'Hår & Skönhet Salon',
+      project_type: 'Ipsum Type',
+      client_name: 'Dolor Client Inc',
       project_url: null,
       completion_date: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
       case_study_content: 'Analys av användning och effektivisering av bokningsprocessen.',
@@ -182,17 +190,17 @@ export default async function HomePage() {
     },
     {
       id: '3',
-      title: 'Mobilapp för träningslogg',
-      slug: 'mobilapp-traningslogg',
-      description: 'Enkel och intuitiv app för att logga träningspass och följa framsteg över tid. Fokus på användbarhet och motivation.',
-      content: 'En motiverande träningsapp som hjälper användare att hålla koll på sina träningspass och framsteg.',
-      excerpt: 'Enkel och intuitiv app för träningslogg och framstegsspårning.',
+      title: 'Mobile Application Lorem Ipsum',
+      slug: 'mobile-application-lorem-ipsum',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+      content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+      excerpt: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor.',
       featured_image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=600&fit=crop&crop=center',
-      project_type: 'Mobilapp',
+      project_type: 'Mobile App',
       client_name: null,
       project_url: null,
       completion_date: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
-      case_study_content: 'Användarfeedback och appens påverkan på träningsvanor.',
+      case_study_content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit et dolore magna aliqua.',
       technologies_used: 'React Native, Firebase, TypeScript',
       published: true,
       published_at: new Date(Date.now() - 35 * 24 * 60 * 60 * 1000).toISOString(),
@@ -201,26 +209,26 @@ export default async function HomePage() {
       author_id: 'mock-author-id',
       technologies: ['React Native', 'Firebase', 'TypeScript'],
       tags: [
-        { id: '10', name: 'Träning', slug: 'traning', created_at: new Date().toISOString() },
-        { id: '11', name: 'Hälsa', slug: 'halsa', created_at: new Date().toISOString() },
-        { id: '12', name: 'Mobilapp', slug: 'mobilapp', created_at: new Date().toISOString() },
-        { id: '13', name: 'Motivation', slug: 'motivation', created_at: new Date().toISOString() }
+        { id: '10', name: 'Health', slug: 'health', created_at: new Date().toISOString() },
+        { id: '11', name: 'Fitness', slug: 'fitness', created_at: new Date().toISOString() },
+        { id: '12', name: 'Mobile', slug: 'mobile', created_at: new Date().toISOString() },
+        { id: '13', name: 'Tracking', slug: 'tracking', created_at: new Date().toISOString() }
       ],
-      category: 'Mobilutveckling'
+      category: 'Mobile Development'
     },
     {
       id: '4',
-      title: 'Företagshemsida med CMS',
-      slug: 'foretagshemsida-cms',
-      description: 'Responsiv företagswebbplats med enkelt innehållshanteringssystem. Optimerad för SEO och snabba laddningstider.',
-      content: 'En professionell företagswebbplats med kraftfullt CMS som gör det enkelt att uppdatera innehåll.',
-      excerpt: 'Responsiv företagswebbplats med enkelt innehållshanteringssystem.',
+      title: 'Corporate Website Lorem Ipsum',
+      slug: 'corporate-website-lorem-ipsum',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+      content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore.',
+      excerpt: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor.',
       featured_image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=600&fit=crop&crop=center',
-      project_type: 'Företagswebbplats',
+      project_type: 'Corporate Website',
       client_name: 'Professional Services AB',
       project_url: null,
       completion_date: new Date(Date.now() - 45 * 24 * 60 * 60 * 1000).toISOString(),
-      case_study_content: 'SEO-förbättringar och prestanda optimeringar.',
+      case_study_content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit et dolore magna aliqua.',
       technologies_used: 'WordPress, PHP, MySQL, SCSS',
       published: true,
       published_at: new Date(Date.now() - 50 * 24 * 60 * 60 * 1000).toISOString(),
@@ -229,28 +237,28 @@ export default async function HomePage() {
       author_id: 'mock-author-id',
       technologies: ['WordPress', 'PHP', 'MySQL', 'SCSS'],
       tags: [
-        { id: '2', name: 'Företag', slug: 'foretag', created_at: new Date().toISOString() },
+        { id: '2', name: 'Corporate', slug: 'corporate', created_at: new Date().toISOString() },
         { id: '14', name: 'CMS', slug: 'cms', created_at: new Date().toISOString() },
         { id: '15', name: 'SEO', slug: 'seo', created_at: new Date().toISOString() },
-        { id: '16', name: 'Responsiv', slug: 'responsiv', created_at: new Date().toISOString() },
+        { id: '16', name: 'Responsive', slug: 'responsive', created_at: new Date().toISOString() },
         { id: '17', name: 'WordPress', slug: 'wordpress', created_at: new Date().toISOString() },
-        { id: '18', name: 'Snabbhet', slug: 'snabbhet', created_at: new Date().toISOString() }
+        { id: '18', name: 'Performance', slug: 'performance', created_at: new Date().toISOString() }
       ],
-      category: 'Webbutveckling'
+      category: 'Web Development'
     },
     {
       id: '5',
-      title: 'Pedagogisk lärplattform',
-      slug: 'pedagogisk-larplattform',
-      description: 'Interaktiv lärplattform med fokus på pedagogik och användbarhet. Framtagen med lärares input för bästa resultat.',
-      content: 'En innovativ lärplattform utvecklad i nära samarbete med lärare för att skapa bästa möjliga lärmiljö.',
-      excerpt: 'Interaktiv lärplattform med fokus på pedagogik och användbarhet.',
+      title: 'Educational Platform Lorem Ipsum',
+      slug: 'educational-platform-lorem-ipsum',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+      content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna.',
+      excerpt: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor.',
       featured_image: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800&h=600&fit=crop&crop=center',
-      project_type: 'Lärplattform',
-      client_name: 'Utbildningscentrum',
+      project_type: 'Learning Platform',
+      client_name: 'Education Center Lorem',
       project_url: null,
       completion_date: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString(),
-      case_study_content: 'Pedagogisk utvärdering och användarupplevelse.',
+      case_study_content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit et dolore magna aliqua.',
       technologies_used: 'Vue.js, Laravel, PostgreSQL, Docker',
       published: true,
       published_at: new Date(Date.now() - 65 * 24 * 60 * 60 * 1000).toISOString(),
@@ -259,10 +267,10 @@ export default async function HomePage() {
       author_id: 'mock-author-id',
       technologies: ['Vue.js', 'Laravel', 'PostgreSQL', 'Docker'],
       tags: [
-        { id: '19', name: 'Utbildning', slug: 'utbildning', created_at: new Date().toISOString() },
-        { id: '20', name: 'Lärare', slug: 'larare', created_at: new Date().toISOString() },
-        { id: '21', name: 'Pedagogik', slug: 'pedagogik', created_at: new Date().toISOString() },
-        { id: '22', name: 'Interaktiv', slug: 'interaktiv', created_at: new Date().toISOString() }
+        { id: '19', name: 'Education', slug: 'education', created_at: new Date().toISOString() },
+        { id: '20', name: 'Learning', slug: 'learning', created_at: new Date().toISOString() },
+        { id: '21', name: 'Platform', slug: 'platform', created_at: new Date().toISOString() },
+        { id: '22', name: 'Interactive', slug: 'interactive', created_at: new Date().toISOString() }
       ],
       category: 'EdTech'
     }
@@ -273,21 +281,21 @@ export default async function HomePage() {
     <div className="flex flex-col">
       <HeroSection>
         <h1 className="text-2xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl animate-slide-up">
-          Välkommen till{' '}
+          Welcome to{' '}
           <span className="text-primary">
             Bearbetar
           </span>
         </h1>
         <p className="mt-6 text-base text-muted-foreground sm:text-lg md:text-xl max-w-xl mx-auto lg:mx-0 lg:max-w-none animate-slide-up-delayed">
-          Vi är öppna för kunder och tar redan emot projekt! Webbplatser, appar och systemlösningar. 
-          Kompetens inom utveckling, design, pedagogik och UX - allt för att skapa lösningar som verkligen fungerar.
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+          Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
         </p>
         <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-slide-up-delayed-2">
           <Button asChild size="lg" className="w-full sm:w-auto min-h-[44px]">
-            <Link href="/kontakt">Hör av dig</Link>
+            <Link href="/kontakt">Get in Touch</Link>
           </Button>
           <Button variant="outline" asChild size="lg" className="w-full sm:w-auto min-h-[44px]">
-            <Link href="/tjanster">Våra tjänster</Link>
+            <Link href="/tjanster">Our Services</Link>
           </Button>
         </div>
       </HeroSection>
@@ -297,10 +305,10 @@ export default async function HomePage() {
         <div className="container">
           <div className="mx-auto max-w-6xl">
           <h2 className="text-center text-xl font-bold tracking-tighter sm:text-3xl md:text-4xl lg:text-5xl animate-slide-up">
-            Vad vi gör
+            What We Do
           </h2>
           <p className="mt-4 text-center text-muted-foreground animate-slide-up-delayed">
-            Det här erbjuder vi redan idag - hemsidan håller vi på att färdigställa!
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor!
           </p>
           
           <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
@@ -308,12 +316,12 @@ export default async function HomePage() {
               <CardHeader>
                 <div className="flex items-center gap-2">
                   <Globe className="h-8 w-8 text-primary" />
-                  <CardTitle>Webbsidor</CardTitle>
+                  <CardTitle>Websites</CardTitle>
                 </div>
               </CardHeader>
               <CardContent>
                 <CardDescription>
-                  Modern webbutveckling med WordPress, React och Next.js. Månadsabonnemang för att göra professionell design tillgänglig för fler.
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
                 </CardDescription>
               </CardContent>
             </Card>
@@ -322,12 +330,12 @@ export default async function HomePage() {
               <CardHeader>
                 <div className="flex items-center gap-2">
                   <Smartphone className="h-8 w-8 text-primary" />
-                  <CardTitle>Appar</CardTitle>
+                  <CardTitle>Applications</CardTitle>
                 </div>
               </CardHeader>
               <CardContent>
                 <CardDescription>
-                  Mobilappar och webappar som löser verkliga problem. Från enkla verktyg till avancerade systemlösningar.
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
                 </CardDescription>
               </CardContent>
             </Card>
@@ -336,12 +344,12 @@ export default async function HomePage() {
               <CardHeader>
                 <div className="flex items-center gap-2">
                   <Code className="h-8 w-8 text-primary" />
-                  <CardTitle>Utveckling</CardTitle>
+                  <CardTitle>Development</CardTitle>
                 </div>
               </CardHeader>
               <CardContent>
                 <CardDescription>
-                  Skräddarsydd mjukvara, automatisering och system som passar dina behov. Vi gillar att hitta smarta lösningar på krångliga problem.
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
                 </CardDescription>
               </CardContent>
             </Card>
@@ -350,12 +358,12 @@ export default async function HomePage() {
               <CardHeader>
                 <div className="flex items-center gap-2">
                   <Coffee className="h-8 w-8 text-primary" />
-                  <CardTitle>Rådgivning</CardTitle>
+                  <CardTitle>Consulting</CardTitle>
                 </div>
               </CardHeader>
               <CardContent>
                 <CardDescription>
-                  UX-design, grafisk formgivning och rådgivning inom teknik och pedagogik. Vi hjälper dig hitta rätt väg framåt.
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
                 </CardDescription>
               </CardContent>
             </Card>
@@ -368,17 +376,17 @@ export default async function HomePage() {
       <section className="container py-16 animate-scale-in">
         <PortfolioCarousel
           projects={mockProjects}
-          title="Senaste projekt"
-          description="Ett urval av projekt vi arbetat med - från webbplatser till mobilappar"
+          title="Latest Projects"
+          description="Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor"
         />
       </section>
 
       {/* Article Carousel */}
       <section className="container py-16 animate-scale-in-delayed">
         <ArticleCarousel
-          articles={articlesToShow}
-          title="Senaste inläggen"
-          description="Tips, tankar och berättelser från vårt dagliga liv som utvecklare"
+          articles={typedArticlesToShow}
+          title="Latest Articles"
+          description="Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor"
         />
       </section>
 
@@ -387,14 +395,14 @@ export default async function HomePage() {
         <div className="container">
           <div className="mx-auto max-w-2xl text-center">
             <h2 className="text-3xl font-bold tracking-tighter">
-              Har du ett projekt i åtanke?
+              Do You Have a Project in Mind?
             </h2>
             <p className="mt-4 text-muted-foreground">
-              Hör av dig så tar vi en kaffe och pratar om vad vi kan hjälpa dig med.
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore.
             </p>
             <div className="mt-8">
               <Button asChild size="lg" className="min-h-[44px] w-full sm:w-auto">
-                <Link href="/kontakt">Hör av dig</Link>
+                <Link href="/kontakt">Get in Touch</Link>
               </Button>
             </div>
           </div>

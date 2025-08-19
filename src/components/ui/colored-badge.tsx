@@ -191,7 +191,8 @@ export function ColoredBadge({ tag, selected = false, className = '', onClick, c
   
   return (
     <div
-      className={`inline-flex items-center justify-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors cursor-pointer text-center ${colorClass} ${className}`}
+      className={`inline-flex items-center justify-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors cursor-pointer text-center no-glow ${colorClass} ${className}`}
+      style={{ boxShadow: 'none' }}
       onClick={onClick}
     >
       {children || tag}

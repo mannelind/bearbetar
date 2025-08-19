@@ -21,9 +21,11 @@ import { RichTextEditor } from '@/components/ui/rich-text-editor'
 import { Badge } from '@/components/ui/badge'
 import { SimpleTooltip } from '@/components/ui/tooltip'
 import { ImageUpload } from '@/components/ui/image-upload'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useSupabase } from '@/hooks/use-supabase'
 import { useAuth } from '@/hooks/use-auth'
 import { ADMIN_ROUTES } from '@/lib/constants'
+import { POST_TYPES, POST_TYPE_CONFIG } from '@/types'
 import { toast } from 'sonner'
 import { Loader2, Save, Eye, X, Plus } from 'lucide-react'
 
@@ -38,6 +40,7 @@ const articleSchema = z.object({
   content: z.string().min(1, 'Innehåll krävs'),
   featured_image: z.string().url('Måste vara en giltig URL').optional().or(z.literal('')),
   published: z.boolean().default(false),
+  post_type: z.string().default(POST_TYPES.article),
   tags: z.array(z.string()).optional().default([]),
 })
 
@@ -53,6 +56,7 @@ interface ArticleFormProps {
     featured_image: string | null
     published: boolean
     published_at: string | null
+    post_type: string
     tags: string[] | null
   }
 }
@@ -111,6 +115,7 @@ export function ArticleForm({ article }: ArticleFormProps) {
       content: article?.content || '',
       featured_image: article?.featured_image || '',
       published: article?.published || false,
+      post_type: article?.post_type || POST_TYPES.article,
       tags: article?.tags || [],
     },
   })
@@ -263,6 +268,37 @@ export function ArticleForm({ article }: ArticleFormProps) {
                   }}
                 />
               </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="post_type"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Inläggstyp</FormLabel>
+              <Select onValueChange={field.onChange} value={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Välj inläggstyp" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {Object.entries(POST_TYPE_CONFIG).map(([type, config]) => (
+                    <SelectItem key={type} value={type}>
+                      <div className="flex items-center gap-2">
+                        <span>{config.emoji}</span>
+                        <div>
+                          <div className="font-medium">{config.label}</div>
+                          <div className="text-xs text-muted-foreground">{config.description}</div>
+                        </div>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}

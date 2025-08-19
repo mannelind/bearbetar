@@ -67,6 +67,12 @@ export function Modal({ children, open, onOpenChange }: ModalProps) {
       // Get scrollbar width to prevent layout shift
       const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth
       
+      // Add CSS custom property for scrollbar width
+      document.documentElement.style.setProperty('--scrollbar-width', `${scrollbarWidth}px`)
+      
+      // Add body class for CSS-based compensation
+      body.classList.add('modal-open')
+      
       // Lock body scroll and prevent layout shift
       body.style.overflow = 'hidden'
       body.style.position = 'fixed'
@@ -75,10 +81,41 @@ export function Modal({ children, open, onOpenChange }: ModalProps) {
       body.style.right = '0'
       body.style.paddingRight = `${scrollbarWidth}px`
       
+      // Apply same padding to fixed positioned elements that might be affected
+      const fixedElements = document.querySelectorAll([
+        'header',
+        'nav', 
+        '.fixed',
+        '[style*="position: fixed"]',
+        '[style*="position:fixed"]'
+      ].join(', '))
+      
+      const originalPaddings = new Map()
+      
+      fixedElements.forEach((element: any) => {
+        const computedStyle = window.getComputedStyle(element)
+        if (computedStyle.position === 'fixed') {
+          const originalPadding = element.style.paddingRight
+          originalPaddings.set(element, originalPadding)
+          element.style.paddingRight = `calc(${originalPadding || '0px'} + ${scrollbarWidth}px)`
+        }
+      })
+      
       // Also lock html element
       html.style.overflow = 'hidden'
       
       return () => {
+        // Restore fixed elements padding
+        fixedElements.forEach((element: any) => {
+          const originalPadding = originalPaddings.get(element)
+          if (originalPadding !== undefined) {
+            element.style.paddingRight = originalPadding
+          }
+        })
+        
+        // Remove body class
+        body.classList.remove('modal-open')
+        
         // Restore body scroll
         body.style.overflow = ''
         body.style.position = ''
@@ -89,6 +126,9 @@ export function Modal({ children, open, onOpenChange }: ModalProps) {
         
         // Restore html
         html.style.overflow = ''
+        
+        // Remove CSS custom property
+        document.documentElement.style.removeProperty('--scrollbar-width')
         
         // Restore scroll position
         window.scrollTo(0, scrollY)
@@ -225,7 +265,7 @@ export function ModalContent({
     <>
       {/* Backdrop - separate layer covering entire viewport */}
       <div 
-        className="fixed inset-0 z-[80] bg-muted/80 backdrop-blur-sm"
+        className="fixed inset-0 z-[80] bg-muted/50 backdrop-blur-sm"
         onClick={close}
         aria-hidden="true"
       />
@@ -240,7 +280,7 @@ export function ModalContent({
           aria-labelledby="modal-title"
           tabIndex={-1}
           className={cn(
-            "relative bg-background border rounded-lg shadow-xl max-h-[90vh] overflow-hidden w-full focus:outline-none pointer-events-auto",
+            "relative bg-background border rounded-lg shadow-xl max-h-[95vh] md:max-h-[90vh] overflow-hidden w-full focus:outline-none pointer-events-auto modal-content",
             sizeClasses[size],
             className
           )}
@@ -250,7 +290,7 @@ export function ModalContent({
           <button
             onClick={close}
             aria-label="Stäng modal"
-            className="absolute top-4 right-4 z-10 p-2 rounded-full hover:bg-muted transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+            className="absolute top-2 right-2 md:top-4 md:right-4 z-10 p-2 md:p-2 rounded-full hover:bg-muted transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 close-button min-h-[44px] min-w-[44px] flex items-center justify-center"
           >
             <X className="h-4 w-4" />
             <span className="sr-only">Stäng</span>

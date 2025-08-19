@@ -103,27 +103,27 @@ export function PortfolioGrid() {
         const mockPortfolioItems: PortfolioItem[] = [
           {
             id: '1',
-            title: 'E-handelsplattform för lokalföretag',
-            slug: 'e-handelsplattform-lokalforetag',
+            title: 'Lorem Ipsum Project Alpha',
+            slug: 'lorem-ipsum-project-alpha',
             description: `
               <div class="space-y-6">
-                <p>Modern e-handelslösning med fokus på användarvänlighet och snabba laddningstider. Integrerad betalning och lagerhantering.</p>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
                 
-                <h2>Projektöversikt</h2>
-                <p>Detta projekt involverade utveckling av en komplett e-handelslösning för ett lokalt företag som ville digitalisera sin verksamhet.</p>
+                <h2>Lorem Ipsum Dolor</h2>
+                <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
                 
-                <h2>Teknisk implementation</h2>
-                <p>Vi använde Next.js för att skapa en snabb och SEO-vänlig frontend, medan Stripe hanterade alla betalningar säkert.</p>
+                <h2>Consectetur Adipiscing</h2>
+                <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
                 
-                <h2>Resultat</h2>
-                <p>Företaget såg en 300% ökning av online-försäljning inom första kvartalet efter lansering.</p>
+                <h2>Excepteur Sint</h2>
+                <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim.</p>
               </div>
             `,
-            content: 'Detta projekt involverade utveckling av en komplett e-handelslösning för ett lokalt företag.',
-            excerpt: 'Modern e-handelslösning med fokus på användarvänlighet och snabba laddningstider.',
+            content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
+            excerpt: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt.',
             featured_image: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&h=600&fit=crop&crop=center',
             project_type: 'simple',
-            client_name: 'Lokalt företag AB',
+            client_name: 'Lorem Client AB',
             project_url: null,
             completion_date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
             case_study_content: 'Detaljerad fallstudie om utvecklingsprocessen och resultaten.',

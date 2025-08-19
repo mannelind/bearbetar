@@ -201,6 +201,8 @@
 
   .button-outline {
     @apply button border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-all duration-200;
+    /* Reservera plats för hover-effekter */
+    box-shadow: 0 0 10px hsla(var(--border), 0);
   }
 
   .button-outline:hover {
@@ -786,6 +788,130 @@
     outline: 2px solid hsl(var(--ring));
     outline-offset: 2px;
   }
+
+  /* Modal scroll lock compensation for fixed elements */
+  body.modal-open {
+    overflow: hidden;
+    padding-right: var(--scrollbar-width, 0px);
+  }
+
+  body.modal-open .fixed,
+  body.modal-open header,
+  body.modal-open nav {
+    padding-right: var(--scrollbar-width, 0px);
+  }
+
+  /* Alternative approach using CSS-only detection */
+  @supports (padding: max(0px)) {
+    body.modal-open .fixed,
+    body.modal-open header,
+    body.modal-open nav {
+      padding-right: max(var(--scrollbar-width, 0px), 0px);
+    }
+  }
+
+  /* Modal mobile optimizations */
+  @media (max-width: 768px) {
+    /* Better touch targets for modal content */
+    .modal-content button,
+    .modal-content a,
+    .modal-content [role="button"] {
+      min-height: 44px;
+      min-width: 44px;
+      touch-action: manipulation;
+    }
+
+    /* Improve text readability on mobile */
+    .modal-content .prose {
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .modal-content .prose h1,
+    .modal-content .prose h2,
+    .modal-content .prose h3 {
+      font-size: 1.125rem;
+      line-height: 1.4;
+      margin-top: 1.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .modal-content .prose h1 {
+      font-size: 1.25rem;
+    }
+
+    .modal-content .prose p {
+      margin-bottom: 1rem;
+    }
+
+    /* Better modal scrolling on mobile */
+    .modal-content [id="article-content"] {
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+    }
+
+    /* Hide external scrollbar indicators on mobile */
+    .modal-external-scrollbar {
+      display: none !important;
+    }
+
+    /* Optimize modal close button for touch */
+    .modal-content .close-button {
+      min-height: 48px;
+      min-width: 48px;
+      top: 0.5rem;
+      right: 0.5rem;
+    }
+  }
+
+  /* iOS Safari specific fixes */
+  @supports (-webkit-touch-callout: none) {
+    /* Fix viewport height issues on iOS */
+    .modal-content {
+      height: -webkit-fill-available;
+    }
+    
+    /* Prevent zoom on input focus */
+    .modal-content input,
+    .modal-content select,
+    .modal-content textarea {
+      font-size: 16px;
+    }
+  }
+
+  /* Mobile navigation hover fixes */
+  .mobile-nav-item {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    margin: 4px;
+  }
+
+  .mobile-nav-item:hover {
+    margin: 0px;
+  }
+
+  /* Bottom navigation layout fix */
+  .bottom-nav nav > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+  }
+
+  /* Prevent nav items from pushing each other */
+  .bottom-nav .mobile-nav-item {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+  }
+
+  /* Navigation items that use margin-based hover effects */
+  .nav-item-margin-hover {
+    margin: 4px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .nav-item-margin-hover:hover {
+    margin: 0px;
+  }
   
   /* Futuristic gradient backgrounds - Green theme (dark mode) */
   .futuristic-gradient {
@@ -1257,6 +1383,11 @@ body {
 .btn-glow {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   border: 1px solid transparent;
+  /* Reservera plats för hover glow-effekter */
+  box-shadow: 
+    0 0 20px hsla(var(--primary), 0),
+    0 0 40px hsla(var(--primary), 0),
+    inset 0 0 10px hsla(var(--primary), 0);
 }
 
 .btn-glow:hover {
@@ -1283,6 +1414,10 @@ body {
 /* Alternativ för outline knappar */
 .btn-glow-outline {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Reservera plats för hover glow-effekter */
+  box-shadow: 
+    0 0 15px hsla(var(--primary), 0),
+    0 0 30px hsla(var(--primary), 0);
 }
 
 .btn-glow-outline:hover {
@@ -1298,16 +1433,27 @@ body {
 /* Sidebar button hover effects for better visibility */
 .sidebar-btn-hover {
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid transparent;
 }
 
-.sidebar-btn-hover:hover {
+.sidebar-btn-hover:hover,
+nav .sidebar-btn-hover:hover,
+.bottom-nav .sidebar-btn-hover:hover {
   background-color: hsl(var(--primary) / 0.08) !important;
   color: hsl(var(--primary)) !important;
   border-radius: 9999px;
 }
 
 /* Light mode sidebar button hover */
-.light .sidebar-btn-hover:hover {
+.light .sidebar-btn-hover {
+  box-shadow: 
+    0 0 6px hsla(95, 20%, 45%, 0),
+    0 0 12px hsla(95, 20%, 45%, 0);
+}
+
+.light .sidebar-btn-hover:hover,
+.light nav .sidebar-btn-hover:hover,
+.light .bottom-nav .sidebar-btn-hover:hover {
   background-color: hsl(95, 25%, 88%) !important; /* Matt olive-grön bakgrund */
   color: hsl(95, 30%, 25%) !important; /* Mörk matt olive text */
   box-shadow: 
@@ -1316,6 +1462,13 @@ body {
 }
 
 /* Dark mode sidebar button hover */
+.dark .sidebar-btn-hover {
+  border: 1px solid transparent;
+  box-shadow: 
+    0 0 6px hsla(120, 70%, 60%, 0),
+    0 0 12px hsla(120, 70%, 60%, 0);
+}
+
 .dark .sidebar-btn-hover:hover {
   background-color: hsl(140, 60%, 15%) !important; /* Mörk grön bakgrund */
   color: hsl(120, 70%, 70%) !important; /* Ljus grön text */

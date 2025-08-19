@@ -218,7 +218,7 @@ export function AdminNavigation({ user }: AdminNavigationProps) {
               size="sm"
               onClick={handleClick}
               className={cn(
-                "text-muted-foreground hover:text-foreground transition-all duration-200 hover:scale-110",
+                "text-muted-foreground hover:text-foreground transition-all duration-200 sidebar-btn-hover",
                 !showExpandedContent ? "h-8 w-8" : ""
               )}
             >
@@ -279,7 +279,7 @@ export function AdminNavigation({ user }: AdminNavigationProps) {
                   href={item.href}
                   onClick={() => setIsOpen(false)}
                   className={cn(
-                    "flex items-center rounded-lg text-sm font-medium transition-colors relative",
+                    "flex items-center rounded-lg text-sm font-medium transition-colors relative sidebar-btn-hover",
                     !showExpandedContent 
                       ? "justify-center py-3 px-2" 
                       : "space-x-3 px-3 py-2",
@@ -304,7 +304,7 @@ export function AdminNavigation({ user }: AdminNavigationProps) {
             <Button
               variant="ghost"
               className={cn(
-                "w-full transition-all duration-200 hover:scale-105",
+                "w-full transition-all duration-200 sidebar-btn-hover",
                 !showExpandedContent ? "h-10 w-10 p-0" : "justify-start"
               )}
               onClick={handleLogout}

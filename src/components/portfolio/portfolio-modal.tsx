@@ -5,8 +5,9 @@ import { createPortal } from 'react-dom'
 import Image from 'next/image'
 import { createBrowserClient } from '@supabase/ssr'
 import { Database } from '@/types/database'
-import { Modal, ModalContent, ModalHeader, ModalBody } from '@/components/ui/modal'
+import { Modal, ModalContent } from '@/components/ui/modal'
 import { Badge } from '@/components/ui/badge'
+import { ColoredBadge } from '@/components/ui/colored-badge'
 import { Button } from '@/components/ui/button'
 import { 
   Calendar, 
@@ -43,6 +44,9 @@ export function PortfolioModal({ item, open, onOpenChange }: PortfolioModalProps
   const [headings, setHeadings] = useState<Array<{id: string, text: string, level: number}>>([])
   const [activeHeading, setActiveHeading] = useState<string | null>(null)
   const [mounted, setMounted] = useState(false)
+  const [scrollHeight, setScrollHeight] = useState(0)
+  const [clientHeight, setClientHeight] = useState(0)
+  const [scrollTop, setScrollTop] = useState(0)
   const contentRef = useRef<HTMLDivElement>(null)
 
   const loadFullItem = useCallback(async (itemId: string) => {
@@ -123,6 +127,18 @@ export function PortfolioModal({ item, open, onOpenChange }: PortfolioModalProps
     setMounted(true)
   }, [])
 
+  useEffect(() => {
+    if (open) {
+      document.body.classList.add('modal-open')
+    } else {
+      document.body.classList.remove('modal-open')
+    }
+    
+    return () => {
+      document.body.classList.remove('modal-open')
+    }
+  }, [open])
+
   const extractHeadings = useCallback(() => {
     setTimeout(() => {
       const container = document.querySelector('[data-portfolio-content]')
@@ -179,7 +195,19 @@ export function PortfolioModal({ item, open, onOpenChange }: PortfolioModalProps
     }
 
     setActiveHeading(activeId)
+    
+    // Update scroll measurements for external scrollbar
+    setScrollHeight(container.scrollHeight)
+    setClientHeight(container.clientHeight)
+    setScrollTop(container.scrollTop)
   }, [headings])
+
+  const handleExternalScroll = useCallback((newScrollTop: number) => {
+    const container = document.querySelector('[data-portfolio-content]')
+    if (container) {
+      container.scrollTop = newScrollTop
+    }
+  }, [])
 
   useEffect(() => {
     if (open && fullItem) {
@@ -207,94 +235,26 @@ export function PortfolioModal({ item, open, onOpenChange }: PortfolioModalProps
   return (
     <>
       <Modal open={open} onOpenChange={onOpenChange}>
-        <ModalContent size="xl" className="overflow-hidden">
+        <ModalContent size="full" className="overflow-hidden h-[75vh] max-w-5xl p-0">
         {loading ? (
           <div className="p-8 text-center">
             <div className="loading-spinner w-8 h-8 mx-auto mb-4" />
             <p className="text-muted-foreground">Laddar projektdetaljer...</p>
           </div>
         ) : fullItem ? (
-          <div className="flex flex-col h-full">
-            {/* Header */}
-            <ModalHeader className="flex-shrink-0">
-              <div className="space-y-3">
-                <div className="flex items-start justify-between">
-                  <div className="space-y-2">
-                    <h2 className="text-2xl font-bold">{fullItem.title}</h2>
-                    
-                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                      {fullItem.client_name && (
-                        <div className="flex items-center gap-1">
-                          <User className="h-4 w-4" />
-                          {fullItem.client_name}
-                        </div>
-                      )}
-                      
-                      {fullItem.completion_date && (
-                        <div className="flex items-center gap-1">
-                          <Calendar className="h-4 w-4" />
-                          {new Date(fullItem.completion_date).toLocaleDateString('sv-SE')}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                  
-                  <Badge variant={fullItem.project_type === 'case_study' ? 'default' : 'secondary'}>
-                    {fullItem.project_type === 'case_study' ? (
-                      <>
-                        <FileText className="h-3 w-3 mr-1" />
-                        Case Study
-                      </>
-                    ) : (
-                      <>
-                        <ImageIcon className="h-3 w-3 mr-1" />
-                        Portfolio
-                      </>
-                    )}
-                  </Badge>
-                </div>
-
-                {/* Categories and Tags */}
-                <div className="flex flex-wrap gap-2">
-                  {fullItem.portfolio_categories?.map((category: any) => (
-                    <Badge key={category.id} variant="outline">
-                      {category.name}
-                    </Badge>
-                  ))}
-                  
-                  {fullItem.tags?.map((tag: any) => (
-                    <Badge key={tag.id} variant="secondary">
-                      #{tag.name}
-                    </Badge>
-                  ))}
-                </div>
-
-                {/* Project URL */}
-                {fullItem.project_url && (
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={() => window.open(fullItem.project_url!, '_blank')}
-                  >
-                    <ExternalLink className="h-4 w-4 mr-2" />
-                    Besök projekt
-                  </Button>
-                )}
-              </div>
-            </ModalHeader>
-
-            {/* Body with scrollable content */}
-            <ModalBody className="flex-1 overflow-y-auto space-y-6" data-portfolio-content onScroll={updateActiveHeading}>
+          <div className="relative flex flex-col md:flex-row h-full">
+            {/* Mobile: Top section, Desktop: Left 40% - Image Gallery + Metadata */}
+            <div className="w-full md:w-2/5 flex-shrink-0 flex flex-col md:max-h-full max-h-[40vh] md:border-r border-b md:border-b-0 border-border">
               {/* Image Gallery */}
-              {allImages.length > 0 && (
-                <div className="space-y-4">
-                  <div className="relative aspect-video bg-muted rounded-lg overflow-hidden">
+              <div className="flex-1">
+                {allImages.length > 0 ? (
+                  <div className="relative h-full bg-background">
                     <Image 
                       src={allImages[currentImageIndex]?.url || ''} 
                       alt={allImages[currentImageIndex]?.caption || fullItem.title}
                       fill
-                      className="object-cover"
-                      sizes="(max-width: 768px) 100vw, 80vw"
+                      className="object-contain"
+                      sizes="40vw"
                     />
                     
                     {allImages.length > 1 && (
@@ -325,22 +285,98 @@ export function PortfolioModal({ item, open, onOpenChange }: PortfolioModalProps
                       </>
                     )}
                   </div>
-
-                  {/* Image caption */}
-                  {allImages[currentImageIndex]?.caption && (
-                    <p className="text-sm text-muted-foreground text-center">
-                      {allImages[currentImageIndex].caption}
-                    </p>
+                ) : (
+                  <div className="h-full bg-background flex items-center justify-center">
+                    <div className="text-muted-foreground text-center">
+                      <div className="text-4xl mb-2">🖼️</div>
+                      <p>Ingen bild tillgänglig</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+              
+              {/* Metadata under image */}
+              <div className="p-3 md:p-4 space-y-2 md:space-y-3 border-t border-border bg-muted/20">
+                {/* Project Type Badge */}
+                <div className="flex items-center gap-2 mb-2">
+                  <Badge variant={fullItem.project_type === 'case_study' ? 'default' : 'secondary'} className="text-xs">
+                    {fullItem.project_type === 'case_study' ? (
+                      <>
+                        <FileText className="h-3 w-3 mr-1" />
+                        Case Study
+                      </>
+                    ) : (
+                      <>
+                        <ImageIcon className="h-3 w-3 mr-1" />
+                        Portfolio
+                      </>
+                    )}
+                  </Badge>
+                </div>
+                
+                {/* Client and Date */}
+                <div className="space-y-2">
+                  {fullItem.client_name && (
+                    <div className="flex items-center gap-2 md:gap-3">
+                      <User className="h-4 w-4 text-muted-foreground" />
+                      <div>
+                        <p className="text-xs md:text-sm font-medium">{fullItem.client_name}</p>
+                        <p className="text-xs text-muted-foreground hidden md:block">Kund</p>
+                      </div>
+                    </div>
                   )}
-
-                  {/* Thumbnail strip */}
-                  {allImages.length > 1 && (
+                  
+                  {fullItem.completion_date && (
+                    <div className="flex items-center gap-1 text-xs md:text-sm text-muted-foreground">
+                      <Calendar className="h-3 w-3 md:h-4 md:w-4" />
+                      <span>{new Date(fullItem.completion_date).toLocaleDateString('sv-SE')}</span>
+                    </div>
+                  )}
+                </div>
+                
+                {/* Categories and Tags */}
+                <div className="space-y-2">
+                  {fullItem.portfolio_categories && fullItem.portfolio_categories.length > 0 && (
+                    <div className="flex flex-wrap gap-1 md:gap-2">
+                      {fullItem.portfolio_categories.map((category: any) => (
+                        <Badge key={category.id} variant="outline" className="text-xs">
+                          {category.name}
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
+                  
+                  {fullItem.tags && fullItem.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-1 md:gap-2">
+                      {fullItem.tags.map((tag: any) => (
+                        <ColoredBadge key={tag.id} tag={tag.name} className="text-xs" />
+                      ))}
+                    </div>
+                  )}
+                </div>
+                
+                {/* Project URL */}
+                {fullItem.project_url && (
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => window.open(fullItem.project_url!, '_blank')}
+                    className="w-full text-xs"
+                  >
+                    <ExternalLink className="h-3 w-3 mr-2" />
+                    Besök projekt
+                  </Button>
+                )}
+                
+                {/* Thumbnail strip for mobile */}
+                {allImages.length > 1 && (
+                  <div className="md:hidden">
                     <div className="flex gap-2 overflow-x-auto pb-2">
                       {allImages.map((img, index) => (
                         <button
                           key={index}
                           className={cn(
-                            "flex-shrink-0 w-16 h-16 rounded-md overflow-hidden border-2 transition-colors",
+                            "flex-shrink-0 w-12 h-12 rounded-md overflow-hidden border-2 transition-colors relative",
                             index === currentImageIndex ? "border-primary" : "border-transparent"
                           )}
                           onClick={() => setCurrentImageIndex(index)}
@@ -350,72 +386,92 @@ export function PortfolioModal({ item, open, onOpenChange }: PortfolioModalProps
                             alt={img.caption || `Bild ${index + 1}`}
                             fill
                             className="object-cover"
-                            sizes="64px"
+                            sizes="48px"
                           />
                         </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Content */}
-              <div className="space-y-4">
-                {fullItem.excerpt && (
-                  <div>
-                    <h3 className="text-lg font-semibold mb-2">Sammanfattning</h3>
-                    <p className="text-muted-foreground">{fullItem.excerpt}</p>
-                  </div>
-                )}
-                
-                {fullItem.description && (
-                  <div>
-                    <h3 className="text-lg font-semibold mb-2">Beskrivning</h3>
-                    <div 
-                      ref={contentRef}
-                      className="prose prose-sm max-w-none dark:prose-invert"
-                      dangerouslySetInnerHTML={{ __html: fullItem.description }}
-                    />
-                  </div>
-                )}
-
-                {fullItem.project_type === 'case_study' && fullItem.case_study_content && (
-                  <div>
-                    <h3 className="text-lg font-semibold mb-2">Case Study</h3>
-                    <div 
-                      className="prose prose-sm max-w-none dark:prose-invert"
-                      dangerouslySetInnerHTML={{ __html: fullItem.case_study_content }}
-                    />
-                  </div>
-                )}
-
-                {fullItem.technologies_used && (
-                  <div>
-                    <h3 className="text-lg font-semibold mb-2">Teknologier</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {fullItem.technologies_used.split(',').map((tech, index) => (
-                        <Badge key={index} variant="outline">
-                          {tech.trim()}
-                        </Badge>
                       ))}
                     </div>
                   </div>
                 )}
               </div>
-            </ModalBody>
-          </div>
+            </div>
+
+            {/* Mobile: Bottom section, Desktop: Right 60% - Content */}
+            <div className="w-full md:w-3/5 flex-shrink-0 flex flex-col overflow-hidden flex-1">
+              <div className="flex-1 p-4 md:pl-6 md:py-6 md:pr-6 overflow-hidden">
+                <div 
+                  className="h-full overflow-y-auto space-y-6"
+                  style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                  data-portfolio-content
+                  onScroll={updateActiveHeading}
+                >
+                  <style jsx>{`
+                    div::-webkit-scrollbar {
+                      display: none;
+                    }
+                  `}</style>
+                
+                  {/* Title and Meta */}
+                  <div className="space-y-3 md:space-y-4 mb-4 md:mb-6">
+                    <h1 className="text-lg md:text-2xl font-bold leading-tight">{fullItem.title}</h1>
+                    
+                    {fullItem.excerpt && (
+                      <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+                        {fullItem.excerpt}
+                      </p>
+                    )}
+                  </div>
+
+                    {/* Content */}
+                    {fullItem.description && (
+                      <div>
+                        <h3 className="text-base md:text-lg font-semibold mb-2">Beskrivning</h3>
+                        <div 
+                          ref={contentRef}
+                          className="prose prose-xs md:prose-sm max-w-none dark:prose-invert prose-headings:text-foreground prose-p:text-muted-foreground prose-strong:text-foreground prose-code:text-foreground prose-pre:bg-muted prose-pre:border prose-headings:text-sm md:prose-headings:text-base"
+                          dangerouslySetInnerHTML={{ __html: fullItem.description }}
+                        />
+                      </div>
+                    )}
+
+                    {fullItem.project_type === 'case_study' && fullItem.case_study_content && (
+                      <div>
+                        <h3 className="text-base md:text-lg font-semibold mb-2">Case Study</h3>
+                        <div 
+                          className="prose prose-xs md:prose-sm max-w-none dark:prose-invert prose-headings:text-foreground prose-p:text-muted-foreground prose-strong:text-foreground prose-code:text-foreground prose-pre:bg-muted prose-pre:border prose-headings:text-sm md:prose-headings:text-base"
+                          dangerouslySetInnerHTML={{ __html: fullItem.case_study_content }}
+                        />
+                      </div>
+                    )}
+
+                    {fullItem.technologies_used && (
+                      <div>
+                        <h3 className="text-base md:text-lg font-semibold mb-2">Teknologier</h3>
+                        <div className="flex flex-wrap gap-2">
+                          {fullItem.technologies_used.split(',').map((tech, index) => (
+                            <Badge key={index} variant="outline" className="text-xs">
+                              {tech.trim()}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
         ) : null}
         </ModalContent>
       </Modal>
 
       {/* External Navigation Menu */}
       {mounted && open && fullItem && headings.length > 0 && createPortal(
-        <div className="fixed top-1/2 right-8 -translate-y-1/2 w-56 z-[999]">
+        <div className="fixed top-1/2 right-4 -translate-y-1/2 w-56 z-[999] hidden lg:block">
           <div className="flex items-center gap-2 mb-4 text-sm font-medium text-muted-foreground">
             <List className="h-4 w-4" />
             Innehåll
           </div>
-          <nav className="space-y-1 max-h-[60vh] overflow-y-auto">
+          <nav className="space-y-1 max-h-[60vh] overflow-y-auto bg-background/90 backdrop-blur-sm border rounded-lg p-3">
             {headings.map((heading) => (
               <button
                 key={heading.id}
@@ -433,6 +489,45 @@ export function PortfolioModal({ item, open, onOpenChange }: PortfolioModalProps
               </button>
             ))}
           </nav>
+        </div>,
+        document.body
+      )}
+
+      {/* External Scrollbar rendered via Portal to ensure highest z-index - Hidden on mobile */}
+      {mounted && open && fullItem && scrollHeight > clientHeight && createPortal(
+        <div className="fixed top-1/2 right-[15rem] -translate-y-1/2 w-1 h-[75vh] z-[999] hidden lg:block">
+          <div className="relative h-full w-full bg-background border rounded-full">
+            <div
+              className="absolute left-0 w-full bg-muted-foreground/50 rounded-full cursor-pointer hover:bg-muted-foreground/70 transition-colors"
+              style={{
+                height: `${Math.max((clientHeight / scrollHeight) * 100, 10)}%`,
+                top: `${(scrollTop / scrollHeight) * 100}%`
+              }}
+              onMouseDown={(e) => {
+                e.preventDefault()
+                const startY = e.clientY
+                const startScrollTop = scrollTop
+                const scrollRatio = scrollHeight / clientHeight
+
+                const handleMouseMove = (e: MouseEvent) => {
+                  const deltaY = e.clientY - startY
+                  const newScrollTop = Math.max(0, Math.min(
+                    scrollHeight - clientHeight,
+                    startScrollTop + (deltaY * scrollRatio)
+                  ))
+                  handleExternalScroll(newScrollTop)
+                }
+
+                const handleMouseUp = () => {
+                  document.removeEventListener('mousemove', handleMouseMove)
+                  document.removeEventListener('mouseup', handleMouseUp)
+                }
+
+                document.addEventListener('mousemove', handleMouseMove)
+                document.addEventListener('mouseup', handleMouseUp)
+              }}
+            />
+          </div>
         </div>,
         document.body
       )}

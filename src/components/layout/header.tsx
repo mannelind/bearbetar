@@ -32,7 +32,7 @@ export function Header() {
       Hoppa till huvudinnehåll
     </a>
     
-    <header role="banner" className={`sticky z-50 transition-all duration-500 ease-in-out ${isScrolled ? 'md:top-4 top-0' : 'md:top-10 top-0'}`} aria-label="Huvudnavigation">
+    <header role="banner" className={`fixed w-full z-40 transition-all duration-500 ease-in-out ${isScrolled ? 'md:top-4 top-0' : 'md:top-10 top-0'} [body:has(.modal-open)_&]:opacity-0 [body:has(.modal-open)_&]:pointer-events-none`} aria-label="Huvudnavigation">
       {/* Mobile Header - Simple with direct navigation */}
       <div className="md:hidden w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/40">
         <div className="flex h-auto items-center justify-between w-full p-2">

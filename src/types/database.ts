@@ -79,6 +79,7 @@ export type Database = {
           featured_image: string | null
           published: boolean
           published_at: string | null
+          post_type: string
           created_at: string
           updated_at: string
           author_id: string
@@ -92,6 +93,7 @@ export type Database = {
           featured_image?: string | null
           published?: boolean
           published_at?: string | null
+          post_type?: string
           created_at?: string
           updated_at?: string
           author_id: string
@@ -105,6 +107,7 @@ export type Database = {
           featured_image?: string | null
           published?: boolean
           published_at?: string | null
+          post_type?: string
           created_at?: string
           updated_at?: string
           author_id?: string
