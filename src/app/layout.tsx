@@ -3,7 +3,7 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import { ConditionalLayout } from '@/components/layout/conditional-layout'
 import { ThemeProvider } from '@/components/providers/theme-provider'
-import { APP_NAME, APP_DESCRIPTION } from '@/lib/constants'
+import { SEO } from '@/lib/constants'
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -19,31 +19,43 @@ export const viewport = {
 }
 
 export const metadata: Metadata = {
-  title: {
-    default: APP_NAME,
-    template: `%s | ${APP_NAME}`,
+  title: SEO.title,
+  description: SEO.description.default,
+  keywords: [...SEO.keywords],
+  authors: [{ name: SEO.author }],
+  creator: SEO.creator,
+  publisher: SEO.publisher,
+  icons: {
+    icon: '/favicon.svg',
+    shortcut: '/favicon.svg',
+    apple: '/favicon.svg',
   },
-  description: APP_DESCRIPTION,
-  keywords: ['affärsutveckling', 'konsulttjänster', 'strategi', 'tillväxt'],
-  authors: [{ name: 'Bearbetar' }],
-  creator: 'Bearbetar',
   openGraph: {
     type: 'website',
     locale: 'sv_SE',
     url: process.env.NEXT_PUBLIC_SITE_URL,
-    title: APP_NAME,
-    description: APP_DESCRIPTION,
-    siteName: APP_NAME,
+    title: SEO.title.default,
+    description: SEO.description.default,
+    siteName: 'Bearbetar',
+    images: [
+      {
+        url: '/images/og-image.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Bearbetar - Webbutveckling, Mobilappar & Design',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: APP_NAME,
-    description: APP_DESCRIPTION,
+    site: '@bearbetar',
+    creator: '@bearbetar',
+    title: SEO.title.default,
+    description: SEO.description.default,
   },
-  robots: {
-    index: true,
-    follow: true,
-  },
+  robots: SEO.robots,
+  alternates: SEO.alternates,
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
 }
 
 export default function RootLayout({

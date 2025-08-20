@@ -13,6 +13,10 @@ import {
   Heart,
   Zap 
 } from 'lucide-react'
+import { pageMetadata } from '@/lib/seo'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = pageMetadata.services()
 
 export default async function ServicesPage() {
   // Fetch active services from database
@@ -30,7 +34,7 @@ export default async function ServicesPage() {
       short_description: 'Modern webbutveckling',
       description: `
         <div class="space-y-6">
-          <p>WordPress-sidor, React-appar och statiska siter. Månadsabonnemang för att göra professionell design tillgänglig för fler småföretag.</p>
+          <p>WordPress-sidor, React-appar och statiska siter. Månadsabonnemang för att göra professionell design tillgänglig för fler företag.</p>
           
           <h2>Vad vi erbjuder</h2>
           <p>Vi utvecklar moderna, responsiva webbsidor som fungerar perfekt på alla enheter. Från enkla WordPress-sidor till avancerade React-applikationer.</p>
@@ -39,7 +43,7 @@ export default async function ServicesPage() {
           <p>WordPress, React, Next.js, Node.js, och moderna CSS-ramverk som Tailwind CSS för optimal prestanda och design.</p>
           
           <h2>Månadsabonnemang</h2>
-          <p>Genom vårt månadsabonnemang gör vi professionell webbutveckling tillgänglig för småföretag som tidigare inte haft råd med skräddarsydda lösningar.</p>
+          <p>Genom vårt månadsabonnemang gör vi professionell webbutveckling tillgänglig för företag som tidigare inte haft råd med skräddarsydda lösningar.</p>
         </div>
       `,
       icon: 'Globe',
@@ -118,7 +122,7 @@ export default async function ServicesPage() {
   return (
     <PageWrapper>
       <HeroSection>
-        <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-5xl xl:text-6xl">
+        <h1 className="text-4xl font-bold tracking-tighter leading-relaxed sm:text-5xl md:text-6xl lg:text-5xl xl:text-6xl">
           Vad vi kan{' '}
           <span className="text-primary">
             hjälpa dig med
@@ -127,6 +131,8 @@ export default async function ServicesPage() {
         <p className="mt-6 text-lg text-muted-foreground sm:text-xl max-w-xl mx-auto lg:mx-0 lg:max-w-none">
           Från enkla webbsidor till komplicerade system - vi tar emot kunder redan nu! 
           Hemsidan är under utveckling men verksamheten är igång.
+          <br />
+          <span className="text-sm text-muted-foreground/70">Allt innehåll på denna sida är exempel/mocktext för demonstrationsändamål.</span>
         </p>
       </HeroSection>
 

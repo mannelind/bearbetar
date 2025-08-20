@@ -1,0 +1,20 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://bearbetar.se/sitemap.xml
+
+# Disallow admin areas
+Disallow: /admin/
+Disallow: /api/
+
+# Allow important pages
+Allow: /
+Allow: /tjanster
+Allow: /om-oss
+Allow: /blog
+Allow: /portfolio
+Allow: /kontakt
+
+# Crawl delay (optional)
+Crawl-delay: 1 

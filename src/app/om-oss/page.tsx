@@ -6,6 +6,10 @@ import { Badge } from '@/components/ui/badge'
 import { HeroSection } from '@/components/ui/hero-section'
 import { AnimatedSection, AnimatedGrid, PageWrapper } from '@/components/ui/page-animations'
 import { User, Mail, ArrowRight } from 'lucide-react'
+import { pageMetadata } from '@/lib/seo'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = pageMetadata.about()
 
 export default function AboutPage() {
   // Statisk data för teammedlemmar
@@ -28,12 +32,12 @@ export default function AboutPage() {
     }
   ]
 
-  const companyDescription = 'Vi har startat Bearbetar för att hjälpa småföretag och privatpersoner med webbutveckling, appar och design. Vi tar emot kunder redan nu även om hemsidan fortfarande utvecklas. Vår målsättning är att göra professionell teknik tillgänglig för fler genom månadsabonnemang och rättframma priser.'
+  const companyDescription = 'Vi har startat Bearbetar för att hjälpa företag av alla storlekar och privatpersoner med webbutveckling, appar och design. Vi tar emot kunder redan nu även om hemsidan fortfarande utvecklas. Vår målsättning är att göra professionell teknik tillgänglig för fler genom månadsabonnemang och rättframma priser.'
 
   return (
     <PageWrapper>
       <HeroSection>
-        <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-5xl xl:text-6xl">
+        <h1 className="text-4xl font-bold tracking-tighter leading-relaxed sm:text-5xl md:text-6xl lg:text-5xl xl:text-6xl">
           Vilka är{' '}
           <span className="text-primary">
             vi egentligen?
@@ -41,6 +45,8 @@ export default function AboutPage() {
         </h1>
         <p className="mt-6 text-lg text-muted-foreground sm:text-xl max-w-xl mx-auto lg:mx-0 lg:max-w-none">
           Vi är Manne och Adam - två utvecklare som har startat Bearbetar för att hjälpa andra få sina digitala idéer till verklighet. Vi tar emot kunder redan nu!
+          <br />
+          <span className="text-sm text-muted-foreground/70">Allt innehåll på denna sida är exempel/mocktext för demonstrationsändamål.</span>
         </p>
       </HeroSection>
 

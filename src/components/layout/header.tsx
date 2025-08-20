@@ -13,26 +13,47 @@ import { APP_NAME, PUBLIC_ROUTES } from '@/lib/constants'
 
 export function Header() {
   const { user, isAdmin } = useAuth()
-  const [isScrolled, setIsScrolled] = useState(false)
+  const [isFloating, setIsFloating] = useState(false)
+  const [isTransitioning, setIsTransitioning] = useState(false)
+  const [lastScrollY, setLastScrollY] = useState(0)
 
   useEffect(() => {
+    let ticking = false
+    
     const handleScroll = () => {
-      const scrollTop = window.scrollY
-      setIsScrolled(scrollTop > 50) // Hide logo after 50px scroll
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const scrollTop = window.scrollY
+          const scrollingUp = scrollTop < lastScrollY
+          
+          // Three-stage transition: floating -> transitioning -> normal
+          if (scrollingUp && scrollTop <= 25 && isFloating) {
+            // Start transition phase - border fades first, then header grows
+            setIsTransitioning(true)
+            setTimeout(() => {
+              setIsFloating(false)
+              setIsTransitioning(false)
+            }, 250) // Border fade duration - shorter for smoother feel
+          } else if (!scrollingUp && scrollTop > 70 && !isFloating) {
+            // Enter floating mode with slight delay for smoother entrance
+            setIsFloating(true)
+            setIsTransitioning(false)
+          }
+          
+          setLastScrollY(scrollTop)
+          ticking = false
+        })
+        ticking = true
+      }
     }
 
-    window.addEventListener('scroll', handleScroll)
+    window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  }, [lastScrollY, isFloating])
 
   return (
     <>
-    {/* Skip navigation link for accessibility */}
-    <a href="#main-content" className="skip-link">
-      Hoppa till huvudinnehåll
-    </a>
-    
-    <header role="banner" className={`fixed w-full z-40 transition-all duration-500 ease-in-out ${isScrolled ? 'md:top-4 top-0' : 'md:top-10 top-0'} [body:has(.modal-open)_&]:opacity-0 [body:has(.modal-open)_&]:pointer-events-none`} aria-label="Huvudnavigation">
+    <header role="banner" className={`fixed w-full z-40 transition-all duration-500 ease-in-out ${isFloating || isTransitioning ? 'md:top-4 top-0' : 'md:top-12 top-0'} [body:has(.modal-open)_&]:opacity-0 [body:has(.modal-open)_&]:pointer-events-none`} aria-label="Huvudnavigation">
       {/* Mobile Header - Simple with direct navigation */}
       <div className="md:hidden w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/40">
         <div className="flex h-auto items-center justify-between w-full p-2">
@@ -102,11 +123,17 @@ export function Header() {
       </div>
 
       {/* Desktop Header - With floating panel behavior */}
-      <div className={`hidden md:block transition-all duration-500 ease-in-out ${isScrolled ? 'mx-auto max-w-fit bg-floating-header/40 text-floating-header-foreground backdrop-blur-xl border border-white/5 shadow-2xl rounded-full px-4 py-2' : 'w-full bg-background/45 backdrop-blur supports-[backdrop-filter]:bg-background/40'}`}>
-        <div className={`flex items-center transition-all duration-500 ease-in-out ${isScrolled ? 'h-10 justify-center gap-2' : 'h-20 justify-center w-full'}`}>
+      <div className={`hidden md:block transition-all duration-500 ease-in-out w-fit mx-auto ${
+        isFloating || isTransitioning 
+          ? `bg-floating-header/40 text-floating-header-foreground backdrop-blur-xl shadow-2xl rounded-full px-4 py-2 ${
+              isTransitioning ? 'floating-border-fade-out' : 'floating-border-visible'
+            }` 
+          : 'bg-background/45 backdrop-blur supports-[backdrop-filter]:bg-background/40 rounded-full px-4 py-2'
+      }`}>
+        <div className={`flex items-center transition-all duration-500 ease-in-out justify-center gap-2 ${isFloating || isTransitioning ? 'h-10' : 'h-14'}`}>
         
         {/* Logo - Left side - Hide when scrolled and hide on desktop/tablet (md+) where sidebar shows */}
-        {!isScrolled && (
+        {!isFloating && !isTransitioning && (
           <SimpleTooltip text="Tillbaka till startsidan 🏠" side="bottom">
             <Link href="/" className="flex items-center space-x-3 absolute left-2 top-1/2 -translate-y-1/2 md:hidden" aria-label={`Tillbaka till ${APP_NAME} startsida`}>
               <ThemeLogo 
@@ -122,12 +149,12 @@ export function Header() {
         )}
 
         {/* Desktop - Primary CTAs - Always centered */}
-        <nav role="navigation" aria-label="Desktop huvudnavigation">
-          <div className={`hidden md:flex items-center transition-all duration-500 ease-in-out ${isScrolled ? 'justify-center gap-2' : 'gap-3'}`}>
+        <nav role="navigation" aria-label="Desktop huvudnavigation" className={`${isFloating || isTransitioning ? '' : 'mt-0'}`}>
+          <div className={`hidden md:flex items-center transition-all duration-500 ease-in-out ${isFloating || isTransitioning ? 'justify-center gap-2' : 'gap-6'}`}>
             <SimpleTooltip text="Se alla våra tjänster och vad vi kan hjälpa dig med 🚀" side="bottom">
-              <Button variant="outline" size={isScrolled ? "sm" : "default"} asChild>
+              <Button variant="outline" size={isFloating || isTransitioning ? "sm" : "default"} asChild>
                 <Link href={PUBLIC_ROUTES.services} aria-describedby="services-desc">
-                  <Briefcase className={`mr-2 ${isScrolled ? 'h-4 w-4' : 'h-5 w-5'}`} style={{color: 'hsl(var(--foreground))'}} aria-hidden="true" />
+                  <Briefcase className={`mr-2 ${isFloating || isTransitioning ? 'h-4 w-4' : 'h-5 w-5'}`} style={{color: 'hsl(var(--foreground))'}} aria-hidden="true" />
                   Våra Tjänster
                   <span id="services-desc" className="sr-only">Se alla våra tjänster och vad vi kan hjälpa dig med</span>
                 </Link>
@@ -135,9 +162,9 @@ export function Header() {
             </SimpleTooltip>
             
             <SimpleTooltip text="Utforska våra tidigare projekt 🎨" side="bottom">
-              <Button variant="outline" size={isScrolled ? "sm" : "default"} asChild>
+              <Button variant="outline" size={isFloating || isTransitioning ? "sm" : "default"} asChild>
                 <Link href="/portfolio" aria-describedby="portfolio-desc">
-                  <FolderOpen className={`mr-2 ${isScrolled ? 'h-4 w-4' : 'h-5 w-5'}`} style={{color: 'hsl(var(--foreground))'}} aria-hidden="true" />
+                  <FolderOpen className={`mr-2 ${isFloating || isTransitioning ? 'h-4 w-4' : 'h-5 w-5'}`} style={{color: 'hsl(var(--foreground))'}} aria-hidden="true" />
                   Portfolio
                   <span id="portfolio-desc" className="sr-only">Utforska våra tidigare projekt och case studies</span>
                 </Link>
@@ -145,9 +172,9 @@ export function Header() {
             </SimpleTooltip>
             
             <SimpleTooltip text="Läs våra senaste artiklar och insikter 📝" side="bottom">
-              <Button variant="outline" size={isScrolled ? "sm" : "default"} asChild>
+              <Button variant="outline" size={isFloating || isTransitioning ? "sm" : "default"} asChild>
                 <Link href={PUBLIC_ROUTES.blog} aria-describedby="blog-desc">
-                  <BookOpen className={`mr-2 ${isScrolled ? 'h-4 w-4' : 'h-5 w-5'}`} style={{color: 'hsl(var(--foreground))'}} aria-hidden="true" />
+                  <BookOpen className={`mr-2 ${isFloating || isTransitioning ? 'h-4 w-4' : 'h-5 w-5'}`} style={{color: 'hsl(var(--foreground))'}} aria-hidden="true" />
                   Blogg & Artiklar
                   <span id="blog-desc" className="sr-only">Läs våra senaste artiklar och branschinsikter</span>
                 </Link>

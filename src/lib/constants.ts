@@ -1,7 +1,81 @@
 // Application constants
 export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || 'Bearbetar'
-export const APP_DESCRIPTION = process.env.NEXT_PUBLIC_APP_DESCRIPTION || 'Professional business development services'
+export const APP_DESCRIPTION = process.env.NEXT_PUBLIC_APP_DESCRIPTION || 'Vi hjälper företag av alla storlekar med webbutveckling, mobilappar och design. Skräddarsydda digitala lösningar för moderna företag.'
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+
+// SEO constants
+export const SEO = {
+  title: {
+    default: 'Bearbetar - Webbutveckling, Mobilappar & Design',
+    template: '%s | Bearbetar',
+  },
+  description: {
+    default: 'Vi hjälper företag av alla storlekar med webbutveckling, mobilappar och design. Skräddarsydda digitala lösningar för moderna företag.',
+    home: 'Bearbetar hjälper företag med professionell webbutveckling, mobilappar och design. Vi tar emot kunder redan nu!',
+    services: 'Våra tjänster inkluderar webbutveckling, mobilappar, skräddarsydd utveckling och designrådgivning.',
+    about: 'Läs mer om Bearbetar - två utvecklare som hjälper företag få sina digitala idéer till verklighet.',
+    blog: 'Tips, tankar och berättelser från vårt jobb som utvecklare. Läs våra senaste artiklar om webbutveckling och design.',
+    portfolio: 'Se våra senaste projekt inom webbutveckling, mobilappar och design. Exempel på vårt arbete.',
+    contact: 'Hör av dig till Bearbetar för ditt nästa digitala projekt. Vi hjälper företag med webbutveckling och design.',
+  },
+  keywords: [
+    'webbutveckling',
+    'mobilappar',
+    'web design',
+    'digital design',
+    'react',
+    'next.js',
+    'wordpress',
+    'e-handel',
+    'företagshemsida',
+    'app utveckling',
+    'ux design',
+    'ui design',
+    'stockholm',
+    'sverige',
+    'digitalisering',
+    'webbplats',
+    'responsive design',
+    'seo',
+    'digital marknadsföring',
+    'skräddarsydd utveckling'
+  ],
+  author: 'Bearbetar',
+  creator: 'Bearbetar',
+  publisher: 'Bearbetar',
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'sv_SE',
+    siteName: 'Bearbetar',
+    images: [
+      {
+        url: '/images/og-image.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Bearbetar - Webbutveckling, Mobilappar & Design',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    site: '@bearbetar',
+    creator: '@bearbetar',
+  },
+  alternates: {
+    canonical: SITE_URL,
+  },
+} as const
 
 // Pagination
 export const DEFAULT_PAGE_SIZE = 10

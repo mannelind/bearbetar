@@ -2,25 +2,31 @@ import { Suspense } from 'react'
 import { PortfolioGrid } from '@/components/portfolio/portfolio-grid'
 import { ContentFilters } from '@/components/ui/content-filters'
 import { HeroSection } from '@/components/ui/hero-section'
+import { pageMetadata } from '@/lib/seo'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = pageMetadata.portfolio()
 
 export default function PortfolioPage() {
   return (
     <div className="flex flex-col">
       <HeroSection className="mb-16">
-          <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-5xl xl:text-6xl mb-6">
+          <h1 className="text-4xl font-bold tracking-tighter leading-relaxed sm:text-5xl md:text-6xl lg:text-5xl xl:text-6xl mb-6">
             Vårt{' '}
             <span className="text-primary">
               Portfolio
             </span>
           </h1>
           <p className="text-lg text-muted-foreground sm:text-xl max-w-xl mx-auto lg:mx-0 lg:max-w-none">
-            Här kommer vi visa projekt vi jobbar på. Än så länge är det tomt här, men det kommer fyllas på efterhand!
+            Här kommer vi visa projekt vi jobbar på. Än så länge är det tomt här, men det kommer fyllas på efterhand! Vi tar emot kunder redan nu även om portfolio:t inte är helt klart än.
+            <br />
+            <span className="text-sm text-muted-foreground/70">Alla projekt som visas är exempel/mocktext för demonstrationsändamål.</span>
           </p>
         </HeroSection>
 
       {/* Filters */}
       <section className="container mb-8">
-        <Suspense fallback={<div>Loading filters...</div>}>
+        <Suspense fallback={<div>Laddar filter...</div>}>
           <ContentFilters
             config={{
               contentType: 'portfolio',
@@ -48,7 +54,7 @@ export default function PortfolioPage() {
 
       {/* Portfolio Grid */}
       <section className="container">
-        <Suspense fallback={<div>Loading portfolio...</div>}>
+        <Suspense fallback={<div>Laddar portfolio...</div>}>
           <PortfolioGrid />
         </Suspense>
       </section>

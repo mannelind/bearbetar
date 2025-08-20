@@ -3,17 +3,26 @@
 export function ConstructionBanner() {
   return (
     <div 
-      className="absolute top-0 left-0 w-full h-8 bg-amber-500/80 dark:bg-amber-600/80 backdrop-blur-sm overflow-hidden construction-banner z-[9999]"
+      className="relative w-full h-8 overflow-hidden"
+      style={{
+        backgroundColor: 'hsl(var(--construction-banner) / 0.9)',
+        transformOrigin: 'center',
+        marginTop: '-2px',
+        marginBottom: '-2px',
+        width: '105%',
+        marginLeft: '-2.5%'
+      }}
     >
       <div className="flex h-full items-center">
         <div 
-          className="whitespace-nowrap text-sm font-medium text-amber-900 dark:text-amber-100 opacity-75 flex"
+          className="whitespace-nowrap text-sm font-medium flex"
           style={{
-            animation: 'marquee 20s linear infinite'
+            animation: 'marquee 20s linear infinite',
+            color: 'hsl(var(--construction-banner-foreground))'
           }}
         >
-          <span className="mr-8">🚧 Ursäkta röran! Denna sida är under utveckling och vissa funktioner kanske inte fungerar som förväntat. Vi arbetar hårt för att förbättra din upplevelse. Tack för ditt tålamod! 🛠️</span>
-          <span className="mr-8">🚧 Ursäkta röran! Denna sida är under utveckling och vissa funktioner kanske inte fungerar som förväntat. Vi arbetar hårt för att förbättra din upplevelse. Tack för ditt tålamod! 🛠️</span>
+          <span className="mr-8 px-4">🚧 Ursäkta röran! Denna sida är under utveckling och vissa funktioner kanske inte fungerar som förväntat. Vi arbetar hårt för att förbättra din upplevelse. Tack för ditt tålamod! 🛠️</span>
+          <span className="mr-8 px-4">🚧 Ursäkta röran! Denna sida är under utveckling och vissa funktioner kanske inte fungerar som förväntat. Vi arbetar hårt för att förbättra din upplevelse. Tack för ditt tålamod! 🛠️</span>
         </div>
       </div>
     </div>

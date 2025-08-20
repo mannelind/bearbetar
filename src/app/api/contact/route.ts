@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
+import { contactRateLimiter } from '@/lib/rate-limiter'
 
 const contactSchema = z.object({
   name: z.string().min(2).max(100),
@@ -15,6 +16,29 @@ const contactSchema = z.object({
 
 export async function POST(request: NextRequest) {
   try {
+    // Get IP for rate limiting
+    const ip = request.headers.get('x-forwarded-for') || 
+               request.headers.get('x-real-ip') || 
+               'unknown'
+    
+    // Check rate limit
+    if (!contactRateLimiter.isAllowed(ip)) {
+      const remainingTime = contactRateLimiter.getRemainingTime(ip)
+      return NextResponse.json(
+        { 
+          message: `För många förfrågningar. Vänligen vänta ${remainingTime} sekunder innan du försöker igen.`,
+          success: false,
+          retryAfter: remainingTime
+        },
+        { 
+          status: 429,
+          headers: {
+            'Retry-After': remainingTime.toString()
+          }
+        }
+      )
+    }
+    
     const body = await request.json()
     
     // Validate the incoming data
@@ -26,11 +50,11 @@ export async function POST(request: NextRequest) {
     // 3. Send autoresponse email
     // 4. Add to CRM system, etc.
     
-    // For now, we'll just log the contact form submission
+    // Log submission without sensitive data
     console.log('New contact form submission:', {
-      ...validatedData,
       timestamp: new Date().toISOString(),
-      ip: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown'
+      projectType: validatedData.projectType,
+      hasMessage: !!validatedData.message
     })
 
     // Simulate email sending (you'd replace this with actual email service)

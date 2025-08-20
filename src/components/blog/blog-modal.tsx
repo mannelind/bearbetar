@@ -11,7 +11,7 @@ import { ColoredBadge } from '@/components/ui/colored-badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { POST_TYPE_CONFIG } from '@/types'
-import { Calendar, Clock, User, Tag, List } from 'lucide-react'
+import { Calendar, Clock, User, List } from 'lucide-react'
 
 type Article = Database['public']['Tables']['articles']['Row'] & {
   categories?: Database['public']['Tables']['categories']['Row'][]
@@ -379,21 +379,19 @@ export function BlogModal({ article, open, onOpenChange }: BlogModalProps) {
         ) : fullArticle ? (
           <div className="relative flex flex-col md:flex-row h-full">
             {/* Mobile: Top section, Desktop: Left 40% - Featured Image + Metadata */}
-            <div className="w-full md:w-2/5 flex-shrink-0 flex flex-col md:max-h-full max-h-[40vh] md:border-r border-b md:border-b-0 border-border">
-              {/* Image at top */}
-              <div className="flex-1">
+            <div className="w-full md:w-2/5 flex-shrink-0 flex flex-col md:h-full h-auto md:border-r border-b md:border-b-0 border-border">
+              {/* Image section */}
+              <div className="h-48 md:h-64 relative bg-muted">
                 {fullArticle.featured_image ? (
-                  <div className="relative h-full bg-background">
-                    <Image 
-                      src={fullArticle.featured_image} 
-                      alt={fullArticle.title}
-                      fill
-                      className="object-contain"
-                      sizes="40vw"
-                    />
-                  </div>
+                  <Image 
+                    src={fullArticle.featured_image} 
+                    alt={fullArticle.title}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, 40vw"
+                  />
                 ) : (
-                  <div className="h-full bg-background flex items-center justify-start">
+                  <div className="h-full flex items-center justify-center">
                     <div className="text-muted-foreground text-center">
                       <div className="text-4xl mb-2">📰</div>
                       <p>Ingen bild tillgänglig</p>
@@ -402,8 +400,8 @@ export function BlogModal({ article, open, onOpenChange }: BlogModalProps) {
                 )}
               </div>
               
-              {/* Metadata under image */}
-              <div className="p-3 md:p-4 space-y-2 md:space-y-3 border-t border-border bg-muted/20">
+              {/* Metadata section - scrollable on desktop if content is long */}
+              <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-card/50">
                 {/* Article Type Badge */}
                 <div className="flex items-center gap-2 mb-2">
                   {(() => {
@@ -418,69 +416,71 @@ export function BlogModal({ article, open, onOpenChange }: BlogModalProps) {
                 
                 {/* Author */}
                 {fullArticle.author && (
-                  <div className="flex items-center gap-2 md:gap-3">
-                    <Avatar className="h-6 w-6 md:h-8 md:w-8">
+                  <div className="flex items-center gap-3">
+                    <Avatar className="h-8 w-8">
                       <AvatarImage src={fullArticle.author.avatar_url || undefined} />
                       <AvatarFallback>
-                        <User className="h-3 w-3 md:h-4 md:w-4" />
+                        <User className="h-4 w-4" />
                       </AvatarFallback>
                     </Avatar>
                     <div>
-                      <p className="text-xs md:text-sm font-medium">
+                      <p className="text-sm font-medium">
                         {fullArticle.author.full_name || fullArticle.author.email}
                       </p>
-                      <p className="text-xs text-muted-foreground hidden md:block">Författare</p>
+                      <p className="text-xs text-muted-foreground">Författare</p>
                     </div>
                   </div>
                 )}
                 
-                {/* Tags under author */}
-                <div className="space-y-2">
-                  
-                  {/* Categories - use article.categories if fullArticle.categories is empty */}
+                {/* Categories and Tags */}
+                <div className="space-y-3">
+                  {/* Categories */}
                   {((fullArticle.categories && fullArticle.categories.length > 0) || (article.categories && article.categories.length > 0)) && (
-                    <div className="flex flex-wrap gap-1 md:gap-2">
-                      {(fullArticle.categories && fullArticle.categories.length > 0 ? fullArticle.categories : article.categories)?.map((category: any) => (
-                        <Badge key={category.id} variant="default" className="text-xs bg-accent text-accent-foreground">
-                          {category.name}
-                        </Badge>
-                      ))}
+                    <div>
+                      <p className="text-xs text-muted-foreground mb-1.5">Kategorier</p>
+                      <div className="flex flex-wrap gap-1.5">
+                        {(fullArticle.categories && fullArticle.categories.length > 0 ? fullArticle.categories : article.categories)?.map((category: any) => (
+                          <Badge key={category.id} variant="secondary" className="text-xs">
+                            {category.name}
+                          </Badge>
+                        ))}
+                      </div>
                     </div>
                   )}
                   
-                  {/* Tags - use article.tags if fullArticle.tags is empty */}
+                  {/* Tags */}
                   {((fullArticle.tags && fullArticle.tags.length > 0) || (article.tags && article.tags.length > 0)) && (
-                    <div className="flex flex-wrap gap-1 md:gap-2">
-                      {(fullArticle.tags && fullArticle.tags.length > 0 ? fullArticle.tags : article.tags)?.map((tag: any) => (
-                        <ColoredBadge key={tag.id} tag={tag.name} className="text-xs">
-                          <Tag className="h-3 w-3 mr-1" />
-                          {tag.name}
-                        </ColoredBadge>
-                      ))}
+                    <div>
+                      <p className="text-xs text-muted-foreground mb-1.5">Taggar</p>
+                      <div className="flex flex-wrap gap-1.5">
+                        {(fullArticle.tags && fullArticle.tags.length > 0 ? fullArticle.tags : article.tags)?.slice(0, 5).map((tag: any) => (
+                          <ColoredBadge key={tag.id} tag={tag.name} className="text-xs" />
+                        ))}
+                      </div>
                     </div>
                   )}
                 </div>
                 
                 {/* Date and Reading time */}
-                <div className="flex items-center gap-3 md:gap-6 text-xs md:text-sm text-muted-foreground">
-                  <div className="flex items-center gap-1">
-                    <Calendar className="h-3 w-3 md:h-4 md:w-4" />
-                    <span className="hidden sm:inline">{new Date(fullArticle.created_at).toLocaleDateString('sv-SE')}</span>
-                    <span className="sm:hidden">{new Date(fullArticle.created_at).toLocaleDateString('sv-SE', { month: 'short', day: 'numeric' })}</span>
-                  </div>
-                  
-                  {fullArticle.content && (
-                    <div className="flex items-center gap-1">
-                      <Clock className="h-3 w-3 md:h-4 md:w-4" />
-                      <span className="hidden sm:inline">{formatReadingTime(fullArticle.content)}</span>
-                      <span className="sm:hidden">{formatReadingTime(fullArticle.content).replace(' läsning', '')}</span>
+                <div className="pt-3 border-t border-border">
+                  <div className="space-y-2 text-sm text-muted-foreground">
+                    <div className="flex items-center gap-2">
+                      <Calendar className="h-4 w-4" />
+                      <span>{new Date(fullArticle.created_at).toLocaleDateString('sv-SE')}</span>
                     </div>
-                  )}
+                    
+                    {fullArticle.content && (
+                      <div className="flex items-center gap-2">
+                        <Clock className="h-4 w-4" />
+                        <span>{formatReadingTime(fullArticle.content)}</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
 
-                {/* Updated date - hidden on mobile to save space */}
+                {/* Updated date */}
                 {fullArticle.updated_at && new Date(fullArticle.updated_at) > new Date(fullArticle.created_at) && (
-                  <div className="text-xs text-muted-foreground hidden md:block">
+                  <div className="text-xs text-muted-foreground pt-2">
                     Uppdaterad: {new Date(fullArticle.updated_at).toLocaleDateString('sv-SE')}
                   </div>
                 )}
@@ -488,8 +488,8 @@ export function BlogModal({ article, open, onOpenChange }: BlogModalProps) {
             </div>
 
             {/* Mobile: Bottom section, Desktop: Right 60% - Content */}
-            <div className="w-full md:w-3/5 flex-shrink-0 flex flex-col overflow-hidden flex-1">
-              <div className="flex-1 p-4 md:pl-6 md:py-6 md:pr-6 overflow-hidden">
+            <div className="w-full md:w-3/5 flex flex-col overflow-hidden">
+              <div className="flex-1 p-6 overflow-hidden">
                 <div 
                   id="article-content" 
                   className="h-full overflow-y-auto"
@@ -503,11 +503,11 @@ export function BlogModal({ article, open, onOpenChange }: BlogModalProps) {
                   `}</style>
                 
                   {/* Title and Meta */}
-                  <div className="space-y-3 md:space-y-4 mb-4 md:mb-6">
-                    <h1 className="text-lg md:text-2xl font-bold leading-tight">{fullArticle.title}</h1>
+                  <div className="space-y-4 mb-6">
+                    <h1 className="text-2xl font-bold leading-tight">{fullArticle.title}</h1>
                     
                     {fullArticle.excerpt && (
-                      <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+                      <p className="text-base text-muted-foreground leading-relaxed">
                         {fullArticle.excerpt}
                       </p>
                     )}
@@ -517,7 +517,7 @@ export function BlogModal({ article, open, onOpenChange }: BlogModalProps) {
                   {fullArticle.content && (
                     <div 
                       ref={contentRef}
-                      className="prose prose-xs md:prose-sm max-w-none dark:prose-invert prose-headings:text-foreground prose-p:text-muted-foreground prose-strong:text-foreground prose-code:text-foreground prose-pre:bg-muted prose-pre:border prose-headings:text-sm md:prose-headings:text-base"
+                      className="prose prose-sm max-w-none dark:prose-invert prose-headings:text-foreground prose-p:text-muted-foreground prose-strong:text-foreground prose-code:text-foreground prose-pre:bg-muted prose-pre:border"
                       dangerouslySetInnerHTML={{ __html: fullArticle.content }}
                     />
                   )}

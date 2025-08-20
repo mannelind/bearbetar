@@ -27,10 +27,10 @@ export function TopBar() {
   if (isScrolled) return null
 
   return (
-    <div className="hidden md:block sticky top-0 z-[60] bg-header-accent/60 backdrop-blur supports-[backdrop-filter]:bg-header-accent/60 transition-all duration-300">
-      <div className="container flex h-auto items-center justify-between text-sm text-header-accent-foreground">
+    <div className="hidden md:block sticky z-[60] bg-header-accent/80 backdrop-blur supports-[backdrop-filter]:bg-header-accent/80 transition-all duration-300">
+      <div className="container flex h-auto items-center justify-between text-sm text-header-accent-foreground px-2 md:px-4">
         {/* Left side - Secondary navigation */}
-        <nav className="hidden md:flex items-center space-x-4">
+        <nav className="hidden md:flex items-center space-x-4 md:space-x-6">
           <SimpleTooltip text="Tillbaka till startsidan 🏠" side="bottom">
             <Link
               href={PUBLIC_ROUTES.home}

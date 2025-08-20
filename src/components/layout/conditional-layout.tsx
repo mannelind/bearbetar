@@ -6,11 +6,11 @@ import { Header } from './header'
 import { Footer } from './footer'
 import { Sidebar } from './sidebar'
 import { BottomNav } from './bottom-nav'
-import { ConstructionBanner } from '@/components/ui/construction-banner'
 import { useAuth } from '@/hooks/use-auth'
 import { ErrorBoundary } from '@/components/ui/error-boundary'
 import { ThemeToggle } from '@/components/ui/theme-toggle'
 import { SimpleTooltip } from '@/components/ui/tooltip'
+import { ConstructionBanner } from '@/components/ui/construction-banner'
 
 interface ConditionalLayoutProps {
   children: React.ReactNode
@@ -51,17 +51,6 @@ export function ConditionalLayout({ children }: ConditionalLayoutProps) {
   // Public routes with sidebar for all users
   return (
     <ErrorBoundary>
-      <ConstructionBanner />
-      {/* Skip links for accessibility */}
-      <div className="skip-links">
-        <a href="#main-content" className="skip-link">
-          Hoppa till huvudinnehåll
-        </a>
-        <a href="#navigation" className="skip-link">
-          Hoppa till navigation
-        </a>
-      </div>
-      
       {/* Mobile Theme Toggle - Global */}
       <div className="md:hidden fixed top-6 right-4 z-50">
         <SimpleTooltip text="Byt tema ☀️🌙" side="left">

@@ -288,7 +288,7 @@ if (loading) {
   return (
     <PageWrapper>
       <HeroSection>
-        <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-5xl xl:text-6xl">
+        <h1 className="text-4xl font-bold tracking-tighter leading-relaxed sm:text-5xl md:text-6xl lg:text-5xl xl:text-6xl">
           Vad vi{' '}
           <span className="text-primary">
             skriver om
@@ -296,6 +296,8 @@ if (loading) {
         </h1>
         <p className="mt-6 text-lg text-muted-foreground sm:text-xl max-w-xl mx-auto lg:mx-0 lg:max-w-none">
           Tips, tankar och berättelser från vårt jobb som utvecklare. Plus lite random grejer vi tänker på.
+          <br />
+          <span className="text-sm text-muted-foreground/70">Alla artiklar som visas är exempel/mocktext för demonstrationsändamål.</span>
         </p>
       </HeroSection>
 

@@ -117,7 +117,7 @@ export default function ExempelFilteringPage() {
   return (
     <PageWrapper>
       <HeroSection className="py-24">
-        <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-5xl xl:text-6xl">
+        <h1 className="text-4xl font-bold tracking-tighter leading-relaxed sm:text-5xl md:text-6xl lg:text-5xl xl:text-6xl">
           Exempel på{' '}
           <span className="text-primary">
             Filtreringssystem

@@ -1,0 +1,53 @@
+{
+  "name": "Bearbetar - Webbutveckling, Mobilappar & Design",
+  "short_name": "Bearbetar",
+  "description": "Vi hjälper företag av alla storlekar med webbutveckling, mobilappar och design. Skräddarsydda digitala lösningar för moderna företag.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "sv",
+  "categories": ["business", "productivity", "utilities"],
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Tjänster",
+      "short_name": "Tjänster",
+      "description": "Se våra tjänster",
+      "url": "/tjanster",
+      "icons": [
+        {
+          "src": "/android-chrome-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Kontakt",
+      "short_name": "Kontakt",
+      "description": "Hör av dig till oss",
+      "url": "/kontakt",
+      "icons": [
+        {
+          "src": "/android-chrome-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+} 

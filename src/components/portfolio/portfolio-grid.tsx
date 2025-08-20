@@ -97,33 +97,33 @@ export function PortfolioGrid() {
     if (error) {
       console.error('Error loading portfolio items:', error)
       
-      // Use mock data in development when Supabase fails
+              // Use mock data in development when Supabase fails
       if (process.env.NODE_ENV === 'development') {
         console.log('Using mock portfolio data for development...')
         const mockPortfolioItems: PortfolioItem[] = [
           {
             id: '1',
-            title: 'Lorem Ipsum Project Alpha',
-            slug: 'lorem-ipsum-project-alpha',
+            title: 'E-handelsplattform för lokal butik',
+            slug: 'e-handelsplattform-lokal-butik',
             description: `
               <div class="space-y-6">
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                <p>En modern e-handelsplattform byggd för en lokal butik som ville ta steget in i digitala världen. Responsiv design och enkel administration.</p>
                 
-                <h2>Lorem Ipsum Dolor</h2>
-                <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                <h2>Utmaningen</h2>
+                <p>Butiken ville behålla sin personliga touch men samtidigt nå fler kunder online. Vi behövde skapa en lösning som var både professionell och användarvänlig.</p>
                 
-                <h2>Consectetur Adipiscing</h2>
-                <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+                <h2>Lösningen</h2>
+                <p>Vi byggde en modern e-handelsplattform med fokus på användarvänlighet och snabba laddningstider. Kunder kan enkelt bläddra, söka och köpa produkter.</p>
                 
-                <h2>Excepteur Sint</h2>
-                <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim.</p>
+                <h2>Resultatet</h2>
+                <p>Butiken har nu en fungerande online-försäljning som kompletterar deras fysiska butik. Kunder uppskattar den enkla beställningsprocessen.</p>
               </div>
             `,
-            content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
-            excerpt: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt.',
+            content: 'En modern e-handelsplattform byggd för en lokal butik som ville ta steget in i digitala världen.',
+            excerpt: 'En modern e-handelsplattform byggd för en lokal butik som ville ta steget in i digitala världen.',
             featured_image: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&h=600&fit=crop&crop=center',
             project_type: 'simple',
-            client_name: 'Lorem Client AB',
+            client_name: 'Lokal Butik AB',
             project_url: null,
             completion_date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
             case_study_content: 'Detaljerad fallstudie om utvecklingsprocessen och resultaten.',

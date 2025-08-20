@@ -13,12 +13,12 @@ const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
 const sampleArticles = [
   {
-    title: 'Digitalisering av småföretag - En praktisk guide',
-    slug: 'digitalisering-av-smaforetag-praktisk-guide',
-    excerpt: 'Lär dig hur ditt småföretag kan dra nytta av digitaliseringens möjligheter med praktiska tips och strategier.',
-    content: `# Digitalisering av småföretag - En praktisk guide
+    title: 'Digitalisering av företag - En praktisk guide',
+    slug: 'digitalisering-av-foretag-praktisk-guide',
+    excerpt: 'Lär dig hur ditt företag kan dra nytta av digitaliseringens möjligheter med praktiska tips och strategier.',
+    content: `# Digitalisering av företag - En praktisk guide
 
-Digitalisering är inte längre en luxury utan en nödvändighet för småföretag som vill vara konkurrenskraftiga. I denna guide går vi igenom de viktigaste stegen för att digitalisera ditt företag.
+Digitalisering är inte längre en luxury utan en nödvändighet för företag som vill vara konkurrenskraftiga. I denna guide går vi igenom de viktigaste stegen för att digitalisera ditt företag.
 
 ## Varför digitalisera?
 
@@ -47,7 +47,7 @@ Några grundläggande verktyg att överväga:
 Digitalisering behöver inte vara komplicerat. Börja smått, fokusera på användarnytta och bygg vidare steg för steg.`,
     published: true,
     published_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-    tags: ['Digitalisering', 'Småföretag', 'Teknik']
+    tags: ['Digitalisering', 'Företag', 'Teknik']
   },
   {
     title: 'Säkerhetsrutiner för moderna webbapplikationer',

@@ -5,12 +5,16 @@ import { HeroSection } from '@/components/ui/hero-section'
 import { AnimatedSection, PageWrapper } from '@/components/ui/page-animations'
 import { ContactForm } from '@/components/forms/contact-form'
 import { Mail, Phone, MapPin, Clock, Coffee } from 'lucide-react'
+import { pageMetadata } from '@/lib/seo'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = pageMetadata.contact()
 
 export default function ContactPage() {
   return (
     <PageWrapper>
       <HeroSection>
-        <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-5xl xl:text-6xl">
+        <h1 className="text-4xl font-bold tracking-tighter leading-relaxed sm:text-5xl md:text-6xl lg:text-5xl xl:text-6xl">
           Hör av{' '}
           <span className="text-primary">
             dig!

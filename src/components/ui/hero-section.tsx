@@ -15,7 +15,7 @@ export function HeroSection({ children, showLogo = true, className = '' }: HeroS
     <section className={`relative futuristic-gradient gradient-mesh overflow-hidden ${className}`}>
       <InteractiveOrbs />
       
-      <div className="container px-4 py-16 md:py-20">
+      <div className="container px-4 py-16 md:py-20 lg:py-32">
         <div className="mx-auto w-full">
           <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 lg:gap-8 items-center text-center lg:text-left">
             {/* Left side - Logo */}

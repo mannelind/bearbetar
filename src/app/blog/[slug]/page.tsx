@@ -9,6 +9,82 @@ import { Calendar, User, ArrowLeft } from 'lucide-react'
 import { formatDistanceToNow } from 'date-fns'
 import { sv } from 'date-fns/locale'
 import { HtmlContent } from '@/components/ui/html-content'
+import { pageMetadata } from '@/lib/seo'
+import type { Metadata } from 'next'
+
+interface ArticlePageProps {
+  params: {
+    slug: string
+  }
+}
+
+export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
+  try {
+    const supabase = await createServerComponentClient()
+    const { data: article } = await supabase
+      .from('articles')
+      .select(`
+        *,
+        admin_users!articles_author_id_fkey (
+          full_name,
+          email
+        ),
+        article_tags (
+          tags (
+            name
+          )
+        )
+      `)
+      .eq('slug', params.slug)
+      .eq('published', true)
+      .single()
+
+    if (article) {
+      const tags = article.article_tags?.map((at: any) => at.tags.name) || []
+      const author = article.admin_users?.full_name || article.admin_users?.email || 'Bearbetar'
+      
+      return pageMetadata.article(
+        article.title,
+        article.excerpt || article.content.substring(0, 160),
+        params.slug,
+        article.published_at || undefined,
+        article.updated_at || undefined,
+        author,
+        tags
+      )
+    }
+
+    // Fallback to mock data for development
+    if (process.env.NODE_ENV === 'development') {
+      const mockArticles: any = {
+        'digitalisering-av-foretag-praktisk-guide': {
+          title: 'Digitalisering av företag - En praktisk guide',
+          excerpt: 'Lär dig hur ditt företag kan dra nytta av digitaliseringens möjligheter med praktiska tips och strategier.',
+          published_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+          updated_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+          admin_users: { full_name: 'Manne' }
+        }
+      }
+      
+      const mockArticle = mockArticles[params.slug]
+      if (mockArticle) {
+        return pageMetadata.article(
+          mockArticle.title,
+          mockArticle.excerpt,
+          params.slug,
+          mockArticle.published_at,
+          mockArticle.updated_at,
+          mockArticle.admin_users.full_name
+        )
+      }
+    }
+
+    return pageMetadata.blog()
+  } catch (error) {
+    console.error('Error generating metadata:', error)
+    return pageMetadata.blog()
+  }
+}
 
 interface ArticlePageProps {
   params: {
@@ -44,14 +120,14 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       // Use mock data in development
       if (process.env.NODE_ENV === 'development') {
         const mockArticles: any = {
-          'digitalisering-av-smaforetag-praktisk-guide': {
+          'digitalisering-av-foretag-praktisk-guide': {
             id: '1',
-            title: 'Digitalisering av småföretag - En praktisk guide',
-            slug: 'digitalisering-av-smaforetag-praktisk-guide',
-            excerpt: 'Lär dig hur ditt småföretag kan dra nytta av digitaliseringens möjligheter med praktiska tips och strategier.',
-            content: `# Digitalisering av småföretag - En praktisk guide
+            title: 'Digitalisering av företag - En praktisk guide',
+            slug: 'digitalisering-av-foretag-praktisk-guide',
+            excerpt: 'Lär dig hur ditt företag kan dra nytta av digitaliseringens möjligheter med praktiska tips och strategier.',
+            content: `# Digitalisering av företag - En praktisk guide
 
-Digitalisering är inte längre en luxury utan en nödvändighet för småföretag som vill vara konkurrenskraftiga. I denna guide går vi igenom de viktigaste stegen för att digitalisera ditt företag.
+Digitalisering är inte längre en luxury utan en nödvändighet för företag som vill vara konkurrenskraftiga. I denna guide går vi igenom de viktigaste stegen för att digitalisera ditt företag.
 
 ## Varför digitalisera?
 
