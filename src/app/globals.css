@@ -81,16 +81,16 @@
 
   /* Dark mode - alias for consistency */
   .dark {
-    --background: 167 10% 10%; /* hsl(167, 18.2%, 12%) - Dark green background */
+    --background: 167 15% 12%; /* hsl(167, 18.2%, 12%) - Dark green background */
     --foreground: 170 10% 80%; /* hsl(142, 61%, 67%) - Light green foreground */
-    --card: 160 20% 13%; /* hsl(160, 20%, 10%) - Dark green card */
+    --card: 160 20% 10%; /* hsl(160, 20%, 10%) - Dark green card */
     --card-foreground: 170 10% 90%; /* hsl(120, 85%, 60%) - Light green card foreground */
     --popover: 85 30% 8%; /* hsl(85, 30%, 8%) - Dark green popover */
     --popover-foreground: 120 25% 85%; /* hsl(120, 25%, 85%) - Light green popover foreground */
     --primary: 167 99% 20%; /* hsl(120, 85%, 60%) - Light green primary */
     --primary-foreground: 85 20% 86%; /* hsl(85, 20%, 6%) - Dark green primary foreground */
-    --secondary: 40 90% 45%; /* hsl(85, 30%, 15%) - Dark green secondary */
-    --secondary-foreground: 155 59% 97%; /* hsl(155, 59%, 47%) - Light green secondary foreground */
+    --secondary: 230 60% 45%; /* hsl(85, 30%, 15%) - Dark green secondary */
+    --secondary-foreground: 230 79% 87%; /* hsl(155, 59%, 47%) - Light green secondary foreground */
     --muted: 167 8% 8%; /* hsl(167, 8%, 8%) - Dark green muted */
     --muted-foreground: 155 15% 65%; /* hsl(155, 15%, 65%) - Light green muted foreground */
     --header-accent: 167 12% 7%; /* hsl(167, 18%, 20%) - Ljusare variant av background för top bar */
@@ -184,6 +184,7 @@
   .button {
     @apply inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
     box-shadow: 0 0 8px hsla(var(--primary), 0.3), 0 0 16px hsla(var(--primary), 0.15);
+    border: 0.5px solid transparent;
   }
 
   .button:hover {
@@ -198,6 +199,7 @@
     @apply button bg-primary text-primary-foreground hover:bg-primary/85 hover:shadow-xl;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary) / 0.9));
+    border: 0.5px solid hsl(var(--primary) / 0.3);
   }
 
   .button-primary:hover {
@@ -211,10 +213,12 @@
 
   .button-secondary {
     @apply button bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-all duration-200;
+    border: 0.5px solid hsl(var(--secondary) / 0.3);
   }
 
   .button-outline {
-    @apply button border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-all duration-200;
+    @apply button bg-background hover:bg-accent hover:text-accent-foreground transition-all duration-200;
+    border: 0.5px solid hsl(var(--border));
     /* Reservera plats för hover-effekter */
     box-shadow: 0 0 10px hsla(var(--border), 0);
   }
@@ -1382,7 +1386,7 @@ h1.animate-slide-up {
 /* Glow border effekt för knappar */
 .btn-glow {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 1px solid transparent;
+  border: 0.5px solid transparent;
   /* Reservera plats för hover glow-effekter */
   box-shadow: 
     0 0 20px hsla(var(--primary), 0),
@@ -1433,7 +1437,7 @@ h1.animate-slide-up {
 /* Sidebar button hover effects for better visibility */
 .sidebar-btn-hover {
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 1px solid transparent;
+  border: 0.5px solid transparent;
 }
 
 .sidebar-btn-hover:hover,
@@ -1463,7 +1467,7 @@ nav .sidebar-btn-hover:hover,
 
 /* Dark mode sidebar button hover */
 .dark .sidebar-btn-hover {
-  border: 1px solid transparent;
+  border: 0.5px solid transparent;
   box-shadow: 
     0 0 6px hsla(200, 30%, 80%, 0),
     0 0 12px hsla(200, 30%, 80%, 0);
@@ -1472,7 +1476,7 @@ nav .sidebar-btn-hover:hover,
 .dark .sidebar-btn-hover:hover {
   background-color: hsl(200, 15%, 35%);
   color: hsl(200, 15%, 85%);
-  border: 1px solid hsl(200, 30%, 80%);
+  border: 0.5px solid hsl(200, 30%, 80%);
   box-shadow: 
     0 0 6px hsla(200, 30%, 80%, 0.12),
     0 0 12px hsla(200, 30%, 80%, 0.06);

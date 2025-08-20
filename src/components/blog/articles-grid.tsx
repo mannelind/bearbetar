@@ -1,17 +1,10 @@
 'use client'
 
-import Image from 'next/image'
 import { useState, useMemo } from 'react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { ColoredBadge } from '@/components/ui/colored-badge'
 import { ArticleCard } from '@/components/ui/article-card'
 import { BlogModal } from './blog-modal'
 import { Database } from '@/types/database'
-import { Calendar, User, ChevronDown, ChevronUp, Filter, BookOpen } from 'lucide-react'
-import { formatDistanceToNow } from 'date-fns'
-import { sv } from 'date-fns/locale'
+import { Filter } from 'lucide-react'
 
 type ArticlesGridArticle = Database['public']['Tables']['articles']['Row'] & {
   tags: string[]
@@ -40,7 +33,6 @@ interface ArticlesGridProps {
 }
 
 export function ArticlesGrid({ articles, selectedTags = [], selectedCategory = 'all', searchTerm = '', sortBy = 'newest', viewMode = 'grid' }: ArticlesGridProps) {
-  const [showMoreCardTags, setShowMoreCardTags] = useState<Record<string, boolean>>({})
   const [selectedArticle, setSelectedArticle] = useState<BlogModalArticle | null>(null)
   const [modalOpen, setModalOpen] = useState(false)
 
@@ -84,22 +76,15 @@ export function ArticlesGrid({ articles, selectedTags = [], selectedCategory = '
     }
   }, [articles, selectedTags, selectedCategory, searchTerm, sortBy])
 
-  const toggleShowMoreCardTags = (articleId: string) => {
-    setShowMoreCardTags(prev => ({
-      ...prev,
-      [articleId]: !prev[articleId]
-    }))
-  }
-
   const handleArticleClick = (article: ArticlesGridArticle) => {
-    // Convert ArticlesGridArticle to BlogModalArticle for the modal
-    const blogModalArticle: BlogModalArticle = {
+    // Convert ArticlesGridArticle to BlogModalArticle for the modal  
+    const blogModalArticle: any = {
       ...article,
-      tags: undefined, // BlogModal will fetch proper tag objects
-      categories: undefined,
-      author: undefined
+      tags: article.tags, // Keep the original tags as strings
+      categories: undefined, // BlogModal will fetch proper category objects
+      author: undefined // BlogModal will fetch proper author object
     }
-    console.log('Article clicked:', article.title)
+    console.log('Article clicked:', article.title, 'tags:', article.tags)
     setSelectedArticle(blogModalArticle)
     setModalOpen(true)
   }
@@ -135,149 +120,15 @@ export function ArticlesGrid({ articles, selectedTags = [], selectedCategory = '
         </div>
       ) : (
         <div className={viewMode === 'grid' ? 'articles-grid grid gap-8 md:grid-cols-2 lg:grid-cols-3' : 'w-full space-y-6'}>
-          {filteredAndSortedArticles.map((article) => {
-            const articleTags = article.tags
-            const visibleCardTags = showMoreCardTags[article.id] ? articleTags : articleTags.slice(0, 3)
-            const hasMoreCardTags = articleTags.length > 3
-
-            return (
-              <div key={article.id} className={viewMode === 'list' ? 'w-full' : ''}>
-                {viewMode === 'grid' ? (
-                  // Grid view - use shared ArticleCard
-                  <ArticleCard article={article} onClick={() => handleArticleClick(article)} />
-                ) : (
-                  <Card 
-                    className="w-full overflow-hidden hover:shadow-lg transition-shadow cursor-pointer group"
-                    onClick={() => handleArticleClick(article)}
-                  >
-                    {/* List view - horizontal layout with image on left */}
-                    <div className="flex flex-col md:flex-row gap-6">
-                      {article.featured_image && (
-                        <div className="aspect-video md:aspect-square relative md:w-48 flex-shrink-0 overflow-hidden rounded-lg">
-                          <Image
-                            src={article.featured_image}
-                            alt={article.title}
-                            fill
-                            className="object-cover transition-transform group-hover:scale-105"
-                            sizes="(max-width: 768px) 100vw, 192px"
-                          />
-                        </div>
-                      )}
-                      
-                      <div className="flex-1 flex flex-col">
-                        <CardHeader className="space-y-2">
-                          <div className="flex items-center gap-2">
-                            <Badge variant="secondary">Artikel</Badge>
-                            {article.published_at && (
-                              <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                                <Calendar className="h-3 w-3" />
-                                {formatDistanceToNow(new Date(article.published_at), {
-                                  addSuffix: true,
-                                  locale: sv
-                                })}
-                              </div>
-                            )}
-                          </div>
-                          
-                          <CardTitle className="line-clamp-2 hover:text-primary transition-colors">
-                            {article.title}
-                          </CardTitle>
-                        </CardHeader>
-
-                        {article.excerpt && (
-                          <CardContent className="pt-0">
-                            <CardDescription className="line-clamp-3">
-                              {article.excerpt}
-                            </CardDescription>
-                            <div className="mt-4">
-                              <Button 
-                                variant="outline" 
-                                size="sm"
-                                onClick={(e) => {
-                                  e.stopPropagation()
-                                  handleArticleClick(article)
-                                }}
-                                className="flex items-center gap-2"
-                              >
-                                <BookOpen className="h-4 w-4" />
-                                Läs mer
-                              </Button>
-                            </div>
-                          </CardContent>
-                        )}
-
-                        {/* Tags and author in list view */}
-                        <div className="mt-auto">
-                          {articleTags.length > 0 && (
-                            <CardContent className="pt-0">
-                              <div className="space-y-2">
-                                <div className="flex flex-wrap gap-1">
-                                  {visibleCardTags.map((tag, index) => (
-                                    <ColoredBadge
-                                      key={index}
-                                      tag={tag}
-                                      selected={selectedTags.includes(tag)}
-                                      className="text-xs"
-                                    />
-                                  ))}
-                                  
-                                  {hasMoreCardTags && (
-                                    <Button
-                                      variant="ghost"
-                                      size="sm"
-                                      onClick={(e) => {
-                                        e.stopPropagation()
-                                        toggleShowMoreCardTags(article.id)
-                                      }}
-                                      className="h-5 px-1 text-xs"
-                                    >
-                                      {showMoreCardTags[article.id] ? (
-                                        <>
-                                          mindre <ChevronUp className="ml-1 h-2 w-2" />
-                                        </>
-                                      ) : (
-                                        <>
-                                          +{articleTags.length - 3} <ChevronDown className="ml-1 h-2 w-2" />
-                                        </>
-                                      )}
-                                    </Button>
-                                  )}
-                                </div>
-                              </div>
-                            </CardContent>
-                          )}
-
-                          {/* Author */}
-                          {article.admin_users && (
-                            <CardContent className="pt-0">
-                              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                                {article.admin_users.profile_image ? (
-                                  <div className="relative w-4 h-4 rounded-full overflow-hidden border border-border">
-                                    <Image
-                                      src={article.admin_users.profile_image}
-                                      alt={article.admin_users.full_name || article.admin_users.email}
-                                      fill
-                                      className="object-cover"
-                                      sizes="16px"
-                                    />
-                                  </div>
-                                ) : (
-                                  <User className="h-3 w-3" />
-                                )}
-                                <span>
-                                  {article.admin_users.full_name || article.admin_users.email}
-                                </span>
-                              </div>
-                            </CardContent>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </Card>
-                )}
-              </div>
-            )
-          })}
+          {filteredAndSortedArticles.map((article) => (
+            <div key={article.id} className={viewMode === 'list' ? 'w-full' : ''}>
+              <ArticleCard 
+                article={article} 
+                onClick={() => handleArticleClick(article)} 
+                className={viewMode === 'list' ? 'w-full' : ''}
+              />
+            </div>
+          ))}
         </div>
       )}
 

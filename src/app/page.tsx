@@ -346,12 +346,12 @@ export default async function HomePage() {
       />
       <div className="flex flex-col">
       <HeroSection>
-        <div className="inline-flex items-center gap-2 mb-6 px-3 py-1.5 bg-primary/15 backdrop-blur-sm rounded-full animate-slide-down no-border-override">
+        <div className="inline-flex items-center gap-2 mb-6 px-3 py-1.5 bg-secondary/20 backdrop-blur-sm rounded-full animate-slide-down no-border-override">
           <span className="relative flex h-2 w-2">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
           </span>
-          <span className="text-sm font-medium text-primary">Vi är öppna för uppdrag!</span>
+          <span className="text-sm font-medium text-secondary-foreground">Vi tar emot uppdrag!</span>
         </div>
         <h1 className="text-2xl font-bold tracking-tighter leading-loose sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl animate-slide-up">
           Vi bygger{' '}
@@ -469,13 +469,13 @@ export default async function HomePage() {
       </section>
 
       {/* Demo Notice */}
-      <section className="bg-amber-50/50 border-t border-amber-200/50 py-8">
+      <section className="bg-primary/10 py-8">
         <div className="container">
           <div className="mx-auto max-w-4xl text-center">
-            <h3 className="text-lg font-semibold text-amber-800 mb-2">
+            <h3 className="text-lg font-semibold text-construction-banner-foreground mb-2">
               🚧 Demo/Utvecklingsversion
             </h3>
-            <p className="text-sm text-amber-700">
+            <p className="text-sm text-construction-banner-foreground">
               Denna hemsida är under utveckling. Allt innehåll (artiklar, projekt, texter) är exempel/mocktext för demonstrationsändamål. 
               Verksamheten är igång och vi tar emot kunder redan nu!
             </p>

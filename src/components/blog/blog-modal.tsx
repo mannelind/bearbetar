@@ -26,11 +26,6 @@ interface BlogModalProps {
 }
 
 export function BlogModal({ article, open, onOpenChange }: BlogModalProps) {
-  console.log('BlogModal render:', { article: article?.title, open })
-  console.log('Article tags/categories:', { 
-    articleTags: article?.tags, 
-    articleCategories: article?.categories 
-  })
   console.log('Supabase env vars:', { 
     url: process.env.NEXT_PUBLIC_SUPABASE_URL, 
     anon: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'present' : 'missing' 
@@ -290,13 +285,19 @@ export function BlogModal({ article, open, onOpenChange }: BlogModalProps) {
     if (element && container) {
       // Calculate the position relative to the container's scroll area
       const elementTop = element.offsetTop
-      const containerPadding = 20 // Add some padding from the top
-      const targetScrollTop = elementTop - containerPadding
+      const containerPadding = 24 // Add padding from the top
+      const targetScrollTop = Math.max(0, elementTop - containerPadding)
       
+      // Scroll to the heading with smooth animation
       container.scrollTo({ 
-        top: Math.max(0, targetScrollTop), 
+        top: targetScrollTop, 
         behavior: 'smooth' 
       })
+      
+      // Update active heading immediately to provide visual feedback
+      setTimeout(() => {
+        updateActiveHeading()
+      }, 100)
     }
   }
 
@@ -306,17 +307,25 @@ export function BlogModal({ article, open, onOpenChange }: BlogModalProps) {
     const container = document.getElementById('article-content')
     if (!container) return
 
-    const containerRect = container.getBoundingClientRect()
+    const scrollTop = container.scrollTop
     let activeId = null
 
-    for (const heading of headings) {
+    // Find the heading that's currently visible in the viewport
+    for (let i = headings.length - 1; i >= 0; i--) {
+      const heading = headings[i]
       const element = document.getElementById(heading.id)
       if (element) {
-        const rect = element.getBoundingClientRect()
-        if (rect.top - containerRect.top <= 100) {
+        const elementTop = element.offsetTop
+        if (scrollTop >= elementTop - 50) {
           activeId = heading.id
+          break
         }
       }
+    }
+
+    // If no heading is found, use the first one if we're at the top
+    if (!activeId && scrollTop < 50 && headings.length > 0) {
+      activeId = headings[0].id
     }
 
     setActiveHeading(activeId)
@@ -401,13 +410,13 @@ export function BlogModal({ article, open, onOpenChange }: BlogModalProps) {
               </div>
               
               {/* Metadata section - scrollable on desktop if content is long */}
-              <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-card/50">
+              <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-background">
                 {/* Article Type Badge */}
                 <div className="flex items-center gap-2 mb-2">
                   {(() => {
                     const config = POST_TYPE_CONFIG[fullArticle.post_type as keyof typeof POST_TYPE_CONFIG] || POST_TYPE_CONFIG.artikel
                     return (
-                      <Badge variant="secondary" className="text-xs bg-primary/10 text-primary">
+                      <Badge variant="secondary" className="text-xs bg-primary/10 text-primary hover:bg-primary/10">
                         {config.label}
                       </Badge>
                     )
@@ -432,34 +441,19 @@ export function BlogModal({ article, open, onOpenChange }: BlogModalProps) {
                   </div>
                 )}
                 
-                {/* Categories and Tags */}
-                <div className="space-y-3">
-                  {/* Categories */}
-                  {((fullArticle.categories && fullArticle.categories.length > 0) || (article.categories && article.categories.length > 0)) && (
-                    <div>
-                      <p className="text-xs text-muted-foreground mb-1.5">Kategorier</p>
-                      <div className="flex flex-wrap gap-1.5">
-                        {(fullArticle.categories && fullArticle.categories.length > 0 ? fullArticle.categories : article.categories)?.map((category: any) => (
-                          <Badge key={category.id} variant="secondary" className="text-xs">
-                            {category.name}
-                          </Badge>
-                        ))}
-                      </div>
+                {/* Categories */}
+                {((fullArticle.categories && fullArticle.categories.length > 0) || (article.categories && article.categories.length > 0)) && (
+                  <div>
+                    <p className="text-xs text-muted-foreground mb-1.5">Kategorier</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {(fullArticle.categories && fullArticle.categories.length > 0 ? fullArticle.categories : article.categories)?.map((category: any) => (
+                        <Badge key={category.id} variant="secondary" className="text-xs hover:bg-secondary">
+                          {category.name}
+                        </Badge>
+                      ))}
                     </div>
-                  )}
-                  
-                  {/* Tags */}
-                  {((fullArticle.tags && fullArticle.tags.length > 0) || (article.tags && article.tags.length > 0)) && (
-                    <div>
-                      <p className="text-xs text-muted-foreground mb-1.5">Taggar</p>
-                      <div className="flex flex-wrap gap-1.5">
-                        {(fullArticle.tags && fullArticle.tags.length > 0 ? fullArticle.tags : article.tags)?.slice(0, 5).map((tag: any) => (
-                          <ColoredBadge key={tag.id} tag={tag.name} className="text-xs" />
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
+                  </div>
+                )}
                 
                 {/* Date and Reading time */}
                 <div className="pt-3 border-t border-border">
@@ -478,9 +472,26 @@ export function BlogModal({ article, open, onOpenChange }: BlogModalProps) {
                   </div>
                 </div>
 
-                {/* Updated date */}
+                {/* Article Tags - Show all tags generated when article was created */}
+                {((fullArticle.tags && fullArticle.tags.length > 0) || (article.tags && article.tags.length > 0)) && (
+                  <div>
+                    <p className="text-xs text-muted-foreground mb-1.5">Taggar</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {(fullArticle.tags && fullArticle.tags.length > 0 ? fullArticle.tags : article.tags)?.map((tag: any, index: number) => {
+                        // Handle both string array (from ArticleCard) and object array (from database)
+                        const tagName = typeof tag === 'string' ? tag : tag.name || tag
+                        const tagKey = typeof tag === 'string' ? `${tagName}-${index}` : tag.id || `${tagName}-${index}`
+                        return (
+                          <ColoredBadge key={tagKey} tag={tagName} className="text-xs hover:bg-current" />
+                        )
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* Updated date - moved to bottom */}
                 {fullArticle.updated_at && new Date(fullArticle.updated_at) > new Date(fullArticle.created_at) && (
-                  <div className="text-xs text-muted-foreground pt-2">
+                  <div className="text-xs text-muted-foreground pt-3 border-t border-border">
                     Uppdaterad: {new Date(fullArticle.updated_at).toLocaleDateString('sv-SE')}
                   </div>
                 )}
@@ -488,11 +499,11 @@ export function BlogModal({ article, open, onOpenChange }: BlogModalProps) {
             </div>
 
             {/* Mobile: Bottom section, Desktop: Right 60% - Content */}
-            <div className="w-full md:w-3/5 flex flex-col overflow-hidden">
-              <div className="flex-1 p-6 overflow-hidden">
+            <div className="w-full md:w-3/5 flex flex-col overflow-hidden relative">
+              <div className="flex-1 p-6 overflow-hidden relative">
                 <div 
                   id="article-content" 
-                  className="h-full overflow-y-auto"
+                  className="h-full overflow-y-auto pr-4"
                   style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                   onScroll={handleScroll}
                 >
@@ -522,16 +533,56 @@ export function BlogModal({ article, open, onOpenChange }: BlogModalProps) {
                     />
                   )}
                 </div>
+                
+                {/* Scrollbar inside content area */}
+                {scrollHeight > clientHeight && (
+                  <div className="absolute right-0 top-0 bottom-0 w-2 hidden lg:block">
+                    <div className="relative h-full w-full bg-background/50 rounded-sm">
+                      <div
+                        className="absolute right-0 w-1 bg-muted-foreground/60 cursor-pointer hover:bg-muted-foreground/80 transition-colors rounded-sm"
+                        style={{
+                          height: `${Math.max(20, (clientHeight / scrollHeight) * 100)}%`,
+                          top: `${(scrollTop / (scrollHeight - clientHeight)) * (100 - Math.max(20, (clientHeight / scrollHeight) * 100))}%`
+                        }}
+                        onClick={handleScrollbarDrag}
+                        onMouseDown={(e) => {
+                          const startY = e.clientY
+                          const startScrollTop = scrollTop
+                          
+                          const handleMouseMove = (e: MouseEvent) => {
+                            const container = document.getElementById('article-content')
+                            if (!container) return
+                            
+                            const deltaY = e.clientY - startY
+                            const scrollbarHeight = clientHeight - (clientHeight / scrollHeight) * clientHeight
+                            const scrollRatio = deltaY / scrollbarHeight
+                            const newScrollTop = Math.max(0, Math.min(scrollHeight - clientHeight, startScrollTop + scrollRatio * (scrollHeight - clientHeight)))
+                            
+                            container.scrollTop = newScrollTop
+                          }
+                          
+                          const handleMouseUp = () => {
+                            document.removeEventListener('mousemove', handleMouseMove)
+                            document.removeEventListener('mouseup', handleMouseUp)
+                          }
+                          
+                          document.addEventListener('mousemove', handleMouseMove)
+                          document.addEventListener('mouseup', handleMouseUp)
+                        }}
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
         ) : null}
         </ModalContent>
-      </Modal>
+      
 
       {/* External Navigation Menu - Hidden on mobile, shown as expandable menu */}
       {mounted && open && fullArticle && headings.length > 0 && createPortal(
-        <div className="fixed top-1/2 right-4 -translate-y-1/2 w-56 z-[999] hidden lg:block">
+        <div className="fixed top-1/2 right-12 -translate-y-1/2 w-56 z-[999] hidden lg:block">
           <div className="flex items-center gap-2 mb-4 text-sm font-medium text-muted-foreground">
             <List className="h-4 w-4" />
             Innehåll
@@ -557,47 +608,8 @@ export function BlogModal({ article, open, onOpenChange }: BlogModalProps) {
         </div>,
         document.body
       )}
+      </Modal>
 
-      {/* External Scrollbar rendered via Portal to ensure highest z-index - Hidden on mobile */}
-      {mounted && open && fullArticle && scrollHeight > clientHeight && createPortal(
-        <div className="fixed top-1/2 right-[15rem] -translate-y-1/2 w-1 h-[75vh] z-[999] hidden lg:block">
-          <div className="relative h-full w-full bg-background border rounded-full">
-            <div
-              className="absolute left-0 w-full bg-muted-foreground/50 rounded-full cursor-pointer hover:bg-muted-foreground/70 transition-colors"
-              style={{
-                height: `${Math.max(20, (clientHeight / scrollHeight) * 100)}%`,
-                top: `${(scrollTop / (scrollHeight - clientHeight)) * (100 - Math.max(20, (clientHeight / scrollHeight) * 100))}%`
-              }}
-              onClick={handleScrollbarDrag}
-              onMouseDown={(e) => {
-                const startY = e.clientY
-                const startScrollTop = scrollTop
-                
-                const handleMouseMove = (e: MouseEvent) => {
-                  const container = document.getElementById('article-content')
-                  if (!container) return
-                  
-                  const deltaY = e.clientY - startY
-                  const scrollbarHeight = clientHeight - (clientHeight / scrollHeight) * clientHeight
-                  const scrollRatio = deltaY / scrollbarHeight
-                  const newScrollTop = Math.max(0, Math.min(scrollHeight - clientHeight, startScrollTop + scrollRatio * (scrollHeight - clientHeight)))
-                  
-                  container.scrollTop = newScrollTop
-                }
-                
-                const handleMouseUp = () => {
-                  document.removeEventListener('mousemove', handleMouseMove)
-                  document.removeEventListener('mouseup', handleMouseUp)
-                }
-                
-                document.addEventListener('mousemove', handleMouseMove)
-                document.addEventListener('mouseup', handleMouseUp)
-              }}
-            />
-          </div>
-        </div>,
-        document.body
-      )}
     </>
   )
 }

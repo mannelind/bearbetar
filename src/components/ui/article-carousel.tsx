@@ -43,12 +43,13 @@ export function ArticleCarousel({ articles, title, description }: ArticleCarouse
 
   const handleArticleClick = (article: Article) => {
     // Convert Article to BlogModalArticle for the modal
-    const blogModalArticle: BlogModalArticle = {
+    const blogModalArticle: any = {
       ...article,
-      tags: undefined, // BlogModal will fetch proper tag objects
-      categories: undefined,
-      author: undefined
+      tags: article.tags, // Keep the original tags as strings
+      categories: undefined, // BlogModal will fetch proper category objects
+      author: undefined // BlogModal will fetch proper author object
     }
+    console.log('Article carousel clicked:', article.title, 'tags:', article.tags)
     setSelectedArticle(blogModalArticle)
     setModalOpen(true)
   }

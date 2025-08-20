@@ -119,7 +119,7 @@ export const POST_TYPE_CONFIG = {
   [POST_TYPES.article]: {
     label: 'Artikel',
     emoji: '📰',
-    color: 'primary',
+    color: 'white',
     description: 'Standardartikel för allmänt innehåll'
   },
   [POST_TYPES.business_law]: {

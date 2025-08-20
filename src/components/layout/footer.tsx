@@ -17,7 +17,7 @@ export function Footer() {
   const currentYear = new Date().getFullYear()
 
   return (
-    <footer className="border-t bg-muted/50">
+    <footer className="bg-muted/50">
       <div className="container py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center md:text-left">
           {/* Brand */}
@@ -70,7 +70,7 @@ export function Footer() {
         </div>
 
         {/* Bottom */}
-        <div className="border-t pt-8 mt-8">
+        <div className="pt-8 mt-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0 text-center md:text-left">
             <p className="text-sm text-muted-foreground">
               © {currentYear} {APP_NAME}. Alla rättigheter förbehållna.

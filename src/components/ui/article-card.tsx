@@ -27,7 +27,7 @@ interface ArticleCardProps {
 export function ArticleCard({ article, onClick, className = '' }: ArticleCardProps) {
   return (
     <Card 
-      className={`h-full overflow-hidden transition-shadow flex flex-col cursor-pointer group hover:shadow-lg ${className}`}
+      className={`h-full overflow-hidden flex flex-col cursor-pointer ${className}`}
       onClick={onClick}
     >
       <div className="flex flex-col h-full">
@@ -37,7 +37,7 @@ export function ArticleCard({ article, onClick, className = '' }: ArticleCardPro
               src={article.featured_image}
               alt={article.title}
               fill
-              className="object-cover transition-transform group-hover:scale-105"
+              className="object-cover"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
             
@@ -46,7 +46,7 @@ export function ArticleCard({ article, onClick, className = '' }: ArticleCardPro
             
             {/* Top metadata - endast ämnestaggar och datum */}
             <div className="absolute top-3 left-3 flex items-center gap-2">
-              <Badge variant="secondary" className="flex bg-primary/90 text-black hover:bg-white">
+              <Badge variant="secondary" className="flex bg-secondary/80 text-secondary-foreground">
                 Artikel
               </Badge>
               {article.published_at && (
@@ -62,7 +62,7 @@ export function ArticleCard({ article, onClick, className = '' }: ArticleCardPro
             
             {/* Bottom right info button */}
             <div className="absolute bottom-2 right-2">
-              <div className="bg-white/10 backdrop-blur-sm rounded-full p-2 group-hover:bg-white/15 transition-colors">
+              <div className="bg-white/10 backdrop-blur-sm rounded-full p-2">
                 <BookOpen className="h-4 w-4 text-white" />
               </div>
             </div>
@@ -71,7 +71,7 @@ export function ArticleCard({ article, onClick, className = '' }: ArticleCardPro
         
         {/* Header med titel */}
         <CardHeader className="pb-2 pt-4">
-          <CardTitle className="leading-tight group-hover:text-primary transition-colors text-sm line-clamp-2">
+          <CardTitle className="leading-tight text-sm line-clamp-2">
             {article.title}
           </CardTitle>
         </CardHeader>
