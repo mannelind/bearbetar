@@ -59,5 +59,6 @@ class RateLimiter {
   }
 }
 
-// Export singleton instance
+// Export class and singleton instances
+export { RateLimiter }
 export const contactRateLimiter = new RateLimiter(3, 15 * 60 * 1000) // 3 requests per 15 minutes

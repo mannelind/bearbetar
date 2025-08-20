@@ -595,7 +595,7 @@ export function BlogModal({ article, open, onOpenChange }: BlogModalProps) {
                 className={`
                   w-full text-left text-xs px-2 py-1.5 transition-colors border border-transparent
                   ${activeHeading === heading.id 
-                    ? 'text-primary font-medium border-primary/20' 
+                    ? 'text-primary' 
                     : 'text-muted-foreground hover:text-foreground hover:border-muted/30'
                   }
                 `}

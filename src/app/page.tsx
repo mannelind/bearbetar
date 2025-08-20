@@ -6,7 +6,7 @@ import { PortfolioCarousel } from '@/components/ui/portfolio-carousel'
 import { HeroSection } from '@/components/ui/hero-section'
 import { createServerComponentClient } from '@/lib/supabase'
 import { Article } from '@/types'
-import { Code, Globe, Smartphone, Coffee } from 'lucide-react'
+import { Code, Globe, Smartphone, Coffee, Search, Accessibility, Zap } from 'lucide-react'
 import { pageMetadata } from '@/lib/seo'
 import type { Metadata } from 'next'
 import { OrganizationStructuredData, WebSiteStructuredData } from '@/components/seo/structured-data'
@@ -346,7 +346,7 @@ export default async function HomePage() {
       />
       <div className="flex flex-col">
       <HeroSection>
-        <div className="inline-flex items-center gap-2 mb-6 px-3 py-1.5 bg-secondary/20 backdrop-blur-sm rounded-full animate-slide-down no-border-override">
+        <div className="inline-flex items-center gap-2 mb-6 px-3 py-1.5 bg-secondary backdrop-blur-sm rounded-full animate-slide-down no-border-override">
           <span className="relative flex h-2 w-2">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
@@ -375,6 +375,90 @@ export default async function HomePage() {
 
       {/* Construction Banner */}
       <ConstructionBanner />
+
+      {/* Verktyg Section - Unique Hero Design */}
+      <section className="tools-hero-section py-24 -mt-8">
+        <div className="tools-floating-orb"></div>
+        <div className="tools-floating-orb"></div>
+        <div className="tools-floating-orb"></div>
+        
+        <div className="container relative z-10">
+          <div className="mx-auto max-w-7xl">
+            <div className="text-center mb-16">
+              <h2 className="tools-section-title text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl animate-slide-up mb-6">
+                Testa din webbplats gratis
+              </h2>
+              <p className="mt-8 text-lg text-muted-foreground max-w-2xl mx-auto animate-slide-up-delayed">
+                Använd våra kraftfulla verktyg för att analysera och förbättra din webbplats prestanda
+              </p>
+            </div>
+            
+            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4 mb-12">
+              <Link href="/verktyg/seo" className="block">
+                <div className="tools-card tools-card-1 h-full cursor-pointer p-6">
+                  <div className="flex flex-col items-center text-center space-y-4">
+                    <div className="tools-card-icon">
+                      <Search className="h-8 w-8 text-primary" />
+                    </div>
+                    <h3 className="tools-card-title">SEO-check</h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                      Analysera din webbplats SEO-prestanda och få förbättringsförslag för bättre sökresultat.
+                    </p>
+                  </div>
+                </div>
+              </Link>
+
+              <Link href="/verktyg/tillganglighet" className="block">
+                <div className="tools-card tools-card-2 h-full cursor-pointer p-6">
+                  <div className="flex flex-col items-center text-center space-y-4">
+                    <div className="tools-card-icon">
+                      <Accessibility className="h-8 w-8 text-primary" />
+                    </div>
+                    <h3 className="tools-card-title">Tillgänglighet</h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                      WCAG-kompatibilitetstest för bättre användarupplevelse och tillgänglighet.
+                    </p>
+                  </div>
+                </div>
+              </Link>
+
+              <Link href="/verktyg/hastighet" className="block">
+                <div className="tools-card tools-card-3 h-full cursor-pointer p-6">
+                  <div className="flex flex-col items-center text-center space-y-4">
+                    <div className="tools-card-icon">
+                      <Zap className="h-8 w-8 text-primary" />
+                    </div>
+                    <h3 className="tools-card-title">Hastighetstest</h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                      Mät laddningstider och prestanda för optimal användarupplevelse.
+                    </p>
+                  </div>
+                </div>
+              </Link>
+
+              <Link href="/verktyg/mobil" className="block">
+                <div className="tools-card tools-card-4 h-full cursor-pointer p-6">
+                  <div className="flex flex-col items-center text-center space-y-4">
+                    <div className="tools-card-icon">
+                      <Smartphone className="h-8 w-8 text-primary" />
+                    </div>
+                    <h3 className="tools-card-title">Mobilvänlighet</h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                      Testa hur väl din webbplats fungerar på mobila enheter.
+                    </p>
+                  </div>
+                </div>
+              </Link>
+            </div>
+
+            <div className="text-center">
+              <Button asChild size="lg" className="tools-cta-button text-white px-8 py-3 text-lg font-semibold">
+                <Link href="/verktyg">Utforska alla verktyg</Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Features Section */}
       <section className="relative py-16 bg-gradient-to-b from-transparent via-primary/5 to-transparent">

@@ -50,7 +50,7 @@ export function ArticleCard({ article, onClick, className = '' }: ArticleCardPro
                 Artikel
               </Badge>
               {article.published_at && (
-                <Badge variant="outline" className="flex bg-white/20 text-white border-white/30 backdrop-blur-sm">
+                <Badge variant="outline" className="flex bg-gray-600/20 text-white border-white/30 backdrop-blur-sm">
                   <Calendar className="h-3 w-3 mr-1" />
                   {formatDistanceToNow(new Date(article.published_at), {
                     addSuffix: true,
