@@ -7,5 +7,9 @@ export const metadata: Metadata = {
 }
 
 export default function VerktygPage() {
-  return null
+  // The layout handles rendering the tools grid when pathname === '/verktyg'
+  // This component can return a fragment or additional content
+  return (
+    <></>
+  )
 }

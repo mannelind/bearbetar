@@ -27,7 +27,7 @@ interface ArticleCardProps {
 export function ArticleCard({ article, onClick, className = '' }: ArticleCardProps) {
   return (
     <Card 
-      className={`h-full overflow-hidden flex flex-col cursor-pointer ${className}`}
+      className={`h-full overflow-hidden flex flex-col cursor-pointer group hover:shadow-lg transition-shadow ${className}`}
       onClick={onClick}
     >
       <div className="flex flex-col h-full">
@@ -37,7 +37,7 @@ export function ArticleCard({ article, onClick, className = '' }: ArticleCardPro
               src={article.featured_image}
               alt={article.title}
               fill
-              className="object-cover"
+              className="object-cover group-hover:scale-105 transition-transform duration-300"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
             

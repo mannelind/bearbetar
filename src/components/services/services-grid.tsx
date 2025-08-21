@@ -2,6 +2,7 @@
 
 import { ServiceCard } from './service-card'
 import { AnimatedGrid } from '@/components/ui/page-animations'
+import { Globe, Smartphone, Code, Coffee, Target } from 'lucide-react'
 
 interface Service {
   id: string
@@ -19,10 +20,21 @@ interface Service {
 
 interface ServicesGridProps {
   services: Service[]
-  getIcon: (iconName: string) => React.ComponentType<{ className?: string }>
 }
 
-export function ServicesGrid({ services, getIcon }: ServicesGridProps) {
+const icons = {
+  Globe,
+  Smartphone,
+  Code,
+  Coffee,
+  Target
+}
+
+export function ServicesGrid({ services }: ServicesGridProps) {
+  const getIcon = (iconName: string) => {
+    return icons[iconName as keyof typeof icons] || Target
+  }
+
   return (
     <AnimatedGrid className="grid gap-8 md:grid-cols-2 lg:grid-cols-2">
       {services.map((service: Service) => {

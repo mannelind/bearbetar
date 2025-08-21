@@ -35,8 +35,8 @@
 .dark button[aria-current="page"],
 .dark [class*="bg-primary"]:not(.no-border-override) {
   box-shadow: 
-    0 0 4px hsla(200, 30%, 80%, 0.15),
-    0 0 8px hsla(200, 30%, 80%, 0.08) !important;
+    0 0 4px hsla(160, 60%, 35%, 0.15),
+    0 0 8px hsla(160, 60%, 35%, 0.08) !important;
   border: 1px solid hsl(162, 83%, 14%) !important;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -47,15 +47,20 @@
   outline: none !important;
 }
 
-/* Give header buttons same effect as sidebar buttons in dark mode on hover */
+/* Give all buttons same hover effect in dark mode */
 .dark button:hover:not(.tools-card-button):not([class*="tools-card"]),
 .dark .btn-glow:hover,
 .dark .btn-glow-outline:hover,
 .dark [class*="btn-glow"]:hover,
-.dark button[class*="outline"]:hover:not(.tools-card-button):not([class*="tools-card"]) {
-  background-color: hsl(200, 15%, 35%) !important;
+.dark button[class*="outline"]:hover:not(.tools-card-button):not([class*="tools-card"]),
+.dark .sidebar-btn-hover:hover,
+.dark a[class*="hover"]:hover,
+.dark [role="menuitem"]:hover,
+.dark [role="button"]:hover:not(.tools-card-button),
+.dark button[variant="ghost"]:hover:not(.tools-card-button) {
+  background-color: hsl(170, 100%, 20%) !important;
   color: hsl(200, 15%, 85%) !important;
-  border: 0.5px solid hsl(200, 30%, 80%) !important;
+  border: 0.5px solid hsl(160, 60%, 35%) !important;
   box-shadow: 
     0 0 6px hsla(200, 30%, 80%, 0.12),
     0 0 12px hsla(200, 30%, 80%, 0.06) !important;

@@ -7,7 +7,7 @@ import { SimpleTooltip } from '@/components/ui/tooltip'
 import { ThemeToggle } from '@/components/ui/theme-toggle'
 import { useState, useEffect } from 'react'
 import { useAuth } from '@/hooks/use-auth'
-import { Briefcase, BookOpen, FolderOpen, Users, LogIn } from 'lucide-react'
+import { Briefcase, BookOpen, FolderOpen, Users, LogIn, Wrench } from 'lucide-react'
 import { APP_NAME, PUBLIC_ROUTES } from '@/lib/constants'
 
 
@@ -53,7 +53,7 @@ export function Header() {
 
   return (
     <>
-    <header role="banner" className={`fixed w-full z-40 transition-all duration-500 ease-in-out ${isFloating || isTransitioning ? 'md:top-4 top-0' : 'md:top-12 top-0'} [body:has(.modal-open)_&]:opacity-0 [body:has(.modal-open)_&]:pointer-events-none`} aria-label="Huvudnavigation">
+    <header role="banner" className={`fixed z-40 w-full transition-all duration-500 ease-in-out ${isFloating || isTransitioning ? 'md:top-4 top-0' : 'md:top-12 top-0'} [body:has(.modal-open)_&]:opacity-0 [body:has(.modal-open)_&]:pointer-events-none`} aria-label="Huvudnavigation">
       {/* Mobile Header - Simple with direct navigation */}
       <div className="md:hidden w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/40">
         <div className="flex h-auto items-center justify-between w-full p-2">
@@ -86,6 +86,14 @@ export function Header() {
               <Button variant="ghost" size="sm" asChild className="min-h-[44px]">
                 <Link href="/kontakt" className="text-sm font-medium" style={{color: 'hsl(var(--foreground))'}}>
                   Kontakt
+                </Link>
+              </Button>
+            </SimpleTooltip>
+            
+            <SimpleTooltip text="Verktyg 🔧" side="bottom">
+              <Button variant="ghost" size="sm" asChild className="min-h-[44px]">
+                <Link href="/verktyg" className="text-sm font-medium" style={{color: 'hsl(var(--foreground))'}}>
+                  Verktyg
                 </Link>
               </Button>
             </SimpleTooltip>
@@ -123,34 +131,20 @@ export function Header() {
       </div>
 
       {/* Desktop Header - With floating panel behavior */}
-      <div className={`hidden md:block transition-all duration-500 ease-in-out w-fit mx-auto ${
-        isFloating || isTransitioning 
-          ? `bg-floating-header/40 text-floating-header-foreground backdrop-blur-xl shadow-2xl rounded-full px-4 py-2 ${
-              isTransitioning ? 'floating-border-fade-out' : 'floating-border-visible'
-            }` 
-          : 'bg-background/45 backdrop-blur supports-[backdrop-filter]:bg-background/40 rounded-full px-4 py-2'
-      }`}>
-        <div className={`flex items-center transition-all duration-500 ease-in-out justify-center gap-2 ${isFloating || isTransitioning ? 'h-10' : 'h-14'}`}>
+      <div className="hidden md:flex transition-all duration-500 ease-in-out justify-center w-full">
+        <div className={`w-fit transition-all duration-500 ease-in-out ${
+          isFloating || isTransitioning 
+            ? `bg-floating-header/40 text-floating-header-foreground backdrop-blur-xl shadow-2xl rounded-full px-4 py-2 ${
+                isTransitioning ? 'floating-border-fade-out' : 'floating-border-visible'
+              }` 
+            : 'px-4 py-2'
+        }`}>
+        <div className={`flex items-center transition-all duration-500 ease-in-out justify-center md:gap-1 lg:gap-2 ${isFloating || isTransitioning ? 'h-10' : 'h-14'}`}>
         
-        {/* Logo - Left side - Hide when scrolled and hide on desktop/tablet (md+) where sidebar shows */}
-        {!isFloating && !isTransitioning && (
-          <SimpleTooltip text="Tillbaka till startsidan 🏠" side="bottom">
-            <Link href="/" className="flex items-center space-x-3 absolute left-2 top-1/2 -translate-y-1/2 md:hidden" aria-label={`Tillbaka till ${APP_NAME} startsida`}>
-              <ThemeLogo 
-                alt={`${APP_NAME} logotyp`}
-                width={48}
-                height={48}
-                className="h-10 w-10"
-                type="symbol"
-                priority
-              />
-            </Link>
-          </SimpleTooltip>
-        )}
 
         {/* Desktop - Primary CTAs - Always centered */}
         <nav role="navigation" aria-label="Desktop huvudnavigation" className={`${isFloating || isTransitioning ? '' : 'mt-0'}`}>
-          <div className={`hidden md:flex items-center transition-all duration-500 ease-in-out ${isFloating || isTransitioning ? 'justify-center gap-2' : 'gap-6'}`}>
+          <div className={`hidden md:flex items-center transition-all duration-500 ease-in-out justify-center ${isFloating || isTransitioning ? 'gap-2' : 'gap-6'}`}>
             <SimpleTooltip text="Se alla våra tjänster och vad vi kan hjälpa dig med 🚀" side="bottom">
               <Button variant="outline" size={isFloating || isTransitioning ? "sm" : "default"} asChild>
                 <Link href={PUBLIC_ROUTES.services} aria-describedby="services-desc">
@@ -180,9 +174,20 @@ export function Header() {
                 </Link>
               </Button>
             </SimpleTooltip>
+            
+            <SimpleTooltip text="Använd våra kraftfulla verktyg för webbanalys 🔧" side="bottom">
+              <Button variant="outline" size={isFloating || isTransitioning ? "sm" : "default"} asChild>
+                <Link href="/verktyg" aria-describedby="tools-desc">
+                  <Wrench className={`mr-2 ${isFloating || isTransitioning ? 'h-4 w-4' : 'h-5 w-5'}`} style={{color: 'hsl(var(--foreground))'}} aria-hidden="true" />
+                  Verktyg
+                  <span id="tools-desc" className="sr-only">Använd våra kraftfulla verktyg för webbanalys</span>
+                </Link>
+              </Button>
+            </SimpleTooltip>
           </div>
         </nav>
 
+        </div>
         </div>
       </div>
     </header>

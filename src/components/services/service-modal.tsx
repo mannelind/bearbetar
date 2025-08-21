@@ -223,9 +223,14 @@ export function ServiceModal({ service, open, onOpenChange }: ServiceModalProps)
                   )}
                 </div>
 
-                <p className="text-muted-foreground">
-                  {service.description}
-                </p>
+                <div 
+                  className="text-muted-foreground prose prose-sm max-w-none"
+                  dangerouslySetInnerHTML={{ 
+                    __html: typeof service.description === 'string' && service.description.includes('<') 
+                      ? service.description 
+                      : `<p>${service.description}</p>`
+                  }}
+                />
               </div>
             </div>
           </ModalHeader>

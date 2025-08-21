@@ -24,15 +24,17 @@ import {
   Pin,
   PinOff,
   Mail,
-  FolderOpen
+  FolderOpen,
+  Wrench
 } from 'lucide-react'
 import { APP_NAME, PUBLIC_ROUTES } from '@/lib/constants'
 
 const navigation = [
   { name: 'Hem', href: PUBLIC_ROUTES.home, icon: Home, tooltip: 'Tillbaka till startsidan 🏠' },
-  { name: 'Tjänster', href: PUBLIC_ROUTES.services, icon: Briefcase, tooltip: 'Se vad vi kan hjälpa dig med 💼' },
+  { name: 'Tjänster', href: '/tjanster', icon: Briefcase, tooltip: 'Se vad vi kan hjälpa dig med 💼' },
   { name: 'Portfolio', href: '/portfolio', icon: FolderOpen, tooltip: 'Utforska våra tidigare projekt 🎨' },
   { name: 'Blogg', href: PUBLIC_ROUTES.blog, icon: FileText, tooltip: 'Läs våra senaste artiklar 📝' },
+  { name: 'Verktyg', href: '/verktyg', icon: Wrench, tooltip: 'Använd våra kraftfulla verktyg för webbanalys 🔧' },
   { name: 'Om oss', href: '/om-oss', icon: UserCircle, tooltip: 'Lär känna teamet bakom Bearbetar 👥' },
   { name: 'Kontakt', href: '/kontakt', icon: Mail, tooltip: 'Hör av dig till oss! 📞' },
 ]
@@ -168,6 +170,20 @@ export function Sidebar() {
   // On desktop, use the collapse/expand logic or pin state
   const showExpandedContent = isOpen || !isCollapsed || isExpanded || isPinned
 
+  // Add/remove class to body for content margin adjustment
+  useEffect(() => {
+    if (showExpandedContent && !isOpen) {
+      document.body.classList.add('sidebar-expanded')
+    } else {
+      document.body.classList.remove('sidebar-expanded')
+    }
+    
+    // Cleanup on unmount
+    return () => {
+      document.body.classList.remove('sidebar-expanded')
+    }
+  }, [showExpandedContent, isOpen])
+
   // Remove the null return - show sidebar for all users
 
   return (
@@ -190,8 +206,8 @@ export function Sidebar() {
           isOpen 
             ? "fixed top-0 left-0 w-full h-full translate-y-0 z-[65]" 
             : "fixed top-0 left-0 w-full h-screen -translate-y-full z-[65]",
-          // Desktop positioning and sizing (sticky positioning for push effect + follows scroll)
-          "md:sticky md:top-0 md:left-auto md:translate-y-0 md:h-[100vh]",
+          // Desktop positioning and sizing (fixed positioning for top alignment)
+          "md:fixed md:top-0 md:left-0 md:translate-y-0 md:h-[100vh]",
           (showExpandedContent && !isOpen) ? "md:w-64" : "md:w-16"
         )}
         style={{ 
@@ -209,14 +225,14 @@ export function Sidebar() {
             {/* Header */}
             <div className="h-16 relative">
               {/* Logo - always at fixed position (left side when collapsed) */}
-              <div className="absolute left-3 top-1/2 -translate-y-1/2">
+              <div className="absolute left-3 top-1/2 -translate-y-1/2 z-10">
                 <Link href="/" className="flex items-center justify-center">
                   <ThemeLogo 
                     alt={`${APP_NAME} logotyp`}
                     width={40}
                     height={40}
                     className={cn(
-                      "w-10 h-10 transition-transform duration-300 ease-out",
+                      "w-10 h-10 transition-transform duration-300 ease-out backdrop-blur-none",
                       showExpandedContent ? "rotate-180" : "rotate-0"
                     )}
                     type="symbol"

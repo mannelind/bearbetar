@@ -33,7 +33,7 @@
     
     /* Text storlek kontroll - Override alla Tailwind text sizes på mobil */
     .text-4xl, .text-5xl, .text-6xl {
-      font-size: 1.875rem !important; /* text-3xl equivalent */
+      font-size: 1.5rem !important; /* text-3xl equivalent */
       line-height: 1.6 !important;
     }
     
@@ -83,6 +83,107 @@
     /* Dölj cursor glow helt på mobil */
     .cursor-glow {
       display: none;
+    }
+  }
+
+  /* Tablet text size adjustments for hero section */
+  @media (min-width: 768px) and (max-width: 1024px) {
+    .hero-section h1,
+    [class*="hero"] h1,
+    h1 {
+      font-size: 1.7rem !important; /* Större på tablet */
+      line-height: 1.1 !important;
+    }
+    
+    .hero-section p,
+    [class*="hero"] p,
+    .hero-section p.text-base,
+    .hero-section p[class*="text-"] {
+      font-size: 0.875rem !important; /* Even smaller body text for tablet */
+      line-height: 1.4 !important;
+      margin: 0 auto !important; /* Centrerar texten */
+      max-width: 85% !important;
+      text-align: center !important; /* Centrerad textjustering på tablet */
+    }
+    
+    .hero-section .text-2xl {
+      font-size: 1.5rem !important;
+    }
+    
+    .hero-section .text-4xl {
+      font-size: 2rem !important;
+    }
+    
+    .hero-section .text-5xl {
+      font-size: 2.5rem !important;
+    }
+    
+    .hero-section .text-6xl {
+      font-size: 2.5rem !important;
+    }
+    
+    /* Hero logo sizing for tablet */
+    .hero-section img.hidden.md\\:block,
+    .hero-section .hidden.md\\:block img {
+      max-width: 50% !important;
+      max-height: 250px !important;
+      width: auto !important;
+      height: auto !important;
+    }
+    
+    /* Header styling for tablet - much smaller buttons and centered */
+    header {
+      padding: 0 1rem !important; /* Mindre padding på sidorna */
+    }
+    
+    header .hidden.md\\:flex {
+      transform: scale(0.8) !important; /* Krymper hela headern */
+      transform-origin: center center !important;
+    }
+    
+    header .hidden.md\\:flex button,
+    header .hidden.md\\:flex a {
+      font-size: 0.65rem !important; /* Ännu mindre text */
+      padding: 0.2rem 0.4rem !important; /* Mindre padding */
+      white-space: nowrap !important; /* Förhindrar radbrytning */
+    }
+    
+    header .hidden.md\\:flex svg {
+      width: 0.75rem !important; /* Mindre ikoner */
+      height: 0.75rem !important;
+      margin-right: 0.25rem !important;
+    }
+    
+    /* Justera gap mellan knappar på tablet */
+    header .hidden.md\\:flex > div > div {
+      gap: 0.5rem !important;
+    }
+  }
+
+  /* Desktop styling */
+  @media (min-width: 1025px) {
+    /* Större h1 för desktop */
+    .hero-section h1,
+    [class*="hero"] h1,
+    h1 {
+      font-size: 4.5rem !important; /* Större på desktop */
+      line-height: 1.1 !important;
+    }
+    
+    /* Hero p text får mindre utrymme genom extra padding åt höger */
+    .hero-section p,
+    [class*="hero"] p {
+      padding-right: 6rem !important; /* Krymper textutrymmet */
+      max-width: 85% !important;
+    }
+    
+    /* Desktop logo sizing for hero section */
+    .hero-section img.hidden.md\\:block,
+    .hero-section .hidden.md\\:block img {
+      max-width: 50% !important;
+      max-height: 300px !important;
+      width: auto !important;
+      height: auto !important;
     }
   }
 

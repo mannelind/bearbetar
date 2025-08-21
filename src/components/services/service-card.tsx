@@ -61,7 +61,11 @@ export function ServiceCard({ service, IconComponent, className = '' }: ServiceC
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-muted-foreground">
-            {service.description}
+            {service.short_description || 
+             (typeof service.description === 'string' && service.description.includes('<') 
+               ? 'Klicka för att läsa mer om denna tjänst och vad vi kan hjälpa dig med.'
+               : service.description)
+            }
           </p>
           
           <div className="flex items-center justify-between pt-4 border-t">

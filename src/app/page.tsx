@@ -37,18 +37,18 @@ export default async function HomePage() {
   const mockArticles = [
     {
       id: '1',
-      title: 'Varför Next.js är vårt favoritramverk',
-      slug: 'varfor-nextjs-ar-vart-favoritramverk',
-      content: 'Vi har testat massor av ramverk genom åren, men Next.js har verkligen imponerat på oss. Här berättar vi varför det blivit vårt första val för nya projekt och vad som gör det så kraftfullt.',
-      excerpt: 'Vi har testat massor av ramverk genom åren, men Next.js har verkligen imponerat på oss. Här berättar vi varför det blivit vårt första val för nya projekt.',
-      featured_image: 'https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=800&h=600&fit=crop&crop=center',
+      title: 'Lorem ipsum dolor sit amet consectetur',
+      slug: 'lorem-ipsum-dolor-sit-amet',
+      content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.',
+      excerpt: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+      featured_image: 'https://images.unsplash.com/photo-1614850715649-1d0106293bd1?w=800&h=600&fit=crop&crop=center',
       published: true,
       published_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
       post_type: 'artikel',
       created_at: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
       updated_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
       author_id: 'mock-author-id',
-      tags: ['Next.js', 'React', 'JavaScript', 'Webbutveckling', 'Framework'],
+      tags: ['Lorem', 'Ipsum', 'Dolor', 'Consectetur', 'Adipiscing'],
       admin_users: {
         full_name: 'Manne',
         email: 'manne@bearbetar.se'
@@ -56,18 +56,18 @@ export default async function HomePage() {
     },
     {
       id: '2',
-      title: 'Så designar man för användbarhet',
-      slug: 'sa-designar-man-for-anvandbarhet',
-      content: 'Användarupplevelse handlar inte bara om att något ser snyggt ut. Det ska framför allt vara lätt att använda. Här är våra bästa tips för bättre UX och hur man skapar verkligt användbara gränssnitt.',
-      excerpt: 'Användarupplevelse handlar inte bara om att något ser snyggt ut. Det ska framför allt vara lätt att använda. Här är våra bästa tips för bättre UX.',
-      featured_image: 'https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?w=800&h=600&fit=crop&crop=center',
+      title: 'Sed do eiusmod tempor incididunt ut',
+      slug: 'sed-do-eiusmod-tempor-incididunt',
+      content: 'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+      excerpt: 'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.',
+      featured_image: 'https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?w=800&h=600&fit=crop&crop=center',
       published: true,
       published_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
       post_type: 'guide',
       created_at: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString(),
       updated_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
       author_id: 'mock-author-id-2',
-      tags: ['UX', 'Design', 'Användbarhet'],
+      tags: ['Tempor', 'Incididunt', 'Labore'],
       admin_users: {
         full_name: 'Adam',
         email: 'adam@bearbetar.se'
@@ -75,17 +75,17 @@ export default async function HomePage() {
     },
     {
       id: '3',
-      title: 'Månadsabonnemang vs engångsköp',
-      slug: 'manadsabonnemang-vs-engangskop',
-      content: 'Varför vi tror på månadsabonnemang för webbplatser och appar. Det blir bättre för alla parter - både kunder och utvecklare. Vi förklarar fördelarna och hur modellen fungerar i praktiken.',
-      excerpt: 'Varför vi tror på månadsabonnemang för webbplatser och appar. Det blir bättre för alla parter - både kunder och utvecklare.',
-      featured_image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&h=600&fit=crop&crop=center',
+      title: 'Duis aute irure dolor in reprehenderit',
+      slug: 'duis-aute-irure-dolor-reprehenderit',
+      content: 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.',
+      excerpt: 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
+      featured_image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&h=600&fit=crop&crop=center',
       published: true,
       published_at: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
       created_at: new Date(Date.now() - 9 * 24 * 60 * 60 * 1000).toISOString(),
       updated_at: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
       author_id: 'mock-author-id',
-      tags: ['Affärsmodell', 'Prenumeration', 'Prissättning', 'Strategi', 'Webbutveckling', 'SaaS'],
+      tags: ['Voluptate', 'Reprehenderit', 'Cupidatat', 'Occaecat', 'Excepteur', 'Proident'],
       admin_users: {
         full_name: 'Manne',
         email: 'manne@bearbetar.se'
@@ -93,17 +93,17 @@ export default async function HomePage() {
     },
     {
       id: '4',
-      title: 'WordPress vs modern utveckling',
-      slug: 'wordpress-vs-modern-utveckling',
-      content: 'WordPress får mycket skit från utvecklare, men för många användningsområden är det fortfarande ett bra val. Vi förklarar när och varför du bör välja WordPress och när du bör satsa på modernare tekniker.',
-      excerpt: 'WordPress får mycket skit från utvecklare, men för många användningsområden är det fortfarande ett bra val. Vi förklarar när och varför.',
-      featured_image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=600&fit=crop&crop=center',
+      title: 'Excepteur sint occaecat cupidatat non',
+      slug: 'excepteur-sint-occaecat-cupidatat',
+      content: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error.',
+      excerpt: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+      featured_image: 'https://images.unsplash.com/photo-1639322537228-f710d846310a?w=800&h=600&fit=crop&crop=center',
       published: true,
       published_at: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
       created_at: new Date(Date.now() - 13 * 24 * 60 * 60 * 1000).toISOString(),
       updated_at: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
       author_id: 'mock-author-id-2',
-      tags: ['WordPress', 'CMS', 'PHP', 'Webbutveckling'],
+      tags: ['Officia', 'Deserunt', 'Mollit', 'Laborum'],
       admin_users: {
         full_name: 'Adam',
         email: 'adam@bearbetar.se'
@@ -111,17 +111,17 @@ export default async function HomePage() {
     },
     {
       id: '5',
-      title: 'Så undviker du vanliga designmisstag',
-      slug: 'sa-undviker-du-vanliga-designmisstag',
-      content: 'Vi har sett samma designmisstag om och om igen. Här är de vanligaste fällorna och hur du undviker dem i ditt nästa projekt. Från navigation till färgval - allt som kan gå snett.',
-      excerpt: 'Vi har sett samma designmisstag om och om igen. Här är de vanligaste fällorna och hur du undviker dem i ditt nästa projekt.',
-      featured_image: 'https://images.unsplash.com/photo-1586717791821-3f44a563fa4c?w=800&h=600&fit=crop&crop=center',
+      title: 'Ut enim ad minim veniam quis nostrud',
+      slug: 'ut-enim-ad-minim-veniam-quis',
+      content: 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate.',
+      excerpt: 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+      featured_image: 'https://images.unsplash.com/photo-1620121692029-d088224ddc74?w=800&h=600&fit=crop&crop=center',
       published: true,
       published_at: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
       created_at: new Date(Date.now() - 16 * 24 * 60 * 60 * 1000).toISOString(),
       updated_at: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
       author_id: 'mock-author-id-2',
-      tags: ['Design', 'UX', 'UI', 'Bästa praxis', 'Tips'],
+      tags: ['Veniam', 'Exercitation', 'Ullamco', 'Consequat', 'Aliquip'],
       admin_users: {
         full_name: 'Adam',
         email: 'adam@bearbetar.se'
@@ -146,7 +146,7 @@ export default async function HomePage() {
       description: 'En modern e-handelsplattform byggd för en lokal butik som ville ta steget in i digitala världen. Responsiv design och enkel administration.',
       content: 'En modern e-handelsplattform byggd för en lokal butik som ville ta steget in i digitala världen. Responsiv design och enkel administration.',
       excerpt: 'En modern e-handelsplattform byggd för en lokal butik som ville ta steget in i digitala världen.',
-      featured_image: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&h=600&fit=crop&crop=center',
+      featured_image: 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=800&h=600&fit=crop&crop=center',
       project_type: 'E-handel',
       client_name: 'Lokal Butik AB',
       project_url: null,
@@ -174,7 +174,7 @@ export default async function HomePage() {
       description: 'Ett enkelt och smidigt bokningssystem för en frisörsalong som ville digitalisera sin bokningsprocess. Kunder kan boka tider online och salongen får notifikationer.',
       content: 'Ett enkelt och smidigt bokningssystem för en frisörsalong som ville digitalisera sin bokningsprocess. Kunder kan boka tider online och salongen får notifikationer.',
       excerpt: 'Ett enkelt och smidigt bokningssystem för en frisörsalong som ville digitalisera sin bokningsprocess.',
-      featured_image: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=800&h=600&fit=crop&crop=center',
+      featured_image: 'https://images.unsplash.com/photo-1617791160588-241658c0f566?w=800&h=600&fit=crop&crop=center',
       project_type: 'Bokningssystem',
       client_name: 'Frisörsalong Vackra',
       project_url: null,
@@ -203,7 +203,7 @@ export default async function HomePage() {
       description: 'En mobilapp för träning hemma med videor, scheman och spårning av framsteg. Byggd för att hjälpa folk hålla sig i form utan att behöva gå till gymmet.',
       content: 'En mobilapp för träning hemma med videor, scheman och spårning av framsteg. Byggd för att hjälpa folk hålla sig i form utan att behöva gå till gymmet.',
       excerpt: 'En mobilapp för träning hemma med videor, scheman och spårning av framsteg.',
-      featured_image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=600&fit=crop&crop=center',
+      featured_image: 'https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?w=800&h=600&fit=crop&crop=center',
       project_type: 'Mobilapp',
       client_name: null,
       project_url: null,
@@ -231,7 +231,7 @@ export default async function HomePage() {
       description: 'En professionell hemsida för ett konsultbolag som ville visa sina tjänster och kompetens på ett tydligt sätt. Fokus på konvertering och användarvänlighet.',
       content: 'En professionell hemsida för ett konsultbolag som ville visa sina tjänster och kompetens på ett tydligt sätt. Fokus på konvertering och användarvänlighet.',
       excerpt: 'En professionell hemsida för ett konsultbolag som ville visa sina tjänster och kompetens.',
-      featured_image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=600&fit=crop&crop=center',
+      featured_image: 'https://images.unsplash.com/photo-1620121478247-ec786b9be2fa?w=800&h=600&fit=crop&crop=center',
       project_type: 'Företagshemsida',
       client_name: 'Konsultbolag Pro',
       project_url: null,
@@ -261,7 +261,7 @@ export default async function HomePage() {
       description: 'En digital läroplattform för distansutbildning med videolektioner, quiz och progressspårning. Byggd för att göra distansutbildning mer engagerande.',
       content: 'En digital läroplattform för distansutbildning med videolektioner, quiz och progressspårning. Byggd för att göra distansutbildning mer engagerande.',
       excerpt: 'En digital läroplattform för distansutbildning med videolektioner, quiz och progressspårning.',
-      featured_image: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800&h=600&fit=crop&crop=center',
+      featured_image: 'https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?w=800&h=600&fit=crop&crop=center',
       project_type: 'Läroplattform',
       client_name: 'Distansutbildning AB',
       project_url: null,
@@ -347,28 +347,28 @@ export default async function HomePage() {
       />
       <div className="flex flex-col">
       <HeroSection>
-        <div className="inline-flex items-center gap-2 mb-6 px-3 py-1.5 bg-secondary backdrop-blur-sm rounded-full animate-slide-down no-border-override">
+        <div className="inline-flex items-center gap-2 mb-6 px-3 py-1.5 bg-background/50 backdrop-blur-sm rounded-full animate-slide-down no-border-override">
           <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75 inset-0"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-accent/20"></span>
           </span>
-          <span className="text-sm font-medium text-secondary-foreground">Vi tar emot uppdrag!</span>
+          <span className="text-sm font-medium text-accent">Vi tar emot uppdrag!</span>
         </div>
-        <h1 className="text-2xl font-bold tracking-tighter leading-loose sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl animate-slide-up">
+        <h1 className="text-2xl font-bold tracking-tighter leading-loose sm:text-4xl md:text-3xl lg:text-5xl xl:text-6xl animate-slide-up">
           Vi bygger{' '}
           <span className="text-primary">
             snygga grejer på nätet
           </span>
         </h1>
-        <p className="mt-6 text-base text-muted-foreground sm:text-lg md:text-xl max-w-xl mx-auto lg:mx-0 lg:max-w-none animate-slide-up-delayed">
+        <p className="mt-6 text-base text-muted-foreground sm:text-base max-w-xl mx-auto lg:mx-0 lg:max-w-none animate-slide-up-delayed">
           Webbutveckling, appar och design – vi fixar det mesta! Denna sida är fortfarande under konstruktion, 
           men vi tar gärna emot uppdrag redan nu. Säg vad du behöver så löser vi det.
         </p>
-        <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-slide-up-delayed-2">
-          <Button asChild size="lg" className="w-full sm:w-auto min-h-[44px]">
+        <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center md:justify-start animate-slide-up-delayed-2">
+          <Button asChild size="lg" className="w-full sm:w-auto min-h-[44px] font-bold">
             <Link href="/kontakt">Hör av dig</Link>
           </Button>
-          <Button variant="outline" asChild size="lg" className="w-full sm:w-auto min-h-[44px]">
+          <Button variant="outline" asChild size="lg" className="w-full sm:w-auto min-h-[44px] font-bold">
             <Link href="/tjanster">Vad vi kan</Link>
           </Button>
         </div>
@@ -398,13 +398,17 @@ export default async function HomePage() {
             
             <ToolsModalWrapper />
 
-            <div className="text-center">
-              <Button asChild size="lg" className="tools-cta-button text-white px-8 py-3 text-lg font-semibold">
-                <Link href="/verktyg">Utforska alla verktyg</Link>
-              </Button>
-            </div>
           </div>
         </div>
+      </section>
+
+      {/* Article Carousel */}
+      <section className="container py-24 animate-scale-in-delayed">
+        <ArticleCarousel
+          articles={typedArticlesToShow}
+          title="Senaste artiklarna"
+          description="Tips, tankar och berättelser från vårt jobb som utvecklare. Plus lite random grejer vi tänker på. Alla artiklar som visas är exempel/mocktext."
+        />
       </section>
 
       {/* Features Section */}
@@ -477,12 +481,18 @@ export default async function HomePage() {
               </CardContent>
             </Card>
           </div>
+          
+          <div className="text-center mt-12">
+            <Button asChild size="lg" className="px-8 py-3 text-lg font-semibold">
+              <Link href="/tjanster">Se alla våra tjänster</Link>
+            </Button>
+          </div>
           </div>
         </div>
       </section>
 
       {/* Portfolio Carousel */}
-      <section className="container py-16 animate-scale-in">
+      <section className="container py-24 animate-scale-in">
         <PortfolioCarousel
           projects={mockProjects}
           title="Senaste projekten"
@@ -490,14 +500,6 @@ export default async function HomePage() {
         />
       </section>
 
-      {/* Article Carousel */}
-      <section className="container py-16 animate-scale-in-delayed">
-        <ArticleCarousel
-          articles={typedArticlesToShow}
-          title="Senaste artiklarna"
-          description="Tips, tankar och berättelser från vårt jobb som utvecklare. Plus lite random grejer vi tänker på. Alla artiklar som visas är exempel/mocktext."
-        />
-      </section>
 
       {/* Demo Notice */}
       <section className="bg-primary/10 py-8">

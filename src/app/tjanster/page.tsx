@@ -5,10 +5,6 @@ import { AnimatedSection, AnimatedGrid, PageWrapper } from '@/components/ui/page
 import { ServicesGrid } from '@/components/services/services-grid'
 import { createServerComponentClient } from '@/lib/supabase'
 import { 
-  Globe, 
-  Smartphone, 
-  Code, 
-  Coffee,
   CheckCircle,
   Heart,
   Zap 
@@ -33,7 +29,7 @@ export default async function ServicesPage() {
       title: 'Webbsidor',
       short_description: 'Modern webbutveckling',
       description: `
-        <div class="space-y-6">
+        <div>
           <p>WordPress-sidor, React-appar och statiska siter. Månadsabonnemang för att göra professionell design tillgänglig för fler företag.</p>
           
           <h2>Vad vi erbjuder</h2>
@@ -56,7 +52,7 @@ export default async function ServicesPage() {
       title: 'Mobilappar',
       short_description: 'Mobilappar och webbappar',
       description: `
-        <div class="space-y-6">
+        <div>
           <p>React Native för mobil och moderna webbappar. Vi hjälper från idé till färdig produkt - ingen app-butik-byråkrati om det inte behövs.</p>
           
           <h2>Mobilutveckling</h2>
@@ -79,7 +75,7 @@ export default async function ServicesPage() {
       title: 'Skräddarsydd utveckling', 
       short_description: 'När standardlösningar inte räcker',
       description: `
-        <div class="space-y-6">
+        <div>
           <p>Har du något specifikt du vill bygga? Vi kan utveckla allt från enkla verktyg till komplexa system. Säg vad du behöver så fixar vi det.</p>
           
           <h2>Unika lösningar</h2>
@@ -109,16 +105,6 @@ export default async function ServicesPage() {
 
   const displayServices = services && services.length > 0 ? services : defaultServices
 
-  const getIcon = (iconName: string) => {
-    const icons = {
-      Globe,
-      Smartphone, 
-      Code,
-      Coffee
-    }
-    return icons[iconName as keyof typeof icons] || Code
-  }
-
   return (
     <PageWrapper>
       <HeroSection>
@@ -140,7 +126,7 @@ export default async function ServicesPage() {
       {/* Services Grid */}
       <AnimatedSection animation="scale-in">
         <section className="container py-16">
-          <ServicesGrid services={displayServices} getIcon={getIcon} />
+          <ServicesGrid services={displayServices} />
         </section>
       </AnimatedSection>
 
@@ -203,8 +189,10 @@ export default async function ServicesPage() {
               Hör av dig så tar vi en kaffe och pratar om vad vi kan hjälpa dig med. Vi tar emot kunder redan nu!
             </p>
             <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:justify-center">
-              <Button size="lg">
-                Hör av dig
+              <Button size="lg" asChild>
+                <Link href="/kontakt">
+                  Hör av dig
+                </Link>
               </Button>
               <Button variant="outline" size="lg" asChild>
                 <Link href="/blog">
