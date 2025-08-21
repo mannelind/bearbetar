@@ -6,12 +6,13 @@ import { PortfolioCarousel } from '@/components/ui/portfolio-carousel'
 import { HeroSection } from '@/components/ui/hero-section'
 import { createServerComponentClient } from '@/lib/supabase'
 import { Article } from '@/types'
-import { Code, Globe, Smartphone, Coffee, Search, Accessibility, Zap } from 'lucide-react'
+import { Code, Globe, Smartphone, Coffee } from 'lucide-react'
 import { pageMetadata } from '@/lib/seo'
 import type { Metadata } from 'next'
 import { OrganizationStructuredData, WebSiteStructuredData } from '@/components/seo/structured-data'
 import { FAQStructuredData } from '@/components/seo/faq-structured-data'
 import { ConstructionBanner } from '@/components/ui/construction-banner'
+import { ToolsModalWrapper } from '@/components/ui/tools-modal-wrapper'
 
 export const metadata: Metadata = pageMetadata.home()
 
@@ -381,6 +382,8 @@ export default async function HomePage() {
         <div className="tools-floating-orb"></div>
         <div className="tools-floating-orb"></div>
         <div className="tools-floating-orb"></div>
+        <div className="tools-floating-orb"></div>
+        <div className="tools-floating-orb"></div>
         
         <div className="container relative z-10">
           <div className="mx-auto max-w-7xl">
@@ -393,63 +396,7 @@ export default async function HomePage() {
               </p>
             </div>
             
-            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4 mb-12">
-              <Link href="/verktyg/seo" className="block">
-                <div className="tools-card tools-card-1 h-full cursor-pointer p-6">
-                  <div className="flex flex-col items-center text-center space-y-4">
-                    <div className="tools-card-icon">
-                      <Search className="h-8 w-8 text-primary" />
-                    </div>
-                    <h3 className="tools-card-title">SEO-check</h3>
-                    <p className="text-muted-foreground text-sm leading-relaxed">
-                      Analysera din webbplats SEO-prestanda och få förbättringsförslag för bättre sökresultat.
-                    </p>
-                  </div>
-                </div>
-              </Link>
-
-              <Link href="/verktyg/tillganglighet" className="block">
-                <div className="tools-card tools-card-2 h-full cursor-pointer p-6">
-                  <div className="flex flex-col items-center text-center space-y-4">
-                    <div className="tools-card-icon">
-                      <Accessibility className="h-8 w-8 text-primary" />
-                    </div>
-                    <h3 className="tools-card-title">Tillgänglighet</h3>
-                    <p className="text-muted-foreground text-sm leading-relaxed">
-                      WCAG-kompatibilitetstest för bättre användarupplevelse och tillgänglighet.
-                    </p>
-                  </div>
-                </div>
-              </Link>
-
-              <Link href="/verktyg/hastighet" className="block">
-                <div className="tools-card tools-card-3 h-full cursor-pointer p-6">
-                  <div className="flex flex-col items-center text-center space-y-4">
-                    <div className="tools-card-icon">
-                      <Zap className="h-8 w-8 text-primary" />
-                    </div>
-                    <h3 className="tools-card-title">Hastighetstest</h3>
-                    <p className="text-muted-foreground text-sm leading-relaxed">
-                      Mät laddningstider och prestanda för optimal användarupplevelse.
-                    </p>
-                  </div>
-                </div>
-              </Link>
-
-              <Link href="/verktyg/mobil" className="block">
-                <div className="tools-card tools-card-4 h-full cursor-pointer p-6">
-                  <div className="flex flex-col items-center text-center space-y-4">
-                    <div className="tools-card-icon">
-                      <Smartphone className="h-8 w-8 text-primary" />
-                    </div>
-                    <h3 className="tools-card-title">Mobilvänlighet</h3>
-                    <p className="text-muted-foreground text-sm leading-relaxed">
-                      Testa hur väl din webbplats fungerar på mobila enheter.
-                    </p>
-                  </div>
-                </div>
-              </Link>
-            </div>
+            <ToolsModalWrapper />
 
             <div className="text-center">
               <Button asChild size="lg" className="tools-cta-button text-white px-8 py-3 text-lg font-semibold">
