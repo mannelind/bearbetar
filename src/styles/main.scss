@@ -1,0 +1,36 @@
+// Main SCSS file - imports all modules
+// Import Tailwind CSS
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+// Import base styles
+@import 'base/variables';
+@import 'base/reset';
+
+// Import themes
+@import 'themes/light';
+@import 'themes/dark';
+@import 'themes/theme-overrides';
+
+// Import layout
+@import 'layout/containers';
+@import 'layout/navigation';
+
+// Import components
+@import 'components/buttons';
+@import 'components/cards';
+@import 'components/tools-card';
+@import 'components/tools-section';
+@import 'components/construction-banner';
+@import 'components/forms';
+@import 'components/loading';
+
+// Import effects
+@import 'effects/glow';
+@import 'effects/gradients';
+
+// Import utilities
+@import 'utilities/animations';
+@import 'utilities/responsive';
+@import 'utilities/helpers';

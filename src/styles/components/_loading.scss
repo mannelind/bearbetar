@@ -1,0 +1,37 @@
+// Loading Component Styles
+@layer components {
+  /* Tech loading spinner */
+  .loading-spinner {
+    @apply animate-spin rounded-full border-2 border-primary border-t-transparent;
+    box-shadow: 0 0 10px hsla(var(--primary), 0.4);
+  }
+
+  /* Tech hover effects */
+  .tech-icon {
+    @apply transition-all duration-200;
+    transform-origin: center;
+    will-change: transform, filter;
+
+    &:hover {
+      filter: drop-shadow(0 0 8px hsla(var(--primary), 0.5));
+      animation: iconSpin 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      transform: rotate(12deg);
+    }
+  }
+
+  a:hover .tech-icon,
+  button:hover .tech-icon {
+    filter: drop-shadow(0 0 8px hsla(var(--primary), 0.5));
+    animation: iconSpin 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    transform: rotate(12deg);
+  }
+}
+
+@keyframes iconSpin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

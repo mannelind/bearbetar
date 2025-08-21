@@ -1,0 +1,83 @@
+// General Card Component Styles
+@layer components {
+  .card {
+    @apply bg-card border border-border rounded-xl shadow-sm transition-all duration-500 ease-out;
+    background: linear-gradient(135deg, hsl(var(--card)), hsl(var(--card) / 0.95));
+
+    &:hover {
+      @apply shadow-xl border-primary/30;
+      box-shadow: 
+        0 0 25px hsla(var(--primary), 0.12), 
+        0 0 50px hsla(var(--primary), 0.06),
+        0 10px 30px hsla(var(--foreground), 0.1);
+      transform: translateY(-2px);
+    }
+
+    // Card image hover effects
+    &:hover img {
+      transform: scale(1.05);
+    }
+
+    img {
+      transition: transform 0.5s ease-out;
+    }
+  }
+
+  // Carousel card specific hover effects
+  [data-radix-collection-item] .card:hover img,
+  .carousel .card:hover img {
+    transform: scale(1.08);
+  }
+
+  [data-radix-collection-item] .card img,
+  .carousel .card img {
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .card-header {
+    @apply p-6 pb-2;
+  }
+
+  .card-content {
+    @apply p-6 pt-2;
+  }
+
+  // Articles grid equal height - Force all cards to be same height
+  .articles-grid {
+    display: grid;
+    grid-auto-rows: 1fr;
+
+    > div {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .article-card {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+
+      > div:first-child {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+      }
+    }
+
+    .article-card-body {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .article-card-excerpt {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .article-card-footer {
+      margin-top: auto;
+    }
+  }
+}

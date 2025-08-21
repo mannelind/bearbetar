@@ -1,0 +1,79 @@
+// Helper Utilities
+@layer utilities {
+  /* Screen reader only text - viktig för tillgänglighet */
+  .sr-only {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border-width: 0 !important;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  /* Popover and dropdown specific styling */
+  [role="listbox"],
+  [data-radix-popper-content-wrapper],
+  .popover-content,
+  .dropdown-content,
+  .select-content {
+    overflow: hidden;
+    border-radius: var(--radius);
+
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: hsl(var(--scrollbar-track));
+      border-radius: 3px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: hsl(var(--scrollbar-thumb) / 0.5);
+      border-radius: 3px;
+      border: 1px solid transparent;
+      background-clip: content-box;
+
+      &:hover {
+        background: hsl(var(--scrollbar-thumb-hover) / 0.7);
+      }
+    }
+  }
+
+  /* Modal scroll lock compensation for fixed elements */
+  body.modal-open {
+    overflow: hidden;
+    padding-right: var(--scrollbar-width, 0px);
+
+    .fixed,
+    header,
+    nav {
+      padding-right: var(--scrollbar-width, 0px);
+    }
+  }
+
+  /* Alternative approach using CSS-only detection */
+  @supports (padding: max(0px)) {
+    body.modal-open .fixed,
+    body.modal-open header,
+    body.modal-open nav {
+      padding-right: max(var(--scrollbar-width, 0px), 0px);
+    }
+  }
+}

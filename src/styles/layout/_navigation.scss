@@ -1,0 +1,99 @@
+// Navigation Component Styles
+@layer components {
+  /* Bottom navigation */
+  .bottom-nav {
+    background: linear-gradient(180deg, 
+      hsla(var(--background), 0.95) 0%, 
+      hsla(var(--background), 0.98) 100%);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid hsla(var(--border), 0.5);
+    box-shadow: 
+      0 -4px 20px hsla(var(--background), 0.8),
+      0 -2px 10px hsla(var(--border), 0.1);
+
+    nav > div {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+    }
+
+    .mobile-nav-item {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+    }
+  }
+
+  /* Mobile navigation hover fixes */
+  .mobile-nav-item {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    margin: 4px;
+
+    &:hover {
+      margin: 0px;
+    }
+  }
+
+  /* Navigation items that use margin-based hover effects */
+  .nav-item-margin-hover {
+    margin: 4px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &:hover {
+      margin: 0px;
+    }
+  }
+
+  /* Sidebar button hover effects for better visibility */
+  .sidebar-btn-hover {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 0.5px solid transparent;
+
+    &:hover {
+      background-color: hsl(var(--primary) / 0.08);
+      color: hsl(var(--primary));
+      border-radius: 9999px;
+    }
+  }
+
+  /* Floating header with visible border */
+  .floating-border-visible {
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .floating-header-glow {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: headerColorShift 8s ease-in-out infinite;
+  }
+}
+
+@keyframes headerColorShift {
+  0%, 100% {
+    border-color: hsl(var(--primary) / 0.2);
+    box-shadow: 
+      0 0 12px hsla(var(--primary), 0.4),
+      0 0 24px hsla(var(--primary), 0.2),
+      0 0 45px hsla(var(--primary), 0.1);
+  }
+  25% {
+    border-color: hsl(var(--accent) / 0.3);
+    box-shadow: 
+      0 0 12px hsla(var(--accent), 0.4),
+      0 0 24px hsla(var(--accent), 0.2),
+      0 0 45px hsla(var(--accent), 0.1);
+  }
+  50% {
+    border-color: hsl(var(--primary) / 0.4);
+    box-shadow: 
+      0 0 15px hsla(var(--primary), 0.5),
+      0 0 30px hsla(var(--primary), 0.25),
+      0 0 50px hsla(var(--primary), 0.12);
+  }
+  75% {
+    border-color: hsl(var(--accent) / 0.25);
+    box-shadow: 
+      0 0 12px hsla(var(--accent), 0.35),
+      0 0 24px hsla(var(--accent), 0.18),
+      0 0 45px hsla(var(--accent), 0.08);
+  }
+}

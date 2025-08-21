@@ -1,0 +1,34 @@
+// Layout Container Styles
+@layer components {
+  .container {
+    @apply max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 w-full;
+  }
+
+  /* Simple sidebar height solution */
+  .sidebar-height {
+    height: 100vh;
+
+    @media (min-width: 768px) {
+      /* Start with space for banner, grow when banner disappears */
+      min-height: calc(100vh - 2rem);
+    }
+  }
+
+  .cyber-border {
+    border: 1px solid hsla(var(--primary), 0.4) !important;
+    border-right: 3px solid hsla(var(--primary), 0.6) !important;
+    background: linear-gradient(135deg, 
+      transparent, 
+      hsla(var(--primary), 0.05), 
+      transparent 50%, 
+      hsla(var(--accent), 0.03));
+    border-radius: 0 12px 12px 0;
+  }
+  
+  /* Extra specificity for sidebars */
+  aside.cyber-border {
+    border: 1px solid hsla(var(--primary), 0.4) !important;
+    border-right: 1px solid hsla(var(--primary), 0.6) !important;
+    border-radius: 0 12px 12px 0;
+  }
+}

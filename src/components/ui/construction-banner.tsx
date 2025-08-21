@@ -3,7 +3,7 @@
 export function ConstructionBanner() {
   return (
     <div 
-      className="relative w-full h-8 overflow-hidden"
+      className="construction-banner relative w-full h-8 overflow-hidden"
       style={{
         backgroundColor: 'hsl(var(--construction-banner) / 0.9)'
       }}

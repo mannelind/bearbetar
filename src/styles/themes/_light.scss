@@ -1,0 +1,39 @@
+// Light Theme Variables
+@layer base {
+  /* Light Olive Mode (Soft Monochromatic Olive-Green) */
+  .light {
+    --background: 90 15% 92%;          /* hsl(90, 15%, 94%) - Mjuk ljus olive-grön bakgrund */
+    --foreground: 167 30% 35;          /* hsl(95, 25%, 20%) - Mörk olive-grön text */
+    --card: 88 12% 88%;                /* hsl(88, 12%, 90%) - Matt ljus olive kort bakgrund */
+    --card-foreground: 167 80% 30%;     /* hsl(95, 20%, 18%) - Mörk olive text på kort */
+    --popover: 92 10% 92%;             /* hsl(92, 10%, 92%) - Mjuk olive popover */
+    --popover-foreground: 95 25% 20%;  /* hsl(95, 25%, 20%) - Mörk olive popover text */
+    --primary: 95 35% 42%;             /* hsl(95, 35%, 42%) - Matt olive-grön primary */
+    --primary-foreground: 0 0% 98%;    /* hsl(0, 0%, 98%) - Vit text på primary */
+    --secondary: 100 80% 70%;            /* hsl(90, 8%, 85%) - Mycket mjuk olive sekundär */
+    --secondary-foreground: 95 20% 25%; /* hsl(95, 20%, 25%) - Mörk olive sekundär text */
+    --muted: 88 15% 68%;               /* hsl(88, 10%, 88%) - Dämpad matt olive */
+    --muted-foreground: 95 12% 45%;    /* hsl(95, 12%, 45%) - Medium olive muted text */
+    --header-accent: 95 50% 32%;     /* hsl(90, 62%, 26%) - Olive för top bar */
+    --header-accent-foreground: 95 45% 88%; /* hsl(95, 45%, 88%) - Ljus olive text för header-accent */
+    --floating-header: 90 20% 85%;     /* hsl(90, 30%, 85%) - Ljus olive för floating header */
+    --floating-header-foreground: 95 30% 20%; /* hsl(95, 30%, 20%) - Mörk olive text för floating header */
+    --accent: 95 30% 48%;              /* hsl(95, 30%, 48%) - Matt olive accent */
+    --accent-foreground: 0 0% 98%;     /* hsl(0, 0%, 98%) - Vit accent text */
+    --destructive: 0 75% 55%;          /* hsl(0, 75%, 55%) - Röd för varningar */
+    --destructive-foreground: 0 0% 98%; /* hsl(0, 0%, 98%) - Vit destructive text */
+    --border: 90 12% 78%;              /* hsl(90, 12%, 78%) - Mjuk olive border */
+    --input: 88 8% 88%;              /* hsl(88, 8%, 88%) - Matt olive input bakgrund */
+    --ring: 95 35% 42%;                /* hsl(95, 35%, 42%) - Matt olive focus ring */
+    --chart-1: 120 60% 50%;            /* hsl(120, 60%, 50%) */
+    --chart-2: 140 55% 45%;            /* hsl(140, 55%, 45%) */
+    --chart-3: 100 65% 55%;            /* hsl(100, 65%, 55%) */
+    --chart-4: 150 50% 40%;            /* hsl(150, 50%, 40%) */
+    --chart-5: 130 70% 45%;            /* hsl(130, 70%, 45%) */
+    --construction-banner: 45 93% 47%; /* hsl(45, 93%, 47%) - Orange/amber för construction banner */
+    --construction-banner-foreground: 45 93% 20%; /* hsl(45, 93%, 20%) - Mörk orange text */
+    --scrollbar-track: 90 15% 92%; /* hsl(90, 15%, 92%) - Scrollbar track bakgrund */
+    --scrollbar-thumb: 95 12% 45%; /* hsl(95, 12%, 45%) - Scrollbar thumb färg */
+    --scrollbar-thumb-hover: 95 12% 55%; /* hsl(95, 12%, 55%) - Scrollbar thumb hover färg */
+  }
+}

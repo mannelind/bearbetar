@@ -378,7 +378,7 @@ export default async function HomePage() {
       <ConstructionBanner />
 
       {/* Verktyg Section - Unique Hero Design */}
-      <section className="tools-hero-section py-24 -mt-8">
+      <section className="tools-hero-section py-24">
         <div className="tools-floating-orb"></div>
         <div className="tools-floating-orb"></div>
         <div className="tools-floating-orb"></div>

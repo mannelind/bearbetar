@@ -1,0 +1,77 @@
+// CSS Custom Properties (Variables)
+@layer base {
+  /* Default theme - Dark Mode */
+  :root {
+    --background: 167 15% 12%; /* hsl(167, 18.2%, 12%) - Dark green background */
+    --foreground: 170 10% 80%; /* hsl(142, 61%, 67%) - Light green foreground */
+    --card: 160 20% 10%; /* hsl(160, 20%, 10%) - Dark green card */
+    --card-foreground: 170 10% 90%; /* hsl(120, 85%, 60%) - Light green card foreground */
+    --popover: 85 30% 8%; /* hsl(85, 30%, 8%) - Dark green popover */
+    --popover-foreground: 120 25% 85%; /* hsl(120, 25%, 85%) - Light green popover foreground */
+    --primary: 167 99% 20%; /* hsl(120, 85%, 60%) - Light green primary */
+    --primary-foreground: 85 20% 86%; /* hsl(85, 20%, 6%) - Dark green primary foreground */
+    --secondary: 230 60% 45%; /* hsl(85, 30%, 15%) - Dark green secondary */
+    --secondary-foreground: 230 79% 87%; /* hsl(155, 59%, 47%) - Light green secondary foreground */
+    --muted: 167 8% 8%; /* hsl(167, 8%, 8%) - Dark green muted */
+    --muted-foreground: 155 15% 65%; /* hsl(155, 15%, 65%) - Light green muted foreground */
+    --header-accent: 167 12% 7%; /* hsl(167, 18%, 20%) - Ljusare variant av background för top bar */
+    --header-accent-foreground: 167 15% 75%; /* hsl(120, 25%, 85%) - Ljus grön text för header-accent */
+    --floating-header: 167 15% 15%; /* hsl(167, 25%, 10%) - Mycket mörk grön för floating header */
+    --floating-header-foreground: 85 20% 86%; /* hsl(120, 30%, 95%) - Mycket ljus grön text för floating header */
+    --accent: 120 85% 60%; /* hsl(120, 85%, 60%) - Light green accent */
+    --accent-foreground: 85 20% 6%; /* hsl(85, 20%, 6%) - Dark green accent foreground */
+    --destructive: 0 75% 55%; /* hsl(0, 75%, 55%) - Red destructive */
+    --destructive-foreground: 0 0% 98%; /* hsl(0, 0%, 98%) - White destructive foreground */
+    --border: 167 15% 25%; /* hsl(167, 35%, 15%) - Dark green border */
+    --input: 167 5% 25%; /* hsl(85, 30%, 10%) - Dark green input */
+    --ring: 120 85% 60%; /* hsl(120, 85%, 60%) - Light green ring */
+    --chart-1: 120 85% 60%; /* hsl(120, 85%, 60%) - Light green chart 1 */
+    --chart-2: 150 60% 45%; /* hsl(150, 60%, 45%) - Light green chart 2 */
+    --chart-3: 170 50% 40%; /* hsl(170, 50%, 40%) - Light green chart 3 */
+    --chart-4: 90 80% 50%; /* hsl(90, 80%, 50%) */
+    --chart-5: 130 70% 45%; /* hsl(130, 70%, 45%) */
+    --construction-banner: 230 43% 47%; /* hsl(45, 93%, 47%) - Orange/amber för construction banner */
+    --construction-banner-foreground: 45 3% 80%; /* hsl(45, 93%, 20%) - Mörk orange text */
+    --scrollbar-track: 167 10% 20%; /* hsl(167, 10%, 10%) - Scrollbar track bakgrund */
+    --scrollbar-thumb: 155 35% 65%; /* hsl(155, 15%, 65%) - Scrollbar thumb färg */
+    --scrollbar-thumb-hover: 155 15% 65%; /* hsl(155, 15%, 75%) - Scrollbar thumb hover färg */
+    --radius: 0.875rem;
+  }
+
+  /* Green Mode - moved to separate class */
+  .green-mode {
+    --background: 167 18.2% 12.9%;         /* hsl(167, 18.2%, 12.9%) - Djup skogsgrön bakgrund */
+    --foreground: 120 25% 85%;        /* hsl(120, 25%, 85%) - Ljus grön text */
+    --card: 85 25% 10%;              /* hsl(85, 25%, 10%) - Djup mörk grön kort bakgrund */
+    --card-foreground: 120 25% 85%;   /* hsl(120, 25%, 85%) - Ljus grön text på kort */
+    --popover: 85 30% 8%;            /* hsl(85, 30%, 8%) - Mörk grön popover */
+    --popover-foreground: 120 25% 85%; /* hsl(120, 25%, 85%) - Ljus grön popover text */
+    --primary: 120 85% 60%;            /* hsl(120, 85%, 60%) - Ljus intensiv grön primary */
+    --primary-foreground: 85 20% 6%; /* hsl(85, 20%, 6%) - Mycket mörk grön text på primary */
+    --secondary: 85 30% 15%;         /* hsl(85, 30%, 15%) - Mörk grön sekundär */
+    --secondary-foreground: 120 25% 85%; /* hsl(120, 25%, 85%) - Ljus grön sekundär text */
+    --muted: 85 25% 12%;             /* hsl(85, 25%, 12%) - Dämpad mörk grön */
+    --muted-foreground: 120 15% 65%;  /* hsl(120, 15%, 65%) - Medium grön muted text */
+    --header-accent: 167 18% 20%;       /* hsl(167, 18%, 20%) - Ljusare variant av background för top bar */
+    --header-accent-foreground: 120 25% 85%; /* hsl(120, 25%, 85%) - Ljus grön text för header-accent */
+    --floating-header: 167 25% 15%;     /* hsl(167, 25%, 15%) - Mörk grön för floating header */
+    --floating-header-foreground: 120 30% 90%; /* hsl(120, 30%, 90%) - Ljus grön text för floating header */
+    --accent: 120 85% 60%;             /* hsl(120, 85%, 60%) - Ljus intensiv grön accent */
+    --accent-foreground: 85 20% 6%; /* hsl(85, 20%, 6%) - Mycket mörk grön accent text */
+    --destructive: 0 75% 55%;        /* hsl(0, 75%, 55%) - Röd för varningar */
+    --destructive-foreground: 0 0% 98%; /* hsl(0, 0%, 98%) - Vit destructive text */
+    --border: 85 40% 25%;            /* hsl(85, 40%, 25%) - Medium grön border */
+    --input: 85 30% 10%;             /* hsl(85, 30%, 10%) - Mörk grön input bakgrund */
+    --ring: 120 85% 60%;               /* hsl(120, 85%, 60%) - Ljus intensiv grön focus ring */
+    --chart-1: 120 85% 60%;         /* hsl(120, 85%, 60%) */
+    --chart-2: 150 60% 45%;         /* hsl(150, 60%, 45%) */
+    --chart-3: 170 50% 40%;         /* hsl(170, 50%, 40%) */
+    --chart-4: 90 80% 50%;          /* hsl(90, 80% 50%) */
+    --chart-5: 130 70% 45%;         /* hsl(130, 70%, 45%) */
+    --construction-banner: 230 53% 37%; /* hsl(45, 93%, 47%) - Orange/amber för construction banner */
+    --construction-banner-foreground: 45 33% 80%; /* hsl(45, 93%, 20%) - Mörk orange text */
+    --scrollbar-track: 167 18.2% 12.9%; /* hsl(167, 18.2%, 12.9%) - Scrollbar track bakgrund */
+    --scrollbar-thumb: 120 15% 65%; /* hsl(120, 15%, 65%) - Scrollbar thumb färg */
+    --scrollbar-thumb-hover: 120 15% 75%; /* hsl(120, 15%, 75%) - Scrollbar thumb hover färg */
+  }
+}

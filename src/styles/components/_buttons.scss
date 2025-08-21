@@ -1,0 +1,111 @@
+// Button Component Styles
+@layer components {
+  .button {
+    @apply inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
+    box-shadow: 0 0 8px hsla(var(--primary), 0.3), 0 0 16px hsla(var(--primary), 0.15);
+    border: 0.5px solid transparent;
+
+    &:hover {
+      animation: buttonPulse 2s ease-in-out infinite;
+      box-shadow: 
+        0 0 15px hsla(var(--primary), 0.5), 
+        0 0 30px hsla(var(--primary), 0.3),
+        0 0 45px hsla(var(--primary), 0.2);
+    }
+  }
+
+  .button-primary {
+    @apply button bg-primary text-primary-foreground hover:bg-primary/85 hover:shadow-xl;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary) / 0.9));
+    border: 0.5px solid hsl(var(--primary) / 0.3);
+
+    &:hover {
+      box-shadow: 
+        0 0 20px hsla(var(--primary), 0.4), 
+        0 0 40px hsla(var(--primary), 0.2),
+        0 8px 25px hsla(var(--primary), 0.15);
+      transform: translateY(-2px) scale(1.03);
+      background: linear-gradient(135deg, hsl(var(--primary) / 1.1), hsl(var(--primary)));
+    }
+  }
+
+  .button-secondary {
+    @apply button bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-all duration-200;
+    border: 0.5px solid hsl(var(--secondary) / 0.3);
+  }
+
+  .button-outline {
+    @apply button bg-background hover:bg-accent hover:text-accent-foreground transition-all duration-200;
+    border: 0.5px solid hsl(var(--border));
+    box-shadow: 0 0 10px hsla(var(--border), 0);
+
+    &:hover {
+      box-shadow: 0 0 10px hsla(var(--border), 0.3);
+    }
+  }
+
+  // Glow button styles
+  .btn-glow {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 0.5px solid transparent;
+    box-shadow: 
+      0 0 20px hsla(var(--primary), 0),
+      0 0 40px hsla(var(--primary), 0),
+      inset 0 0 10px hsla(var(--primary), 0);
+
+    &:hover {
+      background-color: hsl(200, 15%, 35%);
+      color: hsl(200, 15%, 85%);
+      border-color: hsl(200, 30%, 80%);
+      box-shadow: 
+        0 0 20px hsla(200, 30%, 80%, 0.15),
+        0 0 40px hsla(200, 30%, 80%, 0.08),
+        inset 0 0 10px hsla(200, 30%, 80%, 0.05);
+      filter: brightness(1.05);
+    }
+
+    &:focus-visible {
+      background-color: hsl(200, 15%, 35%);
+      color: hsl(200, 15%, 85%);
+      border-color: hsl(200, 30%, 80%);
+      box-shadow: 
+        0 0 15px hsla(200, 30%, 80%, 0.18),
+        0 0 30px hsla(200, 30%, 80%, 0.10),
+        inset 0 0 8px hsla(200, 30%, 80%, 0.08);
+    }
+  }
+
+  .btn-glow-outline {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 
+      0 0 15px hsla(var(--primary), 0),
+      0 0 30px hsla(var(--primary), 0);
+
+    &:hover {
+      background-color: hsl(200, 15%, 35%);
+      color: hsl(200, 15%, 85%);
+      box-shadow: 
+        0 0 15px hsla(200, 30%, 80%, 0.12),
+        0 0 30px hsla(200, 30%, 80%, 0.06);
+      border-color: hsl(200, 30%, 80%);
+      filter: brightness(1.05);
+    }
+  }
+}
+
+// Button keyframes
+@keyframes buttonPulse {
+  0%, 100% {
+    box-shadow: 
+      0 0 15px hsla(var(--primary), 0.5), 
+      0 0 30px hsla(var(--primary), 0.3),
+      0 0 45px hsla(var(--primary), 0.2);
+  }
+  50% {
+    box-shadow: 
+      0 0 25px hsla(var(--primary), 0.8), 
+      0 0 50px hsla(var(--primary), 0.5),
+      0 0 75px hsla(var(--primary), 0.3);
+  }
+}

@@ -1,0 +1,135 @@
+// Theme-specific Overrides
+@layer components {
+  /* Light mode - Remove glow effects */
+  .light .card:hover {
+    box-shadow: 
+      0 4px 6px -1px rgba(0, 0, 0, 0.1),
+      0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transform: translateY(-2px);
+  }
+
+  .light .button {
+    box-shadow: none;
+
+    &:hover {
+      animation: none;
+      box-shadow: 
+        0 2px 4px -1px rgba(0, 0, 0, 0.1),
+        0 1px 2px -1px rgba(0, 0, 0, 0.06);
+    }
+  }
+
+  .light .button-primary:hover {
+    box-shadow: 
+      0 4px 6px -1px rgba(0, 0, 0, 0.1),
+      0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transform: translateY(-1px) scale(1.02);
+  }
+
+  .light .button-outline:hover {
+    box-shadow: 
+      0 1px 3px 0 rgba(0, 0, 0, 0.1),
+      0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  }
+
+  .light .glow-outline {
+    box-shadow: none;
+
+    &:hover {
+      box-shadow: 
+        0 0 0 1px hsl(var(--primary)),
+        0 1px 3px 0 rgba(0, 0, 0, 0.1),
+        0 1px 2px 0 rgba(0, 0, 0, 0.06);
+      filter: none;
+    }
+
+    &:focus-visible {
+      box-shadow: 
+        0 0 0 2px hsl(var(--primary)),
+        0 1px 3px 0 rgba(0, 0, 0, 0.1);
+      filter: none;
+    }
+  }
+
+  .light .input:focus {
+    box-shadow: 
+      0 0 0 1px hsl(var(--primary)),
+      0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  }
+
+  .light .textarea:focus {
+    box-shadow: 
+      0 0 0 1px hsl(var(--primary)),
+      0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  }
+
+  .light .loading-spinner {
+    box-shadow: none;
+  }
+
+  .light .tech-icon:hover,
+  .light a:hover .tech-icon,
+  .light button:hover .tech-icon {
+    filter: none;
+    animation: iconSpin 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    transform: rotate(12deg);
+  }
+
+  .light .cyber-glow {
+    box-shadow: 
+      0 1px 3px 0 rgba(0, 0, 0, 0.1),
+      0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    backdrop-filter: none;
+  }
+
+  .light .floating-header-glow {
+    animation: none;
+  }
+
+  /* Light mode sidebar button hover */
+  .light .sidebar-btn-hover {
+    box-shadow: 
+      0 0 6px hsla(95, 20%, 45%, 0),
+      0 0 12px hsla(95, 20%, 45%, 0);
+
+    &:hover {
+      background-color: hsl(95, 25%, 88%); /* Matt olive-grön bakgrund */
+      color: hsl(95, 30%, 25%); /* Mörk matt olive text */
+      box-shadow: 
+        0 0 6px hsla(95, 20%, 45%, 0.1),
+        0 0 12px hsla(95, 20%, 45%, 0.05);
+    }
+  }
+
+  /* Override sidebar glow effects in light mode */
+  .light aside.cyber-glow {
+    box-shadow: 
+      0 1px 3px 0 rgba(0, 0, 0, 0.1),
+      0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    backdrop-filter: blur(2px);
+  }
+
+  /* Remove inline glow styles from sidebar in light mode */
+  .light aside[style*="boxShadow"] {
+    box-shadow: 
+      0 2px 4px -1px rgba(0, 0, 0, 0.1),
+      0 1px 2px -1px rgba(0, 0, 0, 0.06);
+  }
+
+  /* Dark mode sidebar button hover */
+  .dark .sidebar-btn-hover {
+    border: 0.5px solid transparent;
+    box-shadow: 
+      0 0 6px hsla(200, 30%, 80%, 0),
+      0 0 12px hsla(200, 30%, 80%, 0);
+
+    &:hover {
+      background-color: hsl(200, 15%, 35%);
+      color: hsl(200, 15%, 85%);
+      border: 0.5px solid hsl(200, 30%, 80%);
+      box-shadow: 
+        0 0 6px hsla(200, 30%, 80%, 0.12),
+        0 0 12px hsla(200, 30%, 80%, 0.06);
+    }
+  }
+}
