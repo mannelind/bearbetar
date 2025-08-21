@@ -5,9 +5,9 @@
     position: relative;
     background: linear-gradient(135deg, 
       hsl(var(--background)) 0%, 
-      hsl(var(--primary) / 0.015) 25%,
-      hsl(var(--secondary) / 0.025) 50%,
-      hsl(var(--primary) / 0.02) 75%,
+      hsl(var(--primary) / 0.05) 25%,
+      hsl(var(--primary) / 0.08) 50%,
+      hsl(var(--primary) / 0.05) 75%,
       hsl(var(--background)) 100%
     );
     overflow: hidden;
@@ -90,7 +90,7 @@
     color: hsl(var(--foreground));
     background: linear-gradient(135deg, 
       hsl(var(--foreground)) 0%, 
-      hsl(var(--primary)) 50%,
+      hsl(var(--foreground)) 10%,
       hsl(var(--accent)) 100%
     );
     background-clip: text;
@@ -127,7 +127,7 @@
   .tools-cta-button {
     position: relative;
     background: linear-gradient(135deg, 
-      hsl(var(--primary)) 0%, 
+      hsl(var(--secondary)) 0%, 
       hsl(var(--accent)) 100%
     );
     border: none;
@@ -156,8 +156,8 @@
     &:hover {
       transform: translateY(-2px);
       box-shadow: 
-        0 10px 20px hsl(var(--primary) / 0.3),
-        0 6px 6px hsl(var(--primary) / 0.2);
+        0 10px 20px hsl(var(--secondary) / 0.3),
+        0 6px 6px hsl(var(--secondary) / 0.2);
     }
   }
 
