@@ -48,11 +48,11 @@
 }
 
 /* Give header buttons same effect as sidebar buttons in dark mode on hover */
-.dark button:hover:not(.tools-card-button),
+.dark button:hover:not(.tools-card-button):not([class*="tools-card"]),
 .dark .btn-glow:hover,
 .dark .btn-glow-outline:hover,
 .dark [class*="btn-glow"]:hover,
-.dark button[class*="outline"]:hover:not(.tools-card-button) {
+.dark button[class*="outline"]:hover:not(.tools-card-button):not([class*="tools-card"]) {
   background-color: hsl(200, 15%, 35%) !important;
   color: hsl(200, 15%, 85%) !important;
   border: 0.5px solid hsl(200, 30%, 80%) !important;
