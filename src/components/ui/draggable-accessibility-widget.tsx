@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { Eye, Type, Palette, Highlighter, RotateCcw, ChevronRight, ChevronLeft, ChevronUp, ChevronDown } from 'lucide-react'
+import { Eye, Type, Palette, Highlighter, RotateCcw, X } from 'lucide-react'
 
 type ColorBlindMode = 'normal' | 'protanopia' | 'deuteranopia' | 'tritanopia' | 'monochrome'
 type Position = { x: number; y: number }
@@ -357,17 +357,26 @@ export function DraggableAccessibilityWidget() {
     return undefined
   }, [isDragging, position])
 
-  const getChevronIcon = () => {
-    switch (edge) {
-      case 'left': return <ChevronRight className="w-5 h-5" />
-      case 'right': return <ChevronLeft className="w-5 h-5" />
-      case 'bottom': return <ChevronUp className="w-5 h-5" />
-      case 'header-left': return <Eye className="w-3 h-3" /> // Smaller icon for smaller button
-      case 'header-center': return <Eye className="w-3 h-3" />
-      case 'header-right': return <Eye className="w-3 h-3" />
-      default: return <ChevronLeft className="w-5 h-5" />
+  // Click outside to close when in header position
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (isOpen && edge.startsWith('header-')) {
+        const target = event.target as Node
+        const button = document.querySelector('[aria-label="Tillgänglighetsverktyg - dra för att flytta"]')
+        const panel = button?.nextElementSibling
+        
+        if (button && panel && !button.contains(target) && !panel.contains(target)) {
+          setIsOpen(false)
+        }
+      }
     }
-  }
+
+    if (isOpen && edge.startsWith('header-')) {
+      document.addEventListener('mousedown', handleClickOutside)
+      return () => document.removeEventListener('mousedown', handleClickOutside)
+    }
+    return undefined
+  }, [isOpen, edge])
 
   const getPanelPosition = (): React.CSSProperties => {
     if (typeof document === 'undefined') return { display: 'none' }
@@ -392,6 +401,7 @@ export function DraggableAccessibilityWidget() {
           transform: isOpen ? 'translateX(0)' : 'translateX(-100%)',
           opacity: isOpen ? 1 : 0,
           pointerEvents: isOpen ? 'auto' : 'none',
+          borderRadius: '0 1rem 1rem 0', // Round only right corners
         }
       case 'right':
         return {
@@ -401,17 +411,22 @@ export function DraggableAccessibilityWidget() {
           transform: isOpen ? 'translateX(0)' : 'translateX(100%)',
           opacity: isOpen ? 1 : 0,
           pointerEvents: isOpen ? 'auto' : 'none',
+          borderRadius: '1rem 0 0 1rem', // Round only left corners
         }
       case 'header-left':
       case 'header-center':
       case 'header-right':
         return {
-          ...baseStyle,
-          left: Math.max(20, Math.min(position.x, viewportWidth - panelWidth - 20)),
-          top: 90, // Below header
+          position: 'fixed',
+          left: 0,
+          top: 0,
+          width: '100vw',
+          maxHeight: `${Math.min(viewportHeight * 0.8, 600)}px`,
           transform: isOpen ? 'translateY(0)' : 'translateY(-100%)',
           opacity: isOpen ? 1 : 0,
           pointerEvents: isOpen ? 'auto' : 'none',
+          zIndex: 60, // Higher than header
+          borderRadius: '0 0 1rem 1rem', // Round only bottom corners
         }
       case 'bottom':
         return {
@@ -421,6 +436,7 @@ export function DraggableAccessibilityWidget() {
           transform: isOpen ? 'translateY(0)' : 'translateY(100%)',
           opacity: isOpen ? 1 : 0,
           pointerEvents: isOpen ? 'auto' : 'none',
+          borderRadius: '1rem 1rem 0 0', // Round only top corners
         }
       default:
         return {
@@ -497,10 +513,8 @@ export function DraggableAccessibilityWidget() {
       ...baseStyle, 
       borderRadius: getBorderRadius(),
       transform: getTransform(),
-      opacity: isOpen ? 0 : 1,
-      transition: isDragging 
-        ? 'border-radius 0.2s ease-out, transform 0.3s ease, opacity 0.3s ease'
-        : 'border-radius 0.3s ease-in-out, transform 0.3s ease, opacity 0.3s ease',
+      opacity: isOpen ? (edge.startsWith('header-') ? 0.3 : 0) : 1,
+      transition: isDragging ? 'none' : 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
     }
   }
 
@@ -585,17 +599,17 @@ export function DraggableAccessibilityWidget() {
       <div
         className="z-50 bg-background border border-border shadow-2xl transition-all duration-300 ease-in-out"
         style={getPanelPosition()}
-      >
+      >  
         <div className="h-full flex flex-col">
           {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b border-border">
+          <div className="flex h-12 items-center justify-between p-4 border-b border-border ">
             <h2 className="text-lg font-semibold">Tillgänglighet</h2>
             <button
               onClick={() => setIsOpen(false)}
-              className="p-1 rounded-md hover:bg-muted transition-colors"
+              className="p-1"
               aria-label="Stäng"
             >
-              {getChevronIcon()}
+              <X className="w-5 h-5" />
             </button>
           </div>
 
@@ -609,10 +623,10 @@ export function DraggableAccessibilityWidget() {
               </div>
               <button
                 onClick={() => updateSetting('highContrast', !settings.highContrast)}
-                className={`w-full py-2 px-4 rounded-md border transition-colors ${
+                className={`w-full py-2 px-4 rounded-full border transition-all duration-200 ease-out ${
                   settings.highContrast
                     ? 'bg-primary text-primary-foreground border-primary'
-                    : 'bg-background border-border hover:bg-muted'
+                    : 'bg-background border-border hover:bg-primary/10 hover:text-primary hover:border-primary/20'
                 }`}
               >
                 {settings.highContrast ? 'På' : 'Av'}
@@ -630,10 +644,10 @@ export function DraggableAccessibilityWidget() {
                   <button
                     key={size}
                     onClick={() => updateSetting('textSize', size as any)}
-                    className={`py-2 px-3 rounded-md border text-sm transition-colors ${
+                    className={`py-2 px-3 rounded-full border text-sm transition-all duration-200 ease-out ${
                       settings.textSize === size
                         ? 'bg-primary text-primary-foreground border-primary'
-                        : 'bg-background border-border hover:bg-muted'
+                        : 'bg-background border-border hover:bg-primary/10 hover:text-primary hover:border-primary/20'
                     }`}
                   >
                     {size === 'normal' ? 'Normal' : size === 'large' ? 'Stor' : 'Extra stor'}
@@ -651,7 +665,7 @@ export function DraggableAccessibilityWidget() {
               <select
                 value={settings.colorBlindMode}
                 onChange={(e) => updateSetting('colorBlindMode', e.target.value as ColorBlindMode)}
-                className="w-full py-2 px-3 rounded-md border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full py-2 px-3 rounded-full border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200 ease-out hover:border-primary/20"
               >
                 <option value="normal">Normal</option>
                 <option value="protanopia">Protanopi (röd)</option>
@@ -669,10 +683,10 @@ export function DraggableAccessibilityWidget() {
               </div>
               <button
                 onClick={() => updateSetting('lineHighlight', !settings.lineHighlight)}
-                className={`w-full py-2 px-4 rounded-md border transition-colors ${
+                className={`w-full py-2 px-4 rounded-full border transition-all duration-200 ease-out ${
                   settings.lineHighlight
                     ? 'bg-primary text-primary-foreground border-primary'
-                    : 'bg-background border-border hover:bg-muted'
+                    : 'bg-background border-border hover:bg-primary/10 hover:text-primary hover:border-primary/20'
                 }`}
               >
                 {settings.lineHighlight ? 'På' : 'Av'}
@@ -684,10 +698,10 @@ export function DraggableAccessibilityWidget() {
           <div className="p-4 border-t border-border">
             <button
               onClick={resetSettings}
-              className="w-full py-2 px-4 rounded-md border border-border hover:bg-muted transition-colors flex items-center justify-center gap-2"
+              className="w-full py-2 px-4 rounded-full border border-border hover:bg-primary/10 hover:text-primary hover:border-primary/20 transition-all duration-200 ease-out flex items-center justify-center gap-2 text-sm font-medium"
             >
-              <RotateCcw className="w-4 h-4" />
-              Återställ
+              <RotateCcw className="h-4 w-4 tech-icon" />
+              <span>Återställ</span>
             </button>
           </div>
         </div>
