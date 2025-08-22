@@ -11,9 +11,14 @@
       position: absolute;
       top: 0;
       bottom: 0;
-      width: 40px;
+      width: 20px; /* Reduced from 40px for mobile */
       pointer-events: none;
       z-index: 2;
+      
+      /* Larger fade on desktop */
+      @media (min-width: 768px) {
+        width: 40px;
+      }
     }
     
     &::before {

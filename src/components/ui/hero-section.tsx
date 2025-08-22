@@ -24,8 +24,8 @@ export function HeroSection({ children, showLogo = true, className = '' }: HeroS
                 {/* Mobile/Small screens - Symbol logo */}
                 <ThemeLogo 
                   alt="Bearbetar logotyp"
-                  width={120}
-                  height={120}
+                  width={160}
+                  height={160}
                   className="h-auto md:hidden"
                   type="symbol"
                   priority

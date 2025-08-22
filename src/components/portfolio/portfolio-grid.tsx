@@ -11,7 +11,7 @@ import { PortfolioCard } from '@/components/ui/portfolio-card'
 import { createBrowserClient } from '@supabase/ssr'
 import { Database } from '@/types/database'
 import { SimpleTooltip } from '@/components/ui/tooltip'
-import { PortfolioModal } from './portfolio-modal'
+import { PortfolioModalEnhanced } from './portfolio-modal-enhanced'
 import { Calendar, ExternalLink, FileText, Image as ImageIcon, User } from 'lucide-react'
 
 type PortfolioItem = Database['public']['Tables']['portfolio_items']['Row'] & {
@@ -565,8 +565,8 @@ export function PortfolioGrid() {
         ))}
       </div>
 
-      {/* Portfolio Modal */}
-      <PortfolioModal 
+      {/* Portfolio Modal Enhanced */}
+      <PortfolioModalEnhanced 
         item={selectedItem}
         open={modalOpen}
         onOpenChange={handleModalClose}

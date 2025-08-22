@@ -76,7 +76,7 @@ export function Header() {
             <div className="flex items-center gap-2">
             <SimpleTooltip text="Om oss 👥" side="bottom">
               <Button variant="ghost" size="sm" asChild className="min-h-[44px]">
-                <Link href="/om-oss" className="text-sm font-medium" style={{color: 'hsl(var(--foreground))'}}>
+                <Link href="/om-oss" className="text-xs font-medium" style={{color: 'hsl(var(--foreground))'}}>
                   Om oss
                 </Link>
               </Button>
@@ -84,7 +84,7 @@ export function Header() {
             
             <SimpleTooltip text="Kontakt 📞" side="bottom">
               <Button variant="ghost" size="sm" asChild className="min-h-[44px]">
-                <Link href="/kontakt" className="text-sm font-medium" style={{color: 'hsl(var(--foreground))'}}>
+                <Link href="/kontakt" className="text-xs font-medium" style={{color: 'hsl(var(--foreground))'}}>
                   Kontakt
                 </Link>
               </Button>
@@ -92,7 +92,7 @@ export function Header() {
             
             <SimpleTooltip text="Verktyg 🔧" side="bottom">
               <Button variant="ghost" size="sm" asChild className="min-h-[44px]">
-                <Link href="/verktyg" className="text-sm font-medium" style={{color: 'hsl(var(--foreground))'}}>
+                <Link href="/verktyg" className="text-xs font-medium" style={{color: 'hsl(var(--foreground))'}}>
                   Verktyg
                 </Link>
               </Button>
