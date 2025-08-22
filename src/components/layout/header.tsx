@@ -4,15 +4,12 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { ThemeLogo } from '@/components/ui/theme-logo'
 import { SimpleTooltip } from '@/components/ui/tooltip'
-import { ThemeToggle } from '@/components/ui/theme-toggle'
 import { useState, useEffect } from 'react'
-import { useAuth } from '@/hooks/use-auth'
-import { Briefcase, BookOpen, FolderOpen, Users, LogIn, Wrench } from 'lucide-react'
+import { Briefcase, BookOpen, FolderOpen, Wrench } from 'lucide-react'
 import { APP_NAME, PUBLIC_ROUTES } from '@/lib/constants'
 
 
 export function Header() {
-  const { user, isAdmin } = useAuth()
   const [isFloating, setIsFloating] = useState(false)
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [lastScrollY, setLastScrollY] = useState(0)
@@ -54,10 +51,20 @@ export function Header() {
   return (
     <>
     <header role="banner" className={`fixed z-40 w-full transition-all duration-500 ease-in-out ${isFloating || isTransitioning ? 'md:top-4 top-0' : 'md:top-12 top-0'} [body:has(.modal-open)_&]:opacity-0 [body:has(.modal-open)_&]:pointer-events-none`} aria-label="Huvudnavigation">
-      {/* Mobile Header - Simple with direct navigation */}
-      <div className="md:hidden w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/40">
-        <div className="flex h-auto items-center justify-between w-full p-2">
-          {/* Mobile Logo */}
+      {/* Mobile Header - Logo left, snap zones distributed in remaining space */}
+      <div className="md:hidden w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/40 relative">
+        {/* Accessibility Widget Snap Zones */}
+        <div className="accessibility-header-snap-zone accessibility-header-snap-zone-left" data-snap-position="header-left"></div>
+        <div className="accessibility-header-snap-zone accessibility-header-snap-zone-center" data-snap-position="header-center"></div>
+        <div className="accessibility-header-snap-zone accessibility-header-snap-zone-right" data-snap-position="header-right"></div>
+        
+        {/* Mobile Menu Widget Snap Zones */}
+        <div className="mobile-menu-header-snap-zone mobile-menu-header-snap-zone-left" data-snap-position="header-left"></div>
+        <div className="mobile-menu-header-snap-zone mobile-menu-header-snap-zone-center" data-snap-position="header-center"></div>
+        <div className="mobile-menu-header-snap-zone mobile-menu-header-snap-zone-right" data-snap-position="header-right"></div>
+        
+        <div className="flex h-auto items-center justify-between w-full p-2 relative z-10">
+          {/* Mobile Logo - Left aligned */}
           <SimpleTooltip text="Tillbaka till startsidan 🏠" side="bottom">
             <Link href="/" className="flex items-center" aria-label={`Tillbaka till ${APP_NAME} startsida`}>
               <ThemeLogo 
@@ -71,62 +78,8 @@ export function Header() {
             </Link>
           </SimpleTooltip>
           
-          {/* Mobile Navigation Links */}
-          <nav role="navigation" aria-label="Mobil huvudnavigation">
-            <div className="flex items-center gap-2">
-            <SimpleTooltip text="Om oss 👥" side="bottom">
-              <Button variant="ghost" size="sm" asChild className="min-h-[44px]">
-                <Link href="/om-oss" className="text-xs font-medium" style={{color: 'hsl(var(--foreground))'}}>
-                  Om oss
-                </Link>
-              </Button>
-            </SimpleTooltip>
-            
-            <SimpleTooltip text="Kontakt 📞" side="bottom">
-              <Button variant="ghost" size="sm" asChild className="min-h-[44px]">
-                <Link href="/kontakt" className="text-xs font-medium" style={{color: 'hsl(var(--foreground))'}}>
-                  Kontakt
-                </Link>
-              </Button>
-            </SimpleTooltip>
-            
-            <SimpleTooltip text="Verktyg 🔧" side="bottom">
-              <Button variant="ghost" size="sm" asChild className="min-h-[44px]">
-                <Link href="/verktyg" className="text-xs font-medium" style={{color: 'hsl(var(--foreground))'}}>
-                  Verktyg
-                </Link>
-              </Button>
-            </SimpleTooltip>
-
-            {/* Auth button */}
-            {!user ? (
-              <SimpleTooltip text="Logga in 🔑" side="bottom">
-                <Button variant="ghost" size="sm" asChild className="min-h-[44px] min-w-[44px]">
-                  <Link href="/admin/login" aria-label="Logga in som administratör">
-                    <LogIn className="h-5 w-5" style={{color: 'hsl(var(--foreground))'}} aria-hidden="true" />
-                    <span className="sr-only">Logga in</span>
-                  </Link>
-                </Button>
-              </SimpleTooltip>
-            ) : isAdmin ? (
-              <SimpleTooltip text="Admin 👑" side="bottom">
-                <Button variant="ghost" size="sm" asChild className="min-h-[44px] min-w-[44px]">
-                  <Link href="/admin" aria-label="Gå till adminpanelen">
-                    <Users className="h-5 w-5" style={{color: 'hsl(var(--foreground))'}} aria-hidden="true" />
-                    <span className="sr-only">Admin</span>
-                  </Link>
-                </Button>
-              </SimpleTooltip>
-            ) : null}
-            
-            {/* Theme Toggle - Mobile */}
-            <SimpleTooltip text="Byt tema 🌙☀️" side="bottom">
-              <div className="min-h-[44px] min-w-[44px] flex items-center justify-center">
-                <ThemeToggle />
-              </div>
-            </SimpleTooltip>
-            </div>
-          </nav>
+          {/* Spacer for snap zones - takes remaining space */}
+          <div className="flex-1"></div>
         </div>
       </div>
 

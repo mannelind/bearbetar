@@ -9,6 +9,9 @@ import { BottomNav } from './bottom-nav'
 import { useAuth } from '@/hooks/use-auth'
 import { ErrorBoundary } from '@/components/ui/error-boundary'
 import { ConstructionBanner } from '@/components/ui/construction-banner'
+import { DraggableAccessibilityWidget } from '@/components/ui/draggable-accessibility-widget'
+import { AccessibilityFilters } from '@/components/ui/accessibility-filters'
+import { DraggableMobileMenuWidget } from '@/components/ui/draggable-mobile-menu-widget'
 
 interface ConditionalLayoutProps {
   children: React.ReactNode
@@ -49,7 +52,9 @@ export function ConditionalLayout({ children }: ConditionalLayoutProps) {
   // Public routes with sidebar for all users
   return (
     <ErrorBoundary>
-      
+      <AccessibilityFilters />
+      <DraggableAccessibilityWidget />
+      <DraggableMobileMenuWidget />
       <div className="flex min-h-screen flex-col">
         <Sidebar />
         <div className="flex flex-1 flex-col transition-all duration-300 overflow-auto md:ml-16 md:[.sidebar-expanded_&]:ml-64">

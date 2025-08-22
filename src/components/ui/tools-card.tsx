@@ -29,7 +29,7 @@ export function ToolsCard({ onClick, icon, title, description, className = '' }:
           {icon}
         </div>
         <h3 className="tools-card-title">{title}</h3>
-        <p className="text-muted-foreground text-sm leading-relaxed max-w-[90%] mx-auto">
+        <p className="tools-card-description text-muted-foreground text-sm leading-relaxed">
           {description}
         </p>
       </div>

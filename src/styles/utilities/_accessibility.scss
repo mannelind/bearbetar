@@ -1,0 +1,121 @@
+// Tillgänglighetsstilar
+
+// Högkontrast
+.high-contrast {
+  * {
+    transition: none !important;
+  }
+  
+  body {
+    background: #000 !important;
+    color: #fff !important;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    color: #fff !important;
+  }
+  
+  a {
+    color: #ffff00 !important;
+    text-decoration: underline !important;
+    
+    &:hover {
+      color: #00ffff !important;
+    }
+  }
+  
+  button, .button {
+    background: #fff !important;
+    color: #000 !important;
+    border: 2px solid #fff !important;
+    
+    &:hover {
+      background: #000 !important;
+      color: #fff !important;
+    }
+  }
+  
+  input, textarea, select {
+    background: #000 !important;
+    color: #fff !important;
+    border: 2px solid #fff !important;
+  }
+  
+  .card, .modal {
+    background: #000 !important;
+    border: 2px solid #fff !important;
+  }
+}
+
+// Textstorlekar
+.text-size-normal {
+  font-size: 100%;
+}
+
+.text-size-large {
+  font-size: 125%;
+  
+  h1 { font-size: 3rem; }
+  h2 { font-size: 2.5rem; }
+  h3 { font-size: 2rem; }
+  h4 { font-size: 1.75rem; }
+  h5 { font-size: 1.5rem; }
+  h6 { font-size: 1.25rem; }
+}
+
+.text-size-extra-large {
+  font-size: 150%;
+  
+  h1 { font-size: 3.5rem; }
+  h2 { font-size: 3rem; }
+  h3 { font-size: 2.5rem; }
+  h4 { font-size: 2rem; }
+  h5 { font-size: 1.75rem; }
+  h6 { font-size: 1.5rem; }
+}
+
+// Färgblindhetsfilter
+[data-color-blind-mode="protanopia"] {
+  filter: url('#protanopia-filter');
+}
+
+[data-color-blind-mode="deuteranopia"] {
+  filter: url('#deuteranopia-filter');
+}
+
+[data-color-blind-mode="tritanopia"] {
+  filter: url('#tritanopia-filter');
+}
+
+[data-color-blind-mode="monochrome"] {
+  filter: grayscale(100%);
+}
+
+// Line highlighting
+.line-highlight {
+  p, li, div {
+    position: relative;
+    
+    &:hover {
+      background: rgba(255, 255, 0, 0.1);
+      outline: 2px solid rgba(255, 255, 0, 0.3);
+      outline-offset: 2px;
+    }
+  }
+  
+  // För mörkt tema
+  &.dark {
+    p:hover, li:hover, div:hover {
+      background: rgba(255, 255, 0, 0.05);
+      outline-color: rgba(255, 255, 0, 0.2);
+    }
+  }
+}
+
+// SVG-filter för färgblindhet (läggs i HTML)
+.accessibility-filters {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}

@@ -1,0 +1,195 @@
+// Accessibility Widget Header Snap Zones
+@layer components {
+  .accessibility-header-snap-zone {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle,
+      hsl(var(--primary) / 0.15) 0%,
+      hsl(var(--primary) / 0.08) 50%,
+      transparent 70%
+    );
+    border: 2px solid hsl(var(--primary) / 0.2);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 5;
+    
+    // Show when accessibility widget is being dragged (smaller, subdued)
+    &.visible {
+      opacity: 0.6;
+      transform: translateY(-50%) scale(0.7);
+      background: radial-gradient(
+        circle,
+        hsl(var(--primary) / 0.15) 0%,
+        hsl(var(--primary) / 0.08) 50%,
+        hsl(var(--primary) / 0.03) 70%,
+        transparent 100%
+      );
+      border-color: hsl(var(--primary) / 0.25);
+      box-shadow: 
+        0 0 8px hsl(var(--primary) / 0.2),
+        0 0 15px hsl(var(--primary) / 0.1),
+        inset 0 0 5px hsl(var(--primary) / 0.05);
+    }
+    
+    // Highlight when widget will actually snap to this zone (larger, prominent)
+    &.highlight {
+      opacity: 1;
+      transform: translateY(-50%) scale(1.3);
+      background: radial-gradient(
+        circle,
+        hsl(var(--primary) / 0.5) 0%,
+        hsl(var(--primary) / 0.3) 50%,
+        hsl(var(--primary) / 0.15) 70%,
+        transparent 100%
+      );
+      border-color: hsl(var(--primary) / 0.7);
+      box-shadow: 
+        0 0 25px hsl(var(--primary) / 0.6),
+        0 0 50px hsl(var(--primary) / 0.4),
+        inset 0 0 20px hsl(var(--primary) / 0.25);
+      animation: snapZonePulse 1s ease-in-out infinite alternate;
+    }
+  }
+  
+  .accessibility-header-snap-zone-left {
+    // Position circle where button actually lands - adjusted for viewport vs clientWidth difference
+    left: calc(32% + 8px);
+  }
+  
+  .accessibility-header-snap-zone-center {
+    // Middle zone (approximately 62.5% from left)
+    left: 62.5%;
+    transform: translateX(-50%) translateY(-50%);
+    
+    &.visible {
+      transform: translateX(-50%) translateY(-50%) scale(0.7);
+    }
+    
+    &.highlight {
+      transform: translateX(-50%) translateY(-50%) scale(1.3);
+    }
+  }
+  
+  .accessibility-header-snap-zone-right {
+    // Last zone (20px from right edge)
+    right: 20px;
+  }
+}
+
+@keyframes snapZonePulse {
+  0% {
+    box-shadow: 
+      0 0 20px hsl(var(--primary) / 0.5),
+      0 0 40px hsl(var(--primary) / 0.3),
+      inset 0 0 15px hsl(var(--primary) / 0.2);
+  }
+  100% {
+    box-shadow: 
+      0 0 25px hsl(var(--primary) / 0.7),
+      0 0 50px hsl(var(--primary) / 0.4),
+      inset 0 0 20px hsl(var(--primary) / 0.3);
+  }
+}
+
+// Mobile Menu Widget Header Snap Zones (Secondary colors)
+.mobile-menu-header-snap-zone {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    hsl(var(--secondary) / 0.15) 0%,
+    hsl(var(--secondary) / 0.08) 50%,
+    transparent 70%
+  );
+  border: 2px solid hsl(var(--secondary) / 0.2);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 5;
+  
+  // Show when mobile menu widget is being dragged (smaller, subdued)
+  &.visible {
+    opacity: 0.6;
+    transform: translateY(-50%) scale(0.7);
+    background: radial-gradient(
+      circle,
+      hsl(var(--secondary) / 0.15) 0%,
+      hsl(var(--secondary) / 0.08) 50%,
+      hsl(var(--secondary) / 0.03) 70%,
+      transparent 100%
+    );
+    border-color: hsl(var(--secondary) / 0.25);
+    box-shadow: 
+      0 0 8px hsl(var(--secondary) / 0.2),
+      0 0 15px hsl(var(--secondary) / 0.1),
+      inset 0 0 5px hsl(var(--secondary) / 0.05);
+  }
+  
+  // Highlight when widget will actually snap to this zone (larger, prominent)
+  &.highlight {
+    opacity: 1;
+    transform: translateY(-50%) scale(1.3);
+    background: radial-gradient(
+      circle,
+      hsl(var(--secondary) / 0.5) 0%,
+      hsl(var(--secondary) / 0.3) 50%,
+      hsl(var(--secondary) / 0.15) 70%,
+      transparent 100%
+    );
+    border-color: hsl(var(--secondary) / 0.7);
+    box-shadow: 
+      0 0 25px hsl(var(--secondary) / 0.6),
+      0 0 50px hsl(var(--secondary) / 0.4),
+      inset 0 0 20px hsl(var(--secondary) / 0.25);
+    animation: mobileMenuSnapZonePulse 1s ease-in-out infinite alternate;
+  }
+}
+
+.mobile-menu-header-snap-zone-left {
+  // Position at mobile menu's left zone - adjusted for viewport vs clientWidth difference
+  left: calc(45% + 8px);
+}
+
+.mobile-menu-header-snap-zone-center {
+  // Position at mobile menu's center zone (78%)
+  left: 78%;
+  transform: translateX(-50%) translateY(-50%);
+  
+  &.visible {
+    transform: translateX(-50%) translateY(-50%) scale(0.7);
+  }
+  
+  &.highlight {
+    transform: translateX(-50%) translateY(-50%) scale(1.3);
+  }
+}
+
+.mobile-menu-header-snap-zone-right {
+  // Position at mobile menu's right zone
+  right: 74px;
+}
+
+@keyframes mobileMenuSnapZonePulse {
+  0% {
+    box-shadow: 
+      0 0 25px hsl(var(--secondary) / 0.6),
+      0 0 50px hsl(var(--secondary) / 0.4),
+      inset 0 0 20px hsl(var(--secondary) / 0.25);
+  }
+  100% {
+    box-shadow: 
+      0 0 30px hsl(var(--secondary) / 0.8),
+      0 0 60px hsl(var(--secondary) / 0.5),
+      inset 0 0 25px hsl(var(--secondary) / 0.35);
+  }
+}

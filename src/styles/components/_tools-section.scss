@@ -30,7 +30,7 @@
   .tools-floating-orb {
     position: absolute;
     border-radius: 50%;
-    opacity: 0.12;
+    opacity: 0.5;
     animation: floatOrbDynamic 20s ease-in-out infinite, orbPulseDynamic 8s ease-in-out infinite;
     background: linear-gradient(45deg, 
       hsl(var(--primary) / 0.25), 
@@ -90,8 +90,7 @@
     color: hsl(var(--foreground));
     background: linear-gradient(135deg, 
       hsl(var(--foreground)) 0%, 
-      hsl(var(--foreground)) 10%,
-      hsl(var(--accent)) 100%
+      hsl(var(--foreground)) 100%
     );
     background-clip: text;
     -webkit-background-clip: text;
@@ -187,11 +186,11 @@
     width: 400px;
     height: 400px;
     background: radial-gradient(circle, 
-      hsla(var(--primary), 0.6) 0%, 
-      hsla(var(--primary), 0.35) 30%, 
-      hsla(var(--primary), 0.18) 60%, 
+      hsla(var(--accent), 0.6) 0%, 
+      hsla(var(--accent), 0.35) 30%, 
+      hsla(var(--accent), 0.18) 60%, 
       hsla(var(--primary), 0.05) 80%,
-      transparent 100%);
+      transparent 10%);
     animation: orbFloat1 20s ease-in-out infinite;
     box-shadow: 0 0 30px hsla(var(--primary), 0.3);
   }

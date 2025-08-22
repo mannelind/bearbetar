@@ -3,14 +3,14 @@
 export function ConstructionBanner() {
   return (
     <div 
-      className="construction-banner relative w-full h-12 md:h-10 lg:h-8 overflow-hidden"
+      className="construction-banner relative w-full h-10 md:h-12 lg:h-10 overflow-hidden"
       style={{
         backgroundColor: 'hsl(var(--construction-banner) / 0.9)'
       }}
     >
-      <div className="flex h-full items-center">
+      <div className="flex h-full items-center py-1">
         <div 
-          className="whitespace-nowrap text-xs md:text-xs lg:text-sm font-medium flex"
+          className="whitespace-nowrap text-xs md:text-sm font-medium flex"
           style={{
             animation: 'marquee 40s linear infinite',
             color: 'hsl(var(--construction-banner-foreground))'
