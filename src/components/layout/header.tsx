@@ -52,7 +52,7 @@ export function Header() {
     <>
     <header role="banner" className={`fixed z-40 w-full transition-all duration-500 ease-in-out ${isFloating || isTransitioning ? 'md:top-4 top-0' : 'md:top-12 top-0'} [body:has(.modal-open)_&]:opacity-0 [body:has(.modal-open)_&]:pointer-events-none`} aria-label="Huvudnavigation">
       {/* Mobile Header - Logo left, snap zones distributed in remaining space */}
-      <div className="md:hidden w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/40 relative">
+      <div className="md:hidden w-full bg-background/95 supports-[backdrop-filter]:bg-muted/10 backdrop-blur-sm relative">
         {/* Accessibility Widget Snap Zones */}
         <div className="accessibility-header-snap-zone accessibility-header-snap-zone-left" data-snap-position="header-left"></div>
         <div className="accessibility-header-snap-zone accessibility-header-snap-zone-center" data-snap-position="header-center"></div>
@@ -69,10 +69,10 @@ export function Header() {
             <Link href="/" className="flex items-center" aria-label={`Tillbaka till ${APP_NAME} startsida`}>
               <ThemeLogo 
                 alt={`${APP_NAME} logotyp`}
-                width={32}
+                width={120}
                 height={32}
-                className="h-8 w-8"
-                type="symbol"
+                className="h-8 w-auto"
+                type="full"
                 priority
               />
             </Link>

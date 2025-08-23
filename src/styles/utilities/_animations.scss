@@ -56,10 +56,10 @@
 
   /* Hero h1 line-height */
   h1.animate-slide-up {
-    line-height: 1.5 !important;
+    line-height: 1.5 ;
     
     @media (min-width: 768px) {
-      line-height: 1.4 !important;
+      line-height: 1.4 ;
     }
   }
 }

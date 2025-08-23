@@ -100,6 +100,29 @@ export default async function ServicesPage() {
       description: 'Kompetens inom pedagogik, UX-design och grafisk formgivning. Vi hjälper dig hitta rätt lösning och undvika dyra misstag.',
       icon: 'Coffee', 
       price_info: null
+    },
+    {
+      id: '5',
+      title: 'Betalning & Villkor',
+      short_description: 'Information om betalningsvillkor och process',
+      description: `
+        <div>
+          <p>Vi arbetar alltid med tydliga avtal för allas trygghet och transparens i våra affärsrelationer.</p>
+          
+          <h2>Betalningsprocess</h2>
+          <p>Vi inleder alltid ett projekt med avtalsskrivning för att säkerställa att alla parter är trygga och vet vad som gäller. Betalning sker med en förskottsbetalning vid projektstart och slutbetalning vid leverans.</p>
+          
+          <h2>Avbetalningsplaner</h2>
+          <p>Vi är öppna för att sätta upp avbetalningsplaner som passar ditt företags kassaflöde. Kontakta oss så diskuterar vi en lösning som fungerar för alla parter.</p>
+          
+          <h2>Pro bono-projekt</h2>
+          <p>Har du en riktigt bra idé eller ett projekt i tankarna för en bra sak men har svårt att finansiera detta själv? Vi tar med jämna mellanrum emot projekt som vi utför gratis, i mån av tid. Om ditt projekt kan göra skillnad och bidra till något positivt i samhället, hör gärna av dig så tittar vi på möjligheterna.</p>
+        </div>
+      `,
+      icon: 'CreditCard',
+      price_info: 'Se projektspecifika offerter',
+      features: ['Tydliga avtal', 'Flexibla betalningsplaner', 'Förskotts- och slutbetalning', 'Pro bono-möjligheter'],
+      process_steps: ['Kontakt', 'Avtal', 'Förskottsbetalning', 'Projektstart', 'Leverans', 'Slutbetalning']
     }
   ]
 

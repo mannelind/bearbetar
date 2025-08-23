@@ -5,12 +5,16 @@ import Link from 'next/link'
 import { Menu, X, Briefcase, BookOpen, FolderOpen, Users, LogIn, Wrench, Home, Info, Phone } from 'lucide-react'
 import { useAuth } from '@/hooks/use-auth'
 import { ThemeToggle } from '@/components/ui/theme-toggle'
+import { useMobileWidgetState } from '@/hooks/use-mobile-widget-state'
 
 type Position = { x: number; y: number }
 type Edge = 'left' | 'right' | 'bottom' | 'header-left' | 'header-center' | 'header-right'
 
+const BUTTON_SIZE = 44 // Reduced from 54px to match accessibility widget
+
 export function DraggableMobileMenuWidget() {
-  const [isOpen, setIsOpen] = useState(false)
+  const { activeWidget, setActiveWidget } = useMobileWidgetState()
+  const isOpen = activeWidget === 'draggable-mobile-menu'
   const [position, setPosition] = useState<Position>({ x: 0, y: 150 })
   const [edge, setEdge] = useState<Edge>('left')
   const [isDragging, setIsDragging] = useState(false)
@@ -34,6 +38,8 @@ export function DraggableMobileMenuWidget() {
   useEffect(() => {
     const setInitialPosition = () => {
       const viewportHeight = document.documentElement.clientHeight
+      const viewportWidth = window.innerWidth
+      
       
       // Check for saved position
       const savedPosition = localStorage.getItem('mobile-menu-position')
@@ -46,10 +52,13 @@ export function DraggableMobileMenuWidget() {
         return
       }
       
-      // Default: left edge, positioned below accessibility widget
-      const defaultY = Math.max(150, viewportHeight / 2 - 25 + 60) // 60px below accessibility widget
-      setEdge('left')
-      setPosition({ x: 0, y: defaultY })
+      // Default: right edge, positioned on right side of screen
+      const defaultY = Math.max(180, viewportHeight / 2 - 25 + 80) // Below accessibility widget
+      const xPos = viewportWidth - BUTTON_SIZE
+      
+      // Use snapToEdge to ensure proper edge snapping and styling
+      const snappedPosition = snapToEdge(xPos, defaultY)
+      setPosition(snappedPosition)
     }
 
     if (typeof window !== 'undefined') {
@@ -64,29 +73,17 @@ export function DraggableMobileMenuWidget() {
     
     if (!accessibilityPos || !accessibilityEdge) return newPos
     
-    const accPos = JSON.parse(accessibilityPos)
-    const buttonSize = 54
-    const smallButtonSize = 38
+    const parsedAccessibilityPos = JSON.parse(accessibilityPos)
     
-    // Get actual accessibility widget size based on edge
-    const accSize = accessibilityEdge.startsWith('header-') ? smallButtonSize : buttonSize
-    const menuSize = edge.startsWith('header-') ? smallButtonSize : buttonSize
-    
-    // Check for overlap
+    // Check if positions would overlap (within 60px of each other)
     const distance = Math.sqrt(
-      Math.pow(newPos.x - accPos.x, 2) + 
-      Math.pow(newPos.y - accPos.y, 2)
+      Math.pow(newPos.x - parsedAccessibilityPos.x, 2) + 
+      Math.pow(newPos.y - parsedAccessibilityPos.y, 2)
     )
     
-    const minDistance = (accSize + menuSize) / 2 + 10 // 10px buffer
-    
-    if (distance < minDistance) {
-      // Push away from accessibility widget
-      const angle = Math.atan2(newPos.y - accPos.y, newPos.x - accPos.x)
-      const adjustedX = accPos.x + Math.cos(angle) * minDistance
-      const adjustedY = accPos.y + Math.sin(angle) * minDistance
-      
-      return { x: adjustedX, y: adjustedY }
+    if (distance < 60) {
+      // Move mobile menu below accessibility widget
+      return { x: newPos.x, y: parsedAccessibilityPos.y + 60 }
     }
     
     return newPos
@@ -95,8 +92,8 @@ export function DraggableMobileMenuWidget() {
   const determineEdge = (x: number, y: number): Edge => {
     const viewportWidth = document.documentElement.clientWidth
     const viewportHeight = document.documentElement.clientHeight
-    const buttonWidth = 54
-    const buttonHeight = 54
+    const buttonWidth = BUTTON_SIZE
+    const buttonHeight = BUTTON_SIZE
     const isDesktopOrTablet = window.innerWidth >= 768
     
     // On desktop/tablet, only allow right and bottom edges
@@ -149,9 +146,9 @@ export function DraggableMobileMenuWidget() {
   const snapToEdge = (x: number, y: number): Position => {
     const viewportWidth = document.documentElement.clientWidth
     const viewportHeight = document.documentElement.clientHeight
-    const buttonWidth = 54
-    const buttonHeight = 54
-    const smallButtonSize = Math.round(54 * 0.7)
+    const buttonWidth = BUTTON_SIZE
+    const buttonHeight = BUTTON_SIZE
+    const smallButtonSize = Math.round(BUTTON_SIZE * 0.7)
     const isDesktopOrTablet = window.innerWidth >= 768
 
     const currentEdge = determineEdge(x, y)
@@ -316,28 +313,54 @@ export function DraggableMobileMenuWidget() {
       }
     }
     return undefined
-  }, [isDragging, position])
+  }, [isDragging, position]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Click outside to close when in header position
+  // Click outside to close menu
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (isOpen && edge.startsWith('header-')) {
+      if (isOpen) {
         const target = event.target as Node
         const button = document.querySelector('[aria-label="Stäng meny"], [aria-label="Öppna meny"]')
         const panel = button?.nextElementSibling
         
         if (button && panel && !button.contains(target) && !panel.contains(target)) {
-          setIsOpen(false)
+          setActiveWidget(null)
         }
       }
     }
 
-    if (isOpen && edge.startsWith('header-')) {
+    if (isOpen) {
       document.addEventListener('mousedown', handleClickOutside)
       return () => document.removeEventListener('mousedown', handleClickOutside)
     }
     return undefined
-  }, [isOpen, edge])
+  }, [isOpen, edge, setActiveWidget])
+
+  // Focus management for dialog
+  useEffect(() => {
+    if (isOpen) {
+      // Focus the close button when dialog opens
+      const closeButton = document.querySelector('[aria-label="Stäng mobilmeny"]') as HTMLButtonElement
+      if (closeButton) {
+        closeButton.focus()
+      }
+    }
+  }, [isOpen])
+
+  // Keyboard navigation - close with Escape
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (isOpen && event.key === 'Escape') {
+        setActiveWidget(null)
+      }
+    }
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleKeyDown)
+      return () => document.removeEventListener('keydown', handleKeyDown)
+    }
+    return undefined
+  }, [isOpen, setActiveWidget])
 
   const getPanelPosition = (): React.CSSProperties => {
     if (typeof document === 'undefined') return { display: 'none' }
@@ -414,10 +437,10 @@ export function DraggableMobileMenuWidget() {
   const getButtonStyle = () => {
     const getButtonSize = () => {
       if (edge.startsWith('header-')) {
-        const smallSize = Math.round(54 * 0.7)
+        const smallSize = Math.round(BUTTON_SIZE * 0.7)
         return { width: `${smallSize}px`, height: `${smallSize}px` }
       }
-      return { width: '54px', height: '54px' }
+      return { width: `${BUTTON_SIZE}px`, height: `${BUTTON_SIZE}px` }
     }
 
     const buttonSize = getButtonSize()
@@ -473,15 +496,12 @@ export function DraggableMobileMenuWidget() {
       borderRadius: getBorderRadius(),
       transition: isDragging ? 'none' : 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
       cursor: isDragging ? 'grabbing' : 'grab',
+      touchAction: 'none', // Prevent scrolling while dragging
     }
   }
 
-  if (typeof window !== 'undefined' && window.innerWidth >= 768) {
-    return null // Hide on desktop/tablet
-  }
-
   return (
-    <>
+    <div className="md:hidden">
       {/* Edge indicators */}
       {previewEdge && (
         <>
@@ -489,13 +509,14 @@ export function DraggableMobileMenuWidget() {
           <div
             className={`fixed left-0 top-1/2 -translate-y-1/2 w-2 h-1/2 transition-all duration-200 pointer-events-none z-40 rounded-r-lg ${
               previewEdge === 'left' 
-                ? 'bg-secondary/70 opacity-100 shadow-lg shadow-secondary/50' 
-                : 'bg-secondary/20 opacity-0'
+                ? 'opacity-100 shadow-lg' 
+                : 'opacity-0'
             }`}
             style={{
               background: previewEdge === 'left' 
-                ? 'linear-gradient(90deg, hsl(var(--secondary)) 0%, hsl(var(--secondary) / 0.3) 100%)'
-                : undefined,
+                ? 'linear-gradient(90deg, hsl(var(--widget-indicator-color)) 0%, hsl(var(--widget-indicator-color) / 0.3) 100%)'
+                : 'hsl(var(--widget-indicator-color) / 0.2)',
+              boxShadow: previewEdge === 'left' ? '0 4px 14px hsl(var(--widget-indicator-glow) / 0.5)' : undefined,
               animation: previewEdge === 'left' ? 'pulse 1s ease-in-out infinite' : undefined
             }}
           />
@@ -504,13 +525,14 @@ export function DraggableMobileMenuWidget() {
           <div
             className={`fixed right-0 top-1/2 -translate-y-1/2 w-2 h-1/2 transition-all duration-200 pointer-events-none z-40 rounded-l-lg ${
               previewEdge === 'right' 
-                ? 'bg-secondary/70 opacity-100 shadow-lg shadow-secondary/50' 
-                : 'bg-secondary/20 opacity-0'
+                ? 'opacity-100 shadow-lg' 
+                : 'opacity-0'
             }`}
             style={{
               background: previewEdge === 'right' 
-                ? 'linear-gradient(-90deg, hsl(var(--secondary)) 0%, hsl(var(--secondary) / 0.3) 100%)'
-                : undefined,
+                ? 'linear-gradient(-90deg, hsl(var(--widget-indicator-color)) 0%, hsl(var(--widget-indicator-color) / 0.3) 100%)'
+                : 'hsl(var(--widget-indicator-color) / 0.2)',
+              boxShadow: previewEdge === 'right' ? '0 4px 14px hsl(var(--widget-indicator-glow) / 0.5)' : undefined,
               animation: previewEdge === 'right' ? 'pulse 1s ease-in-out infinite' : undefined
             }}
           />
@@ -526,37 +548,57 @@ export function DraggableMobileMenuWidget() {
             e.preventDefault()
             return
           }
-          setIsOpen(!isOpen)
+          setActiveWidget(isOpen ? null : 'draggable-mobile-menu')
         }}
-        className="fixed bg-secondary text-secondary-foreground shadow-lg transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2 z-50 flex items-center justify-center"
-        style={getButtonStyle()}
-        aria-label={isOpen ? "Stäng meny" : "Öppna meny"}
+        className={`fixed shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 z-50 flex items-center justify-center select-none touch-none ${          isDragging ? 'cursor-grabbing scale-110' : 'cursor-grab hover:scale-105'        }`}
+        style={{
+          ...getButtonStyle(),
+          backgroundColor: 'hsl(var(--widget-button-background))',
+          color: 'hsl(var(--widget-button-foreground))',
+        }}
+        aria-label={isOpen ? "Stäng mobilmeny" : "Öppna mobilmeny - dra för att flytta knappen"}
+        aria-describedby="mobile-menu-button-desc"
+        aria-expanded={isOpen}
+        aria-haspopup="dialog"
+        type="button"
       >
         <div className="flex items-center justify-center w-full h-full">
-          {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          {isOpen ? <X className="w-5 h-5" aria-hidden="true" /> : <Menu className="w-5 h-5" aria-hidden="true" />}
+        </div>
+        <div id="mobile-menu-button-desc" className="sr-only">
+          Mobilmeny för att navigera mellan webbplatsens sidor
         </div>
       </button>
 
       {/* Panel */}
       <div
+        role="dialog"
+        aria-labelledby="mobile-menu-widget-title"
+        aria-describedby="mobile-menu-widget-description"
         className="fixed bg-background border border-border shadow-2xl transition-all duration-300 ease-in-out overflow-hidden"
         style={getPanelPosition()}
       >
         <div className={`${edge.startsWith('header-') ? 'h-auto max-h-full' : 'h-full'} flex flex-col overflow-hidden`}>
           {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b border-border">
-            <h2 className="text-lg font-semibold">Meny</h2>
+          <div className="flex h-12 items-center justify-between p-4 border-b border-border">
+            <h2 id="mobile-menu-widget-title" className="text-sm font-semibold">Meny</h2>
             <button
-              onClick={() => setIsOpen(false)}
-              className="p-1"
-              aria-label="Stäng meny"
+              onClick={() => setActiveWidget(null)}
+              className="p-1 rounded-md hover:bg-muted transition-colors"
+              aria-label="Stäng mobilmeny"
+              type="button"
             >
-              <X className="w-5 h-5" />
+              <X className="w-5 h-5" aria-hidden="true" />
             </button>
           </div>
 
           {/* Navigation */}
-          <nav className={`flex-1 overflow-y-auto p-4 ${edge.startsWith('header-') ? 'min-h-0' : ''}`}>
+          <nav 
+            id="mobile-menu-widget-description"
+            className={`flex-1 overflow-y-auto p-4 ${edge.startsWith('header-') ? 'min-h-0' : ''}`}
+            role="main"
+            aria-label="Huvudnavigation"
+          >
             <ul className="space-y-2">
               {menuItems.map((item) => {
                 const Icon = item.icon
@@ -564,10 +606,10 @@ export function DraggableMobileMenuWidget() {
                   <li key={item.href}>
                     <Link
                       href={item.href}
-                      className="flex items-center space-x-3 px-3 py-2 rounded-full text-sm font-medium transition-all duration-200 ease-out relative text-foreground sidebar-btn-hover"
-                      onClick={() => setIsOpen(false)}
+                      className="flex items-center space-x-3 px-3 py-2 rounded-full text-sm font-medium transition-all duration-200 ease-out relative text-foreground sidebar-btn-hover focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                      onClick={() => setActiveWidget(null)}
                     >
-                      <Icon className="h-4 w-4 tech-icon" />
+                      <Icon className="h-4 w-4 tech-icon" aria-hidden="true" />
                       <span>{item.label}</span>
                     </Link>
                   </li>
@@ -577,16 +619,16 @@ export function DraggableMobileMenuWidget() {
           </nav>
 
           {/* Footer */}
-          <div className="p-4 border-t border-border">
+          <footer className="p-4 border-t border-border">
             {user ? (
               <div className="space-y-2">
                 {isAdmin && (
                   <Link
                     href="/admin"
                     className="flex items-center space-x-3 px-3 py-2 rounded-full text-sm font-medium transition-all duration-200 ease-out relative text-foreground sidebar-btn-hover"
-                    onClick={() => setIsOpen(false)}
+                    onClick={() => setActiveWidget(null)}
                   >
-                    <Users className="h-4 w-4 tech-icon" />
+                    <Users className="h-4 w-4 tech-icon" aria-hidden="true" />
                     <span>Admin Panel</span>
                   </Link>
                 )}
@@ -595,9 +637,9 @@ export function DraggableMobileMenuWidget() {
               <Link
                 href="/admin/login"
                 className="flex items-center space-x-3 px-3 py-2 rounded-full text-sm font-medium transition-all duration-200 ease-out relative text-foreground sidebar-btn-hover"
-                onClick={() => setIsOpen(false)}
+                onClick={() => setActiveWidget(null)}
               >
-                <LogIn className="h-4 w-4 tech-icon" />
+                <LogIn className="h-4 w-4 tech-icon" aria-hidden="true" />
                 <span>Logga in</span>
               </Link>
             )}
@@ -606,9 +648,9 @@ export function DraggableMobileMenuWidget() {
               <span className="text-sm text-muted-foreground">Byt tema</span>
               <ThemeToggle />
             </div>
-          </div>
+          </footer>
         </div>
       </div>
-    </>
+    </div>
   )
 }

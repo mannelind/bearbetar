@@ -21,6 +21,10 @@ module.exports = {
           DEFAULT: 'hsl(var(--floating-header))',
           foreground: 'hsl(var(--floating-header-foreground))',
         },
+        'accessibility-button': {
+          background: 'hsl(var(--accessibility-button-background))',
+          foreground: 'hsl(var(--accessibility-button-foreground))',
+        },
         primary: {
           DEFAULT: 'hsl(var(--primary))',
           foreground: 'hsl(var(--primary-foreground))',
@@ -122,6 +126,14 @@ module.exports = {
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
+      },
+      fontSize: {
+        'h1': ['2.5rem', { lineHeight: '1.2', fontWeight: '700' }],
+        'h2': ['2rem', { lineHeight: '1.3', fontWeight: '600' }],
+        'h3': ['1.5rem', { lineHeight: '1.4', fontWeight: '600' }],
+        'h4': ['1.25rem', { lineHeight: '1.4', fontWeight: '500' }],
+        'h5': ['1.125rem', { lineHeight: '1.5', fontWeight: '500' }],
+        'h6': ['1rem', { lineHeight: '1.5', fontWeight: '500' }],
       },
       animation: {
         'fade-in': 'fadeIn 0.5s ease-in-out',

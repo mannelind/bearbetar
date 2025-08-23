@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
-import { X, Eye, Type, Palette, Highlighter, RotateCcw, ChevronRight, ChevronLeft, ChevronUp, ChevronDown } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { Eye, Type, Palette, Highlighter, RotateCcw, ChevronRight, ChevronLeft } from 'lucide-react'
 
 type ColorBlindMode = 'normal' | 'protanopia' | 'deuteranopia' | 'tritanopia' | 'monochrome'
 
@@ -92,7 +92,7 @@ export function AccessibilityWidget() {
       {/* Flik-knapp mobil */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`fixed left-0 top-20 z-50 bg-primary text-primary-foreground px-2 py-4 rounded-r-lg shadow-lg transition-transform duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 md:hidden
+        className={`fixed left-0 top-20 z-50 bg-primary text-primary-foreground px-2 py-4 rounded-r-lg transition-transform duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 md:hidden
           ${isOpen ? '-translate-x-full opacity-0 pointer-events-none' : ''}`}
         aria-label="Öppna tillgänglighetsverktyg"
       >

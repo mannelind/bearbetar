@@ -35,6 +35,12 @@
     --scrollbar-track: 167 10% 20%; /* hsl(167, 10%, 10%) - Scrollbar track bakgrund */
     --scrollbar-thumb: 155 35% 65%; /* hsl(155, 15%, 65%) - Scrollbar thumb färg */
     --scrollbar-thumb-hover: 155 15% 65%; /* hsl(155, 15%, 75%) - Scrollbar thumb hover färg */
+    --accessibility-button-background: 120 85% 60%; /* hsl(120, 85%, 60%) - Ljus grön för accessibility button */
+    --accessibility-button-foreground: 85 20% 6%; /* hsl(85, 20%, 6%) - Mörk grön text för accessibility button */
+    --widget-button-background: 230 60% 45%; /* hsl(230, 60%, 45%) - Blå för widget knappar */
+    --widget-button-foreground: 230 79% 87%; /* hsl(230, 79%, 87%) - Ljus blå text för widget knappar */
+    --widget-indicator-color: 230 60% 45%; /* hsl(230, 60%, 45%) - Blå för widget indikatorer */
+    --widget-indicator-glow: 230 60% 45%; /* hsl(230, 60%, 45%) - Blå för widget indikator glow */
     --radius: 0.875rem;
   }
 
@@ -73,5 +79,11 @@
     --scrollbar-track: 167 18.2% 12.9%; /* hsl(167, 18.2%, 12.9%) - Scrollbar track bakgrund */
     --scrollbar-thumb: 120 15% 65%; /* hsl(120, 15%, 65%) - Scrollbar thumb färg */
     --scrollbar-thumb-hover: 120 15% 75%; /* hsl(120, 15%, 75%) - Scrollbar thumb hover färg */
+    --accessibility-button-background: 120 85% 60%; /* hsl(120, 85%, 60%) - Ljus intensiv grön för accessibility button */
+    --accessibility-button-foreground: 85 20% 6%; /* hsl(85, 20%, 6%) - Mörk grön text för accessibility button */
+    --widget-button-background: 155 59% 47%; /* hsl(155, 59%, 47%) - Grön för widget knappar */
+    --widget-button-foreground: 120 25% 85%; /* hsl(120, 25%, 85%) - Ljus grön text för widget knappar */
+    --widget-indicator-color: 120 85% 60%; /* hsl(120, 85%, 60%) - Ljus grön för widget indikatorer */
+    --widget-indicator-glow: 120 85% 60%; /* hsl(120, 85%, 60%) - Ljus grön för widget indikator glow */
   }
 }

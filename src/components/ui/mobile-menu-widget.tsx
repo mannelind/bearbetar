@@ -1,24 +1,16 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import React from 'react'
 import Link from 'next/link'
-import { Menu, X, Briefcase, BookOpen, FolderOpen, Users, LogIn, Wrench, Home, Info, Phone, ChevronRight, ChevronLeft, ChevronUp, ChevronDown } from 'lucide-react'
+import { Menu, Briefcase, BookOpen, FolderOpen, Users, LogIn, Wrench, Home, Info, Phone, ChevronRight } from 'lucide-react'
 import { useAuth } from '@/hooks/use-auth'
 import { ThemeToggle } from '@/components/ui/theme-toggle'
-import { Button } from '@/components/ui/button'
+import { useMobileWidgetState } from '@/hooks/use-mobile-widget-state'
 
-type Position = { x: number; y: number }
-type Edge = 'left' | 'right' | 'bottom' | 'header-left' | 'header-center' | 'header-right'
 
 export function MobileMenuWidget() {
-  const [isOpen, setIsOpen] = useState(false)
-  const [position, setPosition] = useState<Position>({ x: 0, y: 100 })
-  const [edge, setEdge] = useState<Edge>('left')
-  const [isDragging, setIsDragging] = useState(false)
-  const [hasDragged, setHasDragged] = useState(false)
-  const [previewEdge, setPreviewEdge] = useState<Edge | null>(null)
-  const dragStartRef = useRef<Position>({ x: 0, y: 0 })
-  const initialPositionRef = useRef<Position>({ x: 0, y: 0 })
+  const { activeWidget, setActiveWidget } = useMobileWidgetState()
+  const isOpen = activeWidget === 'mobile-menu'
   const { user, isAdmin } = useAuth()
 
   const menuItems = [
@@ -35,7 +27,7 @@ export function MobileMenuWidget() {
     <>
       {/* Flik-knapp - endast synlig på mobil */}
       <button
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => setActiveWidget(isOpen ? null : 'mobile-menu')}
         className={`fixed left-0 top-32 z-50 bg-primary text-primary-foreground px-2 py-4 rounded-r-lg shadow-lg transition-transform duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 md:hidden ${
           isOpen ? '-translate-x-full opacity-0 pointer-events-none' : ''
         }`}
@@ -56,7 +48,7 @@ export function MobileMenuWidget() {
           <div className="flex items-center justify-between p-4 border-b border-border">
             <h2 className="text-lg font-semibold">Meny</h2>
             <button
-              onClick={() => setIsOpen(false)}
+              onClick={() => setActiveWidget(null)}
               className="p-1 rounded-md hover:bg-muted transition-colors"
               aria-label="Stäng"
             >
@@ -73,7 +65,7 @@ export function MobileMenuWidget() {
                   <Link
                     key={item.href}
                     href={item.href}
-                    onClick={() => setIsOpen(false)}
+                    onClick={() => setActiveWidget(null)}
                     className="flex items-center gap-3 px-3 py-3 rounded-md hover:bg-muted transition-colors"
                   >
                     <Icon className="w-5 h-5 text-muted-foreground" />
@@ -87,7 +79,7 @@ export function MobileMenuWidget() {
                 {!user ? (
                   <Link
                     href="/admin/login"
-                    onClick={() => setIsOpen(false)}
+                    onClick={() => setActiveWidget(null)}
                     className="flex items-center gap-3 px-3 py-3 rounded-md hover:bg-muted transition-colors"
                   >
                     <LogIn className="w-5 h-5 text-muted-foreground" />
@@ -96,7 +88,7 @@ export function MobileMenuWidget() {
                 ) : isAdmin ? (
                   <Link
                     href="/admin"
-                    onClick={() => setIsOpen(false)}
+                    onClick={() => setActiveWidget(null)}
                     className="flex items-center gap-3 px-3 py-3 rounded-md hover:bg-muted transition-colors"
                   >
                     <Users className="w-5 h-5 text-muted-foreground" />
@@ -121,7 +113,7 @@ export function MobileMenuWidget() {
       {isOpen && (
         <div
           className="fixed inset-0 bg-black/20 z-40 md:hidden"
-          onClick={() => setIsOpen(false)}
+          onClick={() => setActiveWidget(null)}
         />
       )}
     </>

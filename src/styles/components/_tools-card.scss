@@ -37,6 +37,14 @@
         0 4px 15px hsl(var(--foreground) / 0.05),
         inset 0 0 20px hsl(var(--background) / 0.4);
     }
+
+    @media (min-width: 768px) {
+      padding: 1rem;
+    }
+
+    @media (min-width: 1024px) {
+      padding: 1.5rem;
+    }
   }
 
   .tools-card-icon {
@@ -87,19 +95,35 @@
   }
 
   .tools-card-description {
-    text-align: center !important;
-    margin: 0 auto !important;
-    display: block !important;
-    width: 100% !important;
-    max-width: 90% !important;
+    text-align: center ;
+    margin: auto;
+    display: block;
+    width: 100%;
     pointer-events: none;
-    background: transparent !important;
+    background: transparent;
+    line-height: 1.6;
+    
+    // Mobile styling
+    max-width: 90%;
+    
+    // Tablet and desktop styling for better centering
+    @media (min-width: 768px) {
+      margin-left: auto ;
+      margin-right: auto ;
+      padding: 0;
+      max-width: 100%;
+    }
+    
+    @media (min-width: 1024px) {
+      padding: 0;
+      width: 100%; 
+    }
     
     // Ensure description stays unchanged on hover
     .tools-card:hover & {
-      background: transparent !important;
-      color: hsl(var(--muted-foreground)) !important;
-      text-align: center !important;
+      background: transparent ;
+      color: hsl(var(--muted-foreground)) ;
+      text-align: center ;
     }
   }
 
@@ -128,9 +152,9 @@
 // Keyframes
 @keyframes toolsCardFloatSmooth {
   0%, 100% {
-    transform: translateY(10px);
+    transform: translateY(0px);
   }
   50% {
-    transform: translateY(-5px);
+    transform: translateY(-8px);
   }
 }

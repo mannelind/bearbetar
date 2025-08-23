@@ -3,47 +3,47 @@
 // Högkontrast
 .high-contrast {
   * {
-    transition: none !important;
+    transition: none ;
   }
   
   body {
-    background: #000 !important;
-    color: #fff !important;
+    background: #000 ;
+    color: #fff ;
   }
   
   h1, h2, h3, h4, h5, h6 {
-    color: #fff !important;
+    color: #fff ;
   }
   
   a {
-    color: #ffff00 !important;
-    text-decoration: underline !important;
+    color: #ffff00 ;
+    text-decoration: underline ;
     
     &:hover {
-      color: #00ffff !important;
+      color: #00ffff ;
     }
   }
   
   button, .button {
-    background: #fff !important;
-    color: #000 !important;
-    border: 2px solid #fff !important;
+    background: #fff ;
+    color: #000 ;
+    border: 2px solid #fff ;
     
     &:hover {
-      background: #000 !important;
-      color: #fff !important;
+      background: #000 ;
+      color: #fff ;
     }
   }
   
   input, textarea, select {
-    background: #000 !important;
-    color: #fff !important;
-    border: 2px solid #fff !important;
+    background: #000 ;
+    color: #fff ;
+    border: 2px solid #fff ;
   }
   
   .card, .modal {
-    background: #000 !important;
-    border: 2px solid #fff !important;
+    background: #000 ;
+    border: 2px solid #fff ;
   }
 }
 

@@ -36,15 +36,15 @@
 .dark [class*="bg-primary"]:not(.no-border-override) {
   box-shadow: 
     0 0 4px hsla(160, 60%, 35%, 0.15),
-    0 0 8px hsla(160, 60%, 35%, 0.08) !important;
-  border: 1px solid hsl(162, 83%, 14%) !important;
+    0 0 8px hsla(160, 60%, 35%, 0.08) ;
+  border: 1px solid hsl(162, 83%, 14%) ;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Remove border from status indicator */
 .no-border-override {
-  border: none !important;
-  outline: none !important;
+  border: none ;
+  outline: none ;
 }
 
 /* Give all buttons same hover effect in dark mode */
@@ -58,12 +58,12 @@
 .dark [role="menuitem"]:hover,
 .dark [role="button"]:hover:not(.tools-card-button),
 .dark button[variant="ghost"]:hover:not(.tools-card-button) {
-  background-color: hsl(170, 100%, 20%) !important;
-  color: hsl(200, 15%, 85%) !important;
-  border: 0.5px solid hsl(160, 60%, 35%) !important;
+  background-color: hsl(170, 100%, 20%) ;
+  color: hsl(200, 15%, 85%) ;
+  border: 0.5px solid hsl(160, 60%, 35%) ;
   box-shadow: 
     0 0 6px hsla(200, 30%, 80%, 0.12),
-    0 0 12px hsla(200, 30%, 80%, 0.06) !important;
+    0 0 12px hsla(200, 30%, 80%, 0.06) ;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -73,7 +73,7 @@
   box-shadow: 
     0 0 8px hsla(200, 30%, 80%, 0.18),
     0 0 16px hsla(200, 30%, 80%, 0.10),
-    inset 0 0 4px hsla(200, 30%, 80%, 0.08) !important;
+    inset 0 0 4px hsla(200, 30%, 80%, 0.08) ;
 }
 
 /* Card hover glow in dark mode - very discrete border with original background */
@@ -83,10 +83,10 @@
   background: linear-gradient(135deg, 
     hsla(var(--background)) 0%, 
     hsla(120, 70%, 5%, 0.15) 50%, 
-    hsla(var(--background)) 100%) !important;
-  border: 1px solid hsla(120, 70%, 70%, 0.12) !important;
+    hsla(var(--background)) 100%) ;
+  border: 1px solid hsla(120, 70%, 70%, 0.12) ;
   box-shadow: 
     0 0 4px hsla(120, 60%, 80%, 0.1),
-    0 0 8px hsla(120, 50%, 85%, 0.05) !important;
+    0 0 8px hsla(120, 50%, 85%, 0.05) ;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }

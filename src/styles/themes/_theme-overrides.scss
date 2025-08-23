@@ -97,11 +97,11 @@
   .light [role="menuitem"]:hover,
   .light [role="button"]:hover:not(.tools-card-button),
   .light button[variant="ghost"]:hover:not(.tools-card-button) {
-    background-color: hsl(95, 25%, 88%) !important; /* Matt olive-grön bakgrund */
-    color: hsl(95, 30%, 25%) !important; /* Mörk matt olive text */
+    background-color: hsl(95, 25%, 88%) ; /* Matt olive-grön bakgrund */
+    color: hsl(95, 30%, 25%) ; /* Mörk matt olive text */
     box-shadow: 
       0 0 6px hsla(95, 20%, 45%, 0.1),
-      0 0 12px hsla(95, 20%, 45%, 0.05) !important;
+      0 0 12px hsla(95, 20%, 45%, 0.05) ;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
 

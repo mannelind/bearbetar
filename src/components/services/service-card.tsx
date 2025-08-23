@@ -39,7 +39,7 @@ export function ServiceCard({ service, IconComponent, className = '' }: ServiceC
   return (
     <>
       <Card 
-        className={`relative overflow-hidden hover:shadow-lg transition-shadow cursor-pointer group ${className}`}
+        className={`service-card relative overflow-hidden hover:shadow-lg transition-shadow cursor-pointer group ${className}`}
         onClick={handleCardClick}
       >
         <CardHeader>

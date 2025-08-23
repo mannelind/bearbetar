@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { APP_NAME, PUBLIC_ROUTES } from '@/lib/constants'
+import { ThemeLogo } from '@/components/ui/theme-logo'
 
 const navigation = {
   main: [
@@ -23,7 +24,14 @@ export function Footer() {
           {/* Brand */}
           <div className="md:col-span-2">
             <Link href="/" className="flex items-center justify-center md:justify-start space-x-2 mb-4">
-              <span className="font-bold text-xl">{APP_NAME}</span>
+              <ThemeLogo 
+                alt={`${APP_NAME} logotyp`}
+                width={180}
+                height={48}
+                className="h-12 w-auto"
+                type="full"
+                priority={false}
+              />
             </Link>
             <p className="text-sm text-muted-foreground mb-4 max-w-md mx-auto md:mx-0">
               Vi hjälper företag att utvecklas och växa genom strategisk rådgivning, 

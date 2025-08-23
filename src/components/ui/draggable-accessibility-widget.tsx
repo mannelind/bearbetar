@@ -2,10 +2,11 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { Eye, Type, Palette, Highlighter, RotateCcw, X } from 'lucide-react'
+import { useMobileWidgetState } from '@/hooks/use-mobile-widget-state'
 
 type ColorBlindMode = 'normal' | 'protanopia' | 'deuteranopia' | 'tritanopia' | 'monochrome'
 type Position = { x: number; y: number }
-type Edge = 'left' | 'right' | 'bottom' | 'header-left' | 'header-center' | 'header-right'
+type Edge = 'left' | 'right' | 'bottom' | 'top' | 'header-left' | 'header-center' | 'header-right'
 
 interface AccessibilitySettings {
   highContrast: boolean
@@ -14,8 +15,11 @@ interface AccessibilitySettings {
   lineHighlight: boolean
 }
 
+const BUTTON_SIZE = 44 // Reduced from 54px
+
 export function DraggableAccessibilityWidget() {
-  const [isOpen, setIsOpen] = useState(false)
+  const { activeWidget, setActiveWidget } = useMobileWidgetState()
+  const isOpen = activeWidget === 'accessibility'
   const [isDragging, setIsDragging] = useState(false)
   const [hasDragged, setHasDragged] = useState(false)
   const [position, setPosition] = useState<Position>({ x: 0, y: 100 })
@@ -39,24 +43,32 @@ export function DraggableAccessibilityWidget() {
       const viewportWidth = document.documentElement.clientWidth
       const isDesktopOrTablet = viewportWidth >= 768
       
-      console.log('Setting initial position:', { viewportWidth, viewportHeight, isDesktopOrTablet })
+      // Check for saved position
+      const savedPosition = localStorage.getItem('accessibility-position')
+      const savedEdge = localStorage.getItem('accessibility-edge')
       
-      // Force clear any problematic saved data and reset
-      localStorage.removeItem('accessibility-position')
-      localStorage.removeItem('accessibility-edge')
+      if (savedPosition && savedEdge) {
+        const parsed = JSON.parse(savedPosition)
+        // Use snapToEdge to ensure correct edge detection for saved position
+        const snappedPosition = snapToEdge(parsed.x, parsed.y)
+        setPosition(snappedPosition)
+        return
+      }
       
       if (isDesktopOrTablet) {
-        // Force right edge on desktop/tablet
-        const defaultY = Math.max(100, viewportHeight / 2 - 25)
-        console.log('Desktop: Setting right edge position:', { x: viewportWidth - 54, y: defaultY })
-        setEdge('right')
-        setPosition({ x: viewportWidth - 54, y: defaultY })
+        // Tablet/Desktop - bottom edge, positioned at bottom right
+        const bottomY = viewportHeight - BUTTON_SIZE // Exactly at bottom edge
+        const rightX = viewportWidth - BUTTON_SIZE - 20 // 20px from right edge
+        setEdge('bottom')
+        setPosition({ x: rightX, y: bottomY })
       } else {
-        // Mobile - center right
-        const defaultY = Math.max(100, viewportHeight / 2 - 25)
-        console.log('Mobile: Setting position:', { x: viewportWidth - 54, y: defaultY })
+        // Mobile - right edge, centered vertically but avoid bottom nav
+        const bottomNavHeight = 80 // Bottom nav + padding
+        const maxY = viewportHeight - BUTTON_SIZE - bottomNavHeight
+        const centerY = viewportHeight / 2 - 25
+        const defaultY = Math.min(Math.max(100, centerY), maxY)
         setEdge('right')
-        setPosition({ x: viewportWidth - 54, y: defaultY })
+        setPosition({ x: viewportWidth - BUTTON_SIZE, y: defaultY })
       }
       
       const savedSettings = localStorage.getItem('accessibility-settings')
@@ -122,21 +134,23 @@ export function DraggableAccessibilityWidget() {
   const determineEdge = (x: number, y: number): Edge => {
     const viewportWidth = document.documentElement.clientWidth
     const viewportHeight = document.documentElement.clientHeight
-    const buttonWidth = 54
-    const buttonHeight = 54
+    const buttonWidth = BUTTON_SIZE
+    const buttonHeight = BUTTON_SIZE
     
     // Check if we're on desktop/tablet (sidebar exists)
     const isDesktopOrTablet = window.innerWidth >= 768 // md breakpoint
     
     console.log('Determining edge:', { x, y, viewportWidth, viewportHeight, isDesktopOrTablet })
     
-    // On desktop/tablet, never allow left edge, only right and bottom
+    // On desktop/tablet, allow top, right and bottom edges (not left due to sidebar)
     if (isDesktopOrTablet) {
+      const distanceToTop = y
       const distanceToRight = viewportWidth - (x + buttonWidth)
       const distanceToBottom = viewportHeight - (y + buttonHeight)
       
-      const minDistance = Math.min(distanceToRight, distanceToBottom)
+      const minDistance = Math.min(distanceToTop, distanceToRight, distanceToBottom)
       
+      if (minDistance === distanceToTop) return 'top'
       if (minDistance === distanceToRight) return 'right'
       return 'bottom'
     } else {
@@ -182,9 +196,9 @@ export function DraggableAccessibilityWidget() {
   const snapToEdge = (x: number, y: number): Position => {
     const viewportWidth = document.documentElement.clientWidth
     const viewportHeight = document.documentElement.clientHeight
-    const buttonWidth = 54
-    const buttonHeight = 54
-    const smallButtonSize = Math.round(54 * 0.7) // 38px for header positions
+    const buttonWidth = BUTTON_SIZE
+    const buttonHeight = BUTTON_SIZE
+    const smallButtonSize = Math.round(BUTTON_SIZE * 0.7) // 38px for header positions
     const isDesktopOrTablet = window.innerWidth >= 768
 
     const currentEdge = determineEdge(x, y)
@@ -200,7 +214,11 @@ export function DraggableAccessibilityWidget() {
         }
         return { x: 0, y: Math.max(20, Math.min(y, viewportHeight - buttonHeight - 20)) }
       case 'right':
-        return { x: viewportWidth - buttonWidth, y: Math.max(20, Math.min(y, viewportHeight - buttonHeight - 20)) }
+        // On mobile, avoid bottom nav collision
+        const maxYForRight = isDesktopOrTablet 
+          ? viewportHeight - buttonHeight - 20 
+          : viewportHeight - buttonHeight - 80 // Extra space for bottom nav on mobile
+        return { x: viewportWidth - buttonWidth, y: Math.max(20, Math.min(y, maxYForRight)) }
       case 'header-left':
         // Match CSS: calc(32% + 8px) - center the button on that point
         const leftZoneCenter = viewportWidth * 0.32 + 8
@@ -221,6 +239,8 @@ export function DraggableAccessibilityWidget() {
           x: rightZoneCenter - smallButtonSize/2, 
           y: 24 - smallButtonSize/2 
         }
+      case 'top':
+        return { x: Math.max(20, Math.min(x, viewportWidth - buttonWidth - 20)), y: 0 }
       case 'bottom':
         // On mobile, fallback to right edge if somehow we get bottom
         if (!isDesktopOrTablet) {
@@ -355,28 +375,54 @@ export function DraggableAccessibilityWidget() {
     }
     // Return undefined if not dragging
     return undefined
-  }, [isDragging, position])
+  }, [isDragging, position]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Click outside to close when in header position
+  // Click outside to close widget
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (isOpen && edge.startsWith('header-')) {
+      if (isOpen) {
         const target = event.target as Node
         const button = document.querySelector('[aria-label="Tillgänglighetsverktyg - dra för att flytta"]')
         const panel = button?.nextElementSibling
         
         if (button && panel && !button.contains(target) && !panel.contains(target)) {
-          setIsOpen(false)
+          setActiveWidget(null)
         }
       }
     }
 
-    if (isOpen && edge.startsWith('header-')) {
+    if (isOpen) {
       document.addEventListener('mousedown', handleClickOutside)
       return () => document.removeEventListener('mousedown', handleClickOutside)
     }
     return undefined
-  }, [isOpen, edge])
+  }, [isOpen, edge, setActiveWidget])
+
+  // Focus management for dialog
+  useEffect(() => {
+    if (isOpen) {
+      // Focus the close button when dialog opens
+      const closeButton = document.querySelector('[aria-label="Stäng tillgänglighetsverktyg"]') as HTMLButtonElement
+      if (closeButton) {
+        closeButton.focus()
+      }
+    }
+  }, [isOpen])
+
+  // Keyboard navigation - close with Escape
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (isOpen && event.key === 'Escape') {
+        setActiveWidget(null)
+      }
+    }
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleKeyDown)
+      return () => document.removeEventListener('keydown', handleKeyDown)
+    }
+    return undefined
+  }, [isOpen, setActiveWidget])
 
   const getPanelPosition = (): React.CSSProperties => {
     if (typeof document === 'undefined') return { display: 'none' }
@@ -428,6 +474,16 @@ export function DraggableAccessibilityWidget() {
           zIndex: 60, // Higher than header
           borderRadius: '0 0 1rem 1rem', // Round only bottom corners
         }
+      case 'top':
+        return {
+          ...baseStyle,
+          left: Math.max(20, Math.min(position.x, viewportWidth - panelWidth - 20)),
+          top: 0,
+          transform: isOpen ? 'translateY(0)' : 'translateY(-100%)',
+          opacity: isOpen ? 1 : 0,
+          pointerEvents: isOpen ? 'auto' : 'none',
+          borderRadius: '0 0 1rem 1rem', // Round only bottom corners
+        }
       case 'bottom':
         return {
           ...baseStyle,
@@ -454,10 +510,10 @@ export function DraggableAccessibilityWidget() {
     // Adjust size for header positions to match unfocused indicator circles (scale 0.7)
     const getButtonSize = () => {
       if (edge.startsWith('header-')) {
-        const smallSize = Math.round(54 * 0.7) // Match the scale 0.7 of unfocused circles
+        const smallSize = Math.round(BUTTON_SIZE * 0.7) // Match the scale 0.7 of unfocused circles
         return { width: `${smallSize}px`, height: `${smallSize}px` }
       }
-      return { width: '54px', height: '54px' }
+      return { width: `${BUTTON_SIZE}px`, height: `${BUTTON_SIZE}px` }
     }
 
     const buttonSize = getButtonSize()
@@ -502,6 +558,8 @@ export function DraggableAccessibilityWidget() {
         case 'header-center':
         case 'header-right':
           return '50%' // Completely round for header positions
+        case 'top':
+          return '0 0 20px 20px'
         case 'bottom':
           return '20px 20px 0 0'
         default:
@@ -527,13 +585,14 @@ export function DraggableAccessibilityWidget() {
           <div
             className={`fixed left-0 top-1/2 -translate-y-1/2 w-2 h-1/2 transition-all duration-200 pointer-events-none z-40 rounded-r-lg ${
               previewEdge === 'left' 
-                ? 'bg-primary/70 opacity-100 shadow-lg shadow-primary/50' 
-                : 'bg-primary/20 opacity-0'
+                ? 'opacity-100 shadow-lg' 
+                : 'opacity-0'
             }`}
             style={{
               background: previewEdge === 'left' 
-                ? 'linear-gradient(90deg, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.3) 100%)'
-                : undefined,
+                ? 'linear-gradient(90deg, hsl(var(--widget-indicator-color)) 0%, hsl(var(--widget-indicator-color) / 0.3) 100%)'
+                : 'hsl(var(--widget-indicator-color) / 0.2)',
+              boxShadow: previewEdge === 'left' ? '0 4px 14px hsl(var(--widget-indicator-glow) / 0.5)' : undefined,
               animation: previewEdge === 'left' ? 'pulse 1s ease-in-out infinite' : undefined
             }}
           />
@@ -542,14 +601,31 @@ export function DraggableAccessibilityWidget() {
           <div
             className={`fixed right-0 top-1/2 -translate-y-1/2 w-2 h-1/2 transition-all duration-200 pointer-events-none z-40 rounded-l-lg ${
               previewEdge === 'right' 
-                ? 'bg-primary/70 opacity-100 shadow-lg shadow-primary/50' 
-                : 'bg-primary/20 opacity-0'
+                ? 'opacity-100 shadow-lg' 
+                : 'opacity-0'
             }`}
             style={{
               background: previewEdge === 'right' 
-                ? 'linear-gradient(-90deg, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.3) 100%)'
-                : undefined,
+                ? 'linear-gradient(-90deg, hsl(var(--widget-indicator-color)) 0%, hsl(var(--widget-indicator-color) / 0.3) 100%)'
+                : 'hsl(var(--widget-indicator-color) / 0.2)',
+              boxShadow: previewEdge === 'right' ? '0 4px 14px hsl(var(--widget-indicator-glow) / 0.5)' : undefined,
               animation: previewEdge === 'right' ? 'pulse 1s ease-in-out infinite' : undefined
+            }}
+          />
+          
+          {/* Top edge indicator */}
+          <div
+            className={`fixed top-0 left-1/2 -translate-x-1/2 w-1/2 h-2 transition-all duration-200 pointer-events-none z-40 rounded-b-lg ${
+              previewEdge === 'top' 
+                ? 'opacity-100 shadow-lg' 
+                : 'opacity-0'
+            }`}
+            style={{
+              background: previewEdge === 'top' 
+                ? 'linear-gradient(0deg, hsl(var(--widget-indicator-color)) 0%, hsl(var(--widget-indicator-color) / 0.3) 100%)'
+                : 'hsl(var(--widget-indicator-color) / 0.2)',
+              boxShadow: previewEdge === 'top' ? '0 4px 14px hsl(var(--widget-indicator-glow) / 0.5)' : undefined,
+              animation: previewEdge === 'top' ? 'pulse 1s ease-in-out infinite' : undefined
             }}
           />
           
@@ -557,13 +633,14 @@ export function DraggableAccessibilityWidget() {
           <div
             className={`fixed bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-2 transition-all duration-200 pointer-events-none z-40 rounded-t-lg ${
               previewEdge === 'bottom' 
-                ? 'bg-primary/70 opacity-100 shadow-lg shadow-primary/50' 
-                : 'bg-primary/20 opacity-0'
+                ? 'opacity-100 shadow-lg' 
+                : 'opacity-0'
             }`}
             style={{
               background: previewEdge === 'bottom' 
-                ? 'linear-gradient(-180deg, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.3) 100%)'
-                : undefined,
+                ? 'linear-gradient(-180deg, hsl(var(--widget-indicator-color)) 0%, hsl(var(--widget-indicator-color) / 0.3) 100%)'
+                : 'hsl(var(--widget-indicator-color) / 0.2)',
+              boxShadow: previewEdge === 'bottom' ? '0 4px 14px hsl(var(--widget-indicator-glow) / 0.5)' : undefined,
               animation: previewEdge === 'bottom' ? 'pulse 1s ease-in-out infinite' : undefined
             }}
           />
@@ -580,9 +657,9 @@ export function DraggableAccessibilityWidget() {
             e.preventDefault()
             return
           }
-          setIsOpen(!isOpen)
+          setActiveWidget(isOpen ? null : 'accessibility')
         }}
-        className={`fixed z-50 bg-primary text-primary-foreground shadow-lg transition-all duration-300 hover:scale-105 active:scale-110 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 select-none touch-none flex items-center justify-center ${
+        className={`fixed z-50 bg-accessibility-button-background text-accessibility-button-foreground transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 select-none touch-none flex items-center justify-center ${
           isDragging ? 'cursor-grabbing scale-110' : 'cursor-grab'
         }`}
         style={{
@@ -590,37 +667,53 @@ export function DraggableAccessibilityWidget() {
           pointerEvents: isOpen ? 'none' : 'auto',
           touchAction: 'none', // Prevent scrolling while dragging
         }}
-        aria-label="Tillgänglighetsverktyg - dra för att flytta"
+        aria-label="Öppna tillgänglighetsverktyg - dra för att flytta knappen"
+        aria-describedby="accessibility-button-desc"
+        aria-expanded={isOpen}
+        aria-haspopup="dialog"
+        type="button"
       >
-        <Eye className="w-5 h-5" />
+        <Eye className="w-6 h-6" aria-hidden="true" />
+        <div id="accessibility-button-desc" className="sr-only">
+          Tillgänglighetsverktyg för att anpassa webbplatsens utseende och funktioner
+        </div>
       </button>
 
       {/* Widget Panel */}
       <div
+        role="dialog"
+        aria-labelledby="accessibility-widget-title"
+        aria-describedby="accessibility-widget-description"
         className="z-50 bg-background border border-border shadow-2xl transition-all duration-300 ease-in-out"
         style={getPanelPosition()}
       >  
         <div className="h-full flex flex-col">
           {/* Header */}
           <div className="flex h-12 items-center justify-between p-4 border-b border-border ">
-            <h2 className="text-lg font-semibold">Tillgänglighet</h2>
+            <h2 id="accessibility-widget-title" className="text-sm font-semibold">Tillgänglighet</h2>
             <button
-              onClick={() => setIsOpen(false)}
-              className="p-1"
-              aria-label="Stäng"
+              onClick={() => setActiveWidget(null)}
+              className="p-1 rounded-md hover:bg-muted transition-colors"
+              aria-label="Stäng tillgänglighetsverktyg"
+              type="button"
             >
-              <X className="w-5 h-5" />
+              <X className="w-5 h-5" aria-hidden="true" />
             </button>
           </div>
 
           {/* Content */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-6">
+          <div 
+            id="accessibility-widget-description" 
+            className="flex-1 overflow-y-auto p-4 space-y-6"
+            role="main"
+            aria-label="Tillgänglighetsinställningar"
+          >
             {/* High Contrast */}
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <Eye className="w-4 h-4" />
-                <label className="font-medium">Högkontrast</label>
-              </div>
+            <fieldset className="space-y-2" role="group" aria-labelledby="high-contrast-label">
+              <legend id="high-contrast-label" className="flex items-center gap-2 font-medium">
+                <Eye className="w-4 h-4" aria-hidden="true" />
+                <span>Högkontrast</span>
+              </legend>
               <button
                 onClick={() => updateSetting('highContrast', !settings.highContrast)}
                 className={`w-full py-2 px-4 rounded-full border transition-all duration-200 ease-out ${
@@ -628,59 +721,86 @@ export function DraggableAccessibilityWidget() {
                     ? 'bg-primary text-primary-foreground border-primary'
                     : 'bg-background border-border hover:bg-primary/10 hover:text-primary hover:border-primary/20'
                 }`}
+                type="button"
+                role="switch"
+                aria-checked={settings.highContrast}
+                aria-describedby="high-contrast-desc"
               >
+                <span className="sr-only">Högkontrast är </span>
                 {settings.highContrast ? 'På' : 'Av'}
               </button>
-            </div>
+              <div id="high-contrast-desc" className="sr-only">
+                Aktiverar högkontrast för bättre synlighet av text och element
+              </div>
+            </fieldset>
 
             {/* Text Size */}
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <Type className="w-4 h-4" />
-                <label className="font-medium">Textstorlek</label>
+            <fieldset className="space-y-2" role="group" aria-labelledby="text-size-label">
+              <legend id="text-size-label" className="flex items-center gap-2 font-medium">
+                <Type className="w-4 h-4" aria-hidden="true" />
+                <span>Textstorlek</span>
+              </legend>
+              <div className="grid grid-cols-3 gap-2" role="radiogroup" aria-labelledby="text-size-label">
+                {['normal', 'large', 'extra-large'].map((size) => {
+                  const sizeLabels = {
+                    normal: 'Normal',
+                    large: 'Stor', 
+                    'extra-large': 'Extra stor'
+                  }
+                  return (
+                    <button
+                      key={size}
+                      onClick={() => updateSetting('textSize', size as any)}
+                      className={`py-2 px-3 rounded-full border text-sm transition-all duration-200 ease-out ${
+                        settings.textSize === size
+                          ? 'bg-primary text-primary-foreground border-primary'
+                          : 'bg-background border-border hover:bg-primary/10 hover:text-primary hover:border-primary/20'
+                      }`}
+                      type="button"
+                      role="radio"
+                      aria-checked={settings.textSize === size}
+                      aria-label={`Textstorlek: ${sizeLabels[size as keyof typeof sizeLabels]}`}
+                    >
+                      {sizeLabels[size as keyof typeof sizeLabels]}
+                    </button>
+                  )
+                })}
               </div>
-              <div className="grid grid-cols-3 gap-2">
-                {['normal', 'large', 'extra-large'].map((size) => (
-                  <button
-                    key={size}
-                    onClick={() => updateSetting('textSize', size as any)}
-                    className={`py-2 px-3 rounded-full border text-sm transition-all duration-200 ease-out ${
-                      settings.textSize === size
-                        ? 'bg-primary text-primary-foreground border-primary'
-                        : 'bg-background border-border hover:bg-primary/10 hover:text-primary hover:border-primary/20'
-                    }`}
-                  >
-                    {size === 'normal' ? 'Normal' : size === 'large' ? 'Stor' : 'Extra stor'}
-                  </button>
-                ))}
-              </div>
-            </div>
+            </fieldset>
 
             {/* Color Blind Mode */}
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <Palette className="w-4 h-4" />
-                <label className="font-medium">Färgblindhetsanpassning</label>
-              </div>
+            <fieldset className="space-y-2" role="group" aria-labelledby="colorblind-label">
+              <legend id="colorblind-label" className="flex items-center gap-2 font-medium">
+                <Palette className="w-4 h-4" aria-hidden="true" />
+                <span>Färgblindhetsanpassning</span>
+              </legend>
+              <label htmlFor="colorblind-select" className="sr-only">
+                Välj färgblindhetsanpassning
+              </label>
               <select
+                id="colorblind-select"
                 value={settings.colorBlindMode}
                 onChange={(e) => updateSetting('colorBlindMode', e.target.value as ColorBlindMode)}
-                className="w-full py-2 px-3 rounded-full border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200 ease-out hover:border-primary/20"
+                className="w-full py-2 px-3 rounded-full border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all duration-200 ease-out hover:border-primary/20"
+                aria-describedby="colorblind-desc"
               >
                 <option value="normal">Normal</option>
-                <option value="protanopia">Protanopi (röd)</option>
-                <option value="deuteranopia">Deuteranopi (grön)</option>
-                <option value="tritanopia">Tritanopi (blå)</option>
-                <option value="monochrome">Svartvit</option>
+                <option value="protanopia">Protanopi (röd-grön färgblindhet, typ 1)</option>
+                <option value="deuteranopia">Deuteranopi (röd-grön färgblindhet, typ 2)</option>
+                <option value="tritanopia">Tritanopi (blå-gul färgblindhet)</option>
+                <option value="monochrome">Svartvit (monokrom syn)</option>
               </select>
-            </div>
+              <div id="colorblind-desc" className="sr-only">
+                Anpassar färgpaletten för olika typer av färgblindhet
+              </div>
+            </fieldset>
 
             {/* Line Highlighting */}
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <Highlighter className="w-4 h-4" />
-                <label className="font-medium">Radmarkering</label>
-              </div>
+            <fieldset className="space-y-2" role="group" aria-labelledby="line-highlight-label">
+              <legend id="line-highlight-label" className="flex items-center gap-2 font-medium">
+                <Highlighter className="w-4 h-4" aria-hidden="true" />
+                <span>Radmarkering</span>
+              </legend>
               <button
                 onClick={() => updateSetting('lineHighlight', !settings.lineHighlight)}
                 className={`w-full py-2 px-4 rounded-full border transition-all duration-200 ease-out ${
@@ -688,22 +808,35 @@ export function DraggableAccessibilityWidget() {
                     ? 'bg-primary text-primary-foreground border-primary'
                     : 'bg-background border-border hover:bg-primary/10 hover:text-primary hover:border-primary/20'
                 }`}
+                type="button"
+                role="switch"
+                aria-checked={settings.lineHighlight}
+                aria-describedby="line-highlight-desc"
               >
+                <span className="sr-only">Radmarkering är </span>
                 {settings.lineHighlight ? 'På' : 'Av'}
               </button>
-            </div>
+              <div id="line-highlight-desc" className="sr-only">
+                Markerar textrader när du för muspekaren över dem för bättre läsbarhet
+              </div>
+            </fieldset>
           </div>
 
           {/* Footer */}
-          <div className="p-4 border-t border-border">
+          <footer className="p-4 border-t border-border">
             <button
               onClick={resetSettings}
-              className="w-full py-2 px-4 rounded-full border border-border hover:bg-primary/10 hover:text-primary hover:border-primary/20 transition-all duration-200 ease-out flex items-center justify-center gap-2 text-sm font-medium"
+              className="w-full py-2 px-4 rounded-full border border-border hover:bg-primary/10 hover:text-primary hover:border-primary/20 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all duration-200 ease-out flex items-center justify-center gap-2 text-sm font-medium"
+              type="button"
+              aria-describedby="reset-desc"
             >
-              <RotateCcw className="h-4 w-4 tech-icon" />
-              <span>Återställ</span>
+              <RotateCcw className="h-4 w-4 tech-icon" aria-hidden="true" />
+              <span>Återställ alla inställningar</span>
             </button>
-          </div>
+            <div id="reset-desc" className="sr-only">
+              Återställer alla tillgänglighetsinställningar till standardvärden
+            </div>
+          </footer>
         </div>
       </div>
 
@@ -711,7 +844,7 @@ export function DraggableAccessibilityWidget() {
       {isOpen && (
         <div
           className="fixed inset-0 bg-black/20 z-40"
-          onClick={() => setIsOpen(false)}
+          onClick={() => setActiveWidget(null)}
         />
       )}
     </>

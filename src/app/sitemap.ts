@@ -1,5 +1,19 @@
 import { MetadataRoute } from 'next'
-import { createServerComponentClient } from '@/lib/supabase'
+import { createBrowserClient } from '@supabase/ssr'
+import { Database } from '@/types/database'
+
+// Create a static Supabase client for sitemap generation (no cookies needed)
+function createSitemapSupabaseClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  
+  return createBrowserClient<Database>(supabaseUrl, supabaseAnonKey, {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
+    },
+  })
+}
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bearbetar.se'
@@ -45,8 +59,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ]
 
   try {
+    // Use static Supabase client instead of server client
+    const supabase = createSitemapSupabaseClient()
+    
     // Fetch published articles
-    const supabase = await createServerComponentClient()
     const { data: articles } = await supabase
       .from('articles')
       .select('slug, published_at, updated_at')
@@ -94,4 +110,4 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Return only static pages if database is not available
     return staticPages
   }
-} 
+}

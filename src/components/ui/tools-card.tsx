@@ -14,7 +14,7 @@ export function ToolsCard({ onClick, icon, title, description, className = '' }:
   return (
     <div 
       onClick={onClick}
-      className={`tools-card ${className} h-full cursor-pointer p-8`}
+      className={`tools-card ${className} h-full cursor-pointer px-4 py-8`}
       role="button"
       tabIndex={0}
       onKeyDown={(e) => {
@@ -24,12 +24,12 @@ export function ToolsCard({ onClick, icon, title, description, className = '' }:
         }
       }}
     >
-      <div className="flex flex-col items-center justify-center text-center space-y-4 h-full">
+      <div className="flex flex-col items-center justify-center text-center space-y-4">
         <div className="tools-card-icon">
           {icon}
         </div>
         <h3 className="tools-card-title">{title}</h3>
-        <p className="tools-card-description text-muted-foreground text-sm leading-relaxed">
+        <p className="tools-card-description text-center mx-auto text-sm">
           {description}
         </p>
       </div>

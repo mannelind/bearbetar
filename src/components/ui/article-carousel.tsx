@@ -92,10 +92,10 @@ export function ArticleCarousel({ articles, title, description }: ArticleCarouse
       </div>
 
       <div className="relative py-4 px-4">
-        <div className="relative overflow-hidden">
-          {/* Fade gradient masks - optimerat för centrerad layout */}
-          <div className="absolute left-0 top-0 bottom-0 w-12 sm:w-16 md:w-20 bg-gradient-to-r from-background via-background/80 to-transparent z-10 pointer-events-none" />
-          <div className="absolute right-0 top-0 bottom-0 w-12 sm:w-16 md:w-20 bg-gradient-to-l from-background via-background/80 to-transparent z-10 pointer-events-none" />
+        <div className="relative md:overflow-hidden">
+          {/* Fade gradient masks - endast synligt på desktop */}
+          <div className="hidden md:block absolute left-0 top-0 bottom-0 w-12 sm:w-16 md:w-20 bg-gradient-to-r from-background via-background/80 to-transparent z-10 pointer-events-none" />
+          <div className="hidden md:block absolute right-0 top-0 bottom-0 w-12 sm:w-16 md:w-20 bg-gradient-to-l from-background via-background/80 to-transparent z-10 pointer-events-none" />
           
           <Carousel
             opts={{
@@ -107,7 +107,7 @@ export function ArticleCarousel({ articles, title, description }: ArticleCarouse
           >
             <CarouselContent className="-ml-2 md:-ml-4">
               {articles.map((article) => (
-                <CarouselItem key={article.id} className="pl-2 md:pl-4 basis-[85%] sm:basis-[60%] md:basis-[45%] lg:basis-1/3 flex">
+                <CarouselItem key={article.id} className="pl-2 md:pl-4 basis-[80%] sm:basis-[60%] md:basis-[45%] lg:basis-1/3 flex">
                   <div className="p-2 flex flex-col w-full">
                     <ArticleCard article={article} onClick={() => handleArticleClick(article)} />
                   </div>

@@ -80,4 +80,41 @@
       margin-top: auto;
     }
   }
+
+  // Services grid equal height - Force all service cards to be same height
+  .services-grid {
+    display: grid;
+    grid-auto-rows: 1fr;
+
+    > div {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .service-card {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+
+      > div {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+      }
+    }
+  }
+
+  // Payment info card - special styling
+  .payment-info-card {
+    &.col-span-full {
+      grid-column: 1 / -1;
+    }
+    
+    @media (min-width: 768px) {
+      &.col-span-full {
+        grid-column: 1 / -1;
+        max-width: none;
+      }
+    }
+  }
 }

@@ -1,8 +1,9 @@
 'use client'
 
 import { ServiceCard } from './service-card'
+import { PaymentInfoCard } from './payment-info-card'
 import { AnimatedGrid } from '@/components/ui/page-animations'
-import { Globe, Smartphone, Code, Coffee, Target } from 'lucide-react'
+import { Globe, Smartphone, Code, Coffee, Target, CreditCard } from 'lucide-react'
 
 interface Service {
   id: string
@@ -27,7 +28,8 @@ const icons = {
   Smartphone,
   Code,
   Coffee,
-  Target
+  Target,
+  CreditCard
 }
 
 export function ServicesGrid({ services }: ServicesGridProps) {
@@ -35,18 +37,27 @@ export function ServicesGrid({ services }: ServicesGridProps) {
     return icons[iconName as keyof typeof icons] || Target
   }
 
+  // Separate payment info from regular services
+  const regularServices = services.filter(service => service.id !== '5')
+  const paymentInfo = services.find(service => service.id === '5')
+
   return (
-    <AnimatedGrid className="grid gap-8 md:grid-cols-2 lg:grid-cols-2">
-      {services.map((service: Service) => {
-        const IconComponent = getIcon(service.icon || 'Target')
-        return (
-          <ServiceCard 
-            key={service.id} 
-            service={service} 
-            IconComponent={IconComponent}
-          />
-        )
-      })}
-    </AnimatedGrid>
+    <div className="space-y-8">
+      <AnimatedGrid className="services-grid grid gap-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:h-100 justify-between">
+        {regularServices.map((service: Service) => {
+          const IconComponent = getIcon(service.icon || 'Target')
+          return (
+            <ServiceCard 
+              key={service.id} 
+              service={service} 
+              IconComponent={IconComponent}
+            />
+          )
+        })}
+      </AnimatedGrid>
+      
+      {/* Payment info card - displayed separately */}
+      {paymentInfo && <PaymentInfoCard />}
+    </div>
   )
 }
