@@ -86,7 +86,7 @@ export function AccessibilityWidget() {
           ${isOpen ? 'translate-x-full opacity-0 pointer-events-none' : ''}`}
         aria-label="Öppna tillgänglighetsverktyg"
       >
-        <Eye className="w-5 h-5" />
+        <Eye className="w-4 h-4" />
       </button>
 
       {/* Flik-knapp mobil */}
@@ -96,7 +96,7 @@ export function AccessibilityWidget() {
           ${isOpen ? '-translate-x-full opacity-0 pointer-events-none' : ''}`}
         aria-label="Öppna tillgänglighetsverktyg"
       >
-        <Eye className="w-5 h-5" />
+        <Eye className="w-3 h-3" />
       </button>
 
       {/* Widget-panel desktop/tablet */}

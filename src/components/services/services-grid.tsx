@@ -3,7 +3,7 @@
 import { ServiceCard } from './service-card'
 import { PaymentInfoCard } from './payment-info-card'
 import { AnimatedGrid } from '@/components/ui/page-animations'
-import { Globe, Smartphone, Code, Coffee, Target, CreditCard } from 'lucide-react'
+import { Globe, Smartphone, Code, Coffee, Target, CreditCard, LayoutTemplate, AppWindow, Waypoints } from 'lucide-react'
 
 interface Service {
   id: string
@@ -29,7 +29,13 @@ const icons = {
   Code,
   Coffee,
   Target,
-  CreditCard
+  CreditCard,
+  LayoutTemplate,
+  AppWindow,
+  Waypoints,
+  'layout-template': LayoutTemplate,
+  'app-window': AppWindow,
+  'waypoints': Waypoints
 }
 
 export function ServicesGrid({ services }: ServicesGridProps) {

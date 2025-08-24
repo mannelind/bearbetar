@@ -51,21 +51,12 @@ export function ServiceCard({ service, IconComponent, className = '' }: ServiceC
               <CardTitle className="text-xl group-hover:text-primary transition-colors">
                 {service.title}
               </CardTitle>
-              {service.short_description && (
-                <CardDescription className="mt-1">
-                  {service.short_description}
-                </CardDescription>
-              )}
             </div>
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-muted-foreground">
-            {service.short_description || 
-             (typeof service.description === 'string' && service.description.includes('<') 
-               ? 'Klicka för att läsa mer om denna tjänst och vad vi kan hjälpa dig med.'
-               : service.description)
-            }
+            {service.short_description || 'Klicka för att läsa mer om denna tjänst och vad vi kan hjälpa dig med.'}
           </p>
           
           <div className="flex items-center justify-between pt-4 border-t">

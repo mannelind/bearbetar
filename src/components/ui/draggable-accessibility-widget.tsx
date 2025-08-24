@@ -39,6 +39,8 @@ export function DraggableAccessibilityWidget() {
   // Load saved position and settings
   useEffect(() => {
     const setInitialPosition = () => {
+      // Small delay to ensure localStorage is available
+      setTimeout(() => {
       const viewportHeight = document.documentElement.clientHeight
       const viewportWidth = document.documentElement.clientWidth
       const isDesktopOrTablet = viewportWidth >= 768
@@ -49,27 +51,54 @@ export function DraggableAccessibilityWidget() {
       
       if (savedPosition && savedEdge) {
         const parsed = JSON.parse(savedPosition)
-        // Use snapToEdge to ensure correct edge detection for saved position
-        const snappedPosition = snapToEdge(parsed.x, parsed.y)
-        setPosition(snappedPosition)
+        // Validate saved position is within viewport bounds and check collision
+        const validX = Math.max(0, Math.min(parsed.x, viewportWidth - BUTTON_SIZE))
+        const validY = Math.max(0, Math.min(parsed.y, viewportHeight - BUTTON_SIZE))
+        // Check for collision with mobile menu widget even for saved positions
+        const collisionFreePos = checkCollisionWithMobileMenu({ x: validX, y: validY }, savedEdge as Edge)
+        setPosition(collisionFreePos)
+        // Ensure edge is set correctly, especially for header positions
+        const correctEdge = determineEdge(collisionFreePos.x, collisionFreePos.y)
+        setEdge(correctEdge)
+        // Update localStorage with collision-free position and edge if they changed
+        if (collisionFreePos.x !== validX || collisionFreePos.y !== validY) {
+          localStorage.setItem('accessibility-position', JSON.stringify(collisionFreePos))
+        }
+        if (correctEdge !== savedEdge) {
+          localStorage.setItem('accessibility-edge', correctEdge)
+        }
         return
       }
       
+      // Smart default positioning based on screen size and device type
+      let defaultPos: Position
+      let defaultEdge: Edge
+      
       if (isDesktopOrTablet) {
-        // Tablet/Desktop - bottom edge, positioned at bottom right
-        const bottomY = viewportHeight - BUTTON_SIZE // Exactly at bottom edge
-        const rightX = viewportWidth - BUTTON_SIZE - 20 // 20px from right edge
-        setEdge('bottom')
-        setPosition({ x: rightX, y: bottomY })
+        // Desktop/Tablet: Bottom right corner, but offset slightly to avoid menu widget
+        defaultPos = {
+          x: viewportWidth - BUTTON_SIZE - 80, // More offset from right edge
+          y: viewportHeight - BUTTON_SIZE // Exactly at bottom edge
+        }
+        defaultEdge = 'bottom'
       } else {
-        // Mobile - right edge, centered vertically but avoid bottom nav
-        const bottomNavHeight = 80 // Bottom nav + padding
-        const maxY = viewportHeight - BUTTON_SIZE - bottomNavHeight
-        const centerY = viewportHeight / 2 - 25
-        const defaultY = Math.min(Math.max(100, centerY), maxY)
-        setEdge('right')
-        setPosition({ x: viewportWidth - BUTTON_SIZE, y: defaultY })
+        // Mobile: Right edge, positioned higher than menu for better thumb access
+        // Position in middle area, giving priority to accessibility button
+        const optimalY = Math.min(
+          viewportHeight * 0.45, // 45% down the screen (higher than menu widget)
+          viewportHeight - 200    // Leave space for bottom UI elements
+        )
+        defaultPos = {
+          x: viewportWidth - BUTTON_SIZE,
+          y: Math.max(80, optimalY) // Ensure it's not too high up
+        }
+        defaultEdge = 'right'
       }
+      
+      // Check for collision with mobile menu widget on initial position
+      const initialPos = checkCollisionWithMobileMenu(defaultPos, defaultEdge)
+      setEdge(defaultEdge)
+      setPosition(initialPos)
       
       const savedSettings = localStorage.getItem('accessibility-settings')
       if (savedSettings) {
@@ -77,12 +106,13 @@ export function DraggableAccessibilityWidget() {
         setSettings(parsed)
         applySettings(parsed)
       }
+      }, 10) // 10ms delay, loads before mobile menu
     }
 
     if (typeof window !== 'undefined') {
       setInitialPosition()
     }
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const applySettings = (newSettings: AccessibilitySettings) => {
     const root = document.documentElement
@@ -140,6 +170,32 @@ export function DraggableAccessibilityWidget() {
     // Check if we're on desktop/tablet (sidebar exists)
     const isDesktopOrTablet = window.innerWidth >= 768 // md breakpoint
     
+    // First check if this is an exact header position (for saved positions)
+    if (!isDesktopOrTablet && y < 50) {
+      const smallButtonSize = Math.round(BUTTON_SIZE * 0.7)
+      const headerY = 24 - smallButtonSize/2
+      
+      // Check if Y coordinate matches header position (within 5px tolerance)
+      if (Math.abs(y - headerY) < 5) {
+        const leftZone = viewportWidth * 0.32 + 8 - smallButtonSize/2
+        const centerZone = viewportWidth * 0.625 - smallButtonSize/2
+        const rightZone = viewportWidth - 20 - 27 - smallButtonSize/2
+        
+        const distanceToLeft = Math.abs(x - leftZone)
+        const distanceToCenter = Math.abs(x - centerZone)
+        const distanceToRight = Math.abs(x - rightZone)
+        
+        const minDistance = Math.min(distanceToLeft, distanceToCenter, distanceToRight)
+        
+        // Very tight threshold for exact positions
+        if (minDistance < 10) {
+          if (minDistance === distanceToLeft) return 'header-left'
+          if (minDistance === distanceToCenter) return 'header-center'
+          return 'header-right'
+        }
+      }
+    }
+    
     console.log('Determining edge:', { x, y, viewportWidth, viewportHeight, isDesktopOrTablet })
     
     // On desktop/tablet, allow top, right and bottom edges (not left due to sidebar)
@@ -170,8 +226,9 @@ export function DraggableAccessibilityWidget() {
         
         const minDistance = Math.min(distanceToLeft, distanceToCenter, distanceToRight)
         
-        // Only snap to header zone if close enough (within 80px)
-        const snapThreshold = 80
+        // More generous threshold for detecting existing header positions
+        // If position is very close to header area (y < 40), use smaller threshold
+        const snapThreshold = y < 40 ? 30 : 80
         
         if (minDistance < snapThreshold) {
           if (minDistance === distanceToLeft) return 'header-left'
@@ -191,6 +248,100 @@ export function DraggableAccessibilityWidget() {
       if (minDistance === distanceToLeft) return 'left'
       return 'right'
     }
+  }
+
+  // Collision detection with mobile menu widget
+  const checkCollisionWithMobileMenu = (newPos: Position, currentEdge: Edge): Position => {
+    const mobileMenuPos = localStorage.getItem('mobile-menu-position')
+    const mobileMenuEdge = localStorage.getItem('mobile-menu-edge')
+    
+    if (!mobileMenuPos || !mobileMenuEdge) return newPos
+    
+    const parsedMenuPos = JSON.parse(mobileMenuPos)
+    const minDistance = BUTTON_SIZE + 10 // Minimum space between buttons
+    
+    // Calculate distance between centers
+    const centerX1 = newPos.x + BUTTON_SIZE / 2
+    const centerY1 = newPos.y + BUTTON_SIZE / 2
+    const centerX2 = parsedMenuPos.x + BUTTON_SIZE / 2
+    const centerY2 = parsedMenuPos.y + BUTTON_SIZE / 2
+    
+    const distance = Math.sqrt(
+      Math.pow(centerX1 - centerX2, 2) + 
+      Math.pow(centerY1 - centerY2, 2)
+    )
+    
+    // If buttons are too close, push them apart
+    if (distance < minDistance) {
+      const viewportWidth = document.documentElement.clientWidth
+      const viewportHeight = document.documentElement.clientHeight
+      
+      // Determine push direction based on edges
+      if (currentEdge === 'right' && mobileMenuEdge === 'right') {
+        // Both on right edge - push vertically
+        if (centerY1 < centerY2) {
+          // Accessibility is above - move it further up
+          return { 
+            x: newPos.x, 
+            y: Math.max(20, parsedMenuPos.y - minDistance)
+          }
+        } else {
+          // Accessibility is below - move it further down
+          return { 
+            x: newPos.x, 
+            y: Math.min(viewportHeight - BUTTON_SIZE - 20, parsedMenuPos.y + minDistance)
+          }
+        }
+      } else if (currentEdge === 'left' && mobileMenuEdge === 'left') {
+        // Both on left edge - push vertically
+        if (centerY1 < centerY2) {
+          return { 
+            x: newPos.x, 
+            y: Math.max(20, parsedMenuPos.y - minDistance)
+          }
+        } else {
+          return { 
+            x: newPos.x, 
+            y: Math.min(viewportHeight - BUTTON_SIZE - 20, parsedMenuPos.y + minDistance)
+          }
+        }
+      } else if (currentEdge === 'bottom' && mobileMenuEdge === 'bottom') {
+        // Both on bottom edge - push horizontally
+        if (centerX1 < centerX2) {
+          return { 
+            x: Math.max(20, parsedMenuPos.x - minDistance),
+            y: newPos.y
+          }
+        } else {
+          return { 
+            x: Math.min(viewportWidth - BUTTON_SIZE - 20, parsedMenuPos.x + minDistance),
+            y: newPos.y
+          }
+        }
+      } else if (currentEdge.startsWith('header-') && mobileMenuEdge.startsWith('header-')) {
+        // Both in header - try to find alternative header position
+        const headerPositions = ['header-left', 'header-center', 'header-right']
+        const availablePositions = headerPositions.filter(pos => pos !== mobileMenuEdge)
+        if (availablePositions.length > 0) {
+          // Will be handled by snapToEdge with the new edge
+          return newPos
+        }
+      }
+      
+      // Default: push away from mobile menu
+      const pushX = centerX1 - centerX2
+      const pushY = centerY1 - centerY2
+      const pushDistance = minDistance - distance
+      const normalX = pushX / distance
+      const normalY = pushY / distance
+      
+      return {
+        x: Math.max(0, Math.min(viewportWidth - BUTTON_SIZE, newPos.x + normalX * pushDistance)),
+        y: Math.max(0, Math.min(viewportHeight - BUTTON_SIZE, newPos.y + normalY * pushDistance))
+      }
+    }
+    
+    return newPos
   }
 
   const snapToEdge = (x: number, y: number): Position => {
@@ -251,6 +402,12 @@ export function DraggableAccessibilityWidget() {
       default:
         return { x, y }
     }
+  }
+
+  const snapToEdgeWithCollision = (x: number, y: number): Position => {
+    const currentEdge = determineEdge(x, y)
+    const snappedPos = snapToEdge(x, y)
+    return checkCollisionWithMobileMenu(snappedPos, currentEdge)
   }
 
   const getEventPosition = (e: MouseEvent | TouchEvent) => {
@@ -342,7 +499,7 @@ export function DraggableAccessibilityWidget() {
     
     if (hasDragged) {
       // It was a drag - snap to edge
-      const snappedPosition = snapToEdge(position.x, position.y)
+      const snappedPosition = snapToEdgeWithCollision(position.x, position.y)
       setPosition(snappedPosition)
       
       localStorage.setItem('accessibility-position', JSON.stringify(snappedPosition))

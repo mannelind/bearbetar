@@ -26,8 +26,8 @@ export default async function ServicesPage() {
   const defaultServices = [
     {
       id: '1',
-      title: 'Webbsidor',
-      short_description: 'Modern webbutveckling',
+      title: 'Webb',
+      short_description: 'Responsiva WordPress-sidor, React-applikationer och statiska webbplatser. Månadsabonnemang gör professionell webbutveckling tillgänglig för alla företagsstorlekar.',
       description: `
         <div>
           <p>WordPress-sidor, React-appar och statiska siter. Månadsabonnemang för att göra professionell design tillgänglig för fler företag.</p>
@@ -42,15 +42,15 @@ export default async function ServicesPage() {
           <p>Genom vårt månadsabonnemang gör vi professionell webbutveckling tillgänglig för företag som tidigare inte haft råd med skräddarsydda lösningar.</p>
         </div>
       `,
-      icon: 'Globe',
+      icon: 'app-window',
       price_info: 'Från 2,000 kr/mån',
       features: ['Responsiv design', 'SEO-optimering', 'Snabba laddningstider', 'Säkerhetsuppdateringar'],
       process_steps: ['Konsultation', 'Design', 'Utveckling', 'Lansering', 'Support']
     },
     {
       id: '2', 
-      title: 'Mobilappar',
-      short_description: 'Mobilappar och webbappar',
+      title: 'App',
+      short_description: 'Cross-platform mobilappar med React Native och progressiva webbappar (PWA). Vi guidar från idé till färdig produkt utan onödig app-butik-byråkrati.',
       description: `
         <div>
           <p>React Native för mobil och moderna webbappar. Vi hjälper från idé till färdig produkt - ingen app-butik-byråkrati om det inte behövs.</p>
@@ -72,8 +72,8 @@ export default async function ServicesPage() {
     },
     {
       id: '3',
-      title: 'Skräddarsydd utveckling', 
-      short_description: 'När standardlösningar inte räcker',
+      title: 'System', 
+      short_description: 'Skräddarsydda system och verktyg anpassade efter dina specifika behov. Från enkla automationsverktyg till komplexa datahanteringssystem.',
       description: `
         <div>
           <p>Har du något specifikt du vill bygga? Vi kan utveckla allt från enkla verktyg till komplexa system. Säg vad du behöver så fixar vi det.</p>
@@ -88,23 +88,23 @@ export default async function ServicesPage() {
           <p>Vi anpassar vår utvecklingsprocess efter ditt projekt och dina önskemål för att leverera bästa möjliga resultat.</p>
         </div>
       `,
-      icon: 'Code',
+      icon: 'waypoints',
       price_info: 'Offereras per projekt',
       features: ['Skräddarsydd lösning', 'Skalbar arkitektur', 'Integrationer', 'Löpande support'],
       process_steps: ['Behovsanalys', 'Arkitektur', 'Utveckling', 'Testning', 'Lansering', 'Support']
     },
     {
       id: '4',
-      title: 'Design & rådgivning',
-      short_description: 'UX, grafisk design och teknikrådgivning',
+      title: 'Design',
+      short_description: 'Pedagogisk UX-design, grafisk formgivning och strategisk teknikrådgivning. Vi hjälper dig hitta rätt lösning och undvika kostsamma misstag.',
       description: 'Kompetens inom pedagogik, UX-design och grafisk formgivning. Vi hjälper dig hitta rätt lösning och undvika dyra misstag.',
-      icon: 'Coffee', 
+      icon: 'vector-square', 
       price_info: null
     },
     {
       id: '5',
       title: 'Betalning & Villkor',
-      short_description: 'Information om betalningsvillkor och process',
+      short_description: 'Transparenta betalningsvillkor, flexibla avbetalningsplaner och möjlighet till pro bono-projekt för samhällsnyttiga initiativ.',
       description: `
         <div>
           <p>Vi arbetar alltid med tydliga avtal för allas trygghet och transparens i våra affärsrelationer.</p>
